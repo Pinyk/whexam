@@ -11,4 +11,8 @@ import java.util.List;
  */
 public interface RoleService {
     public List<Role> findAll();
+
+    public Integer addRole(String name);
+
+    public Role findById(Integer id);
 }
