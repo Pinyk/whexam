@@ -24,4 +24,14 @@ public class RoleServiceImpl implements RoleService {
     public List<Role> findAll() {
         return roleMapper.selectList(new LambdaQueryWrapper<>());
     }
+
+    @Override
+    public Integer addRole(String name) {
+        return roleMapper.insert(new Role(name));
+    }
+
+    @Override
+    public Role findById(Integer id) {
+        return roleMapper.selectById(id);
+    }
 }
