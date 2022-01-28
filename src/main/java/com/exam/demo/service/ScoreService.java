@@ -1,12 +1,14 @@
 package com.exam.demo.service;
 
-import com.exam.demo.entity.Score;
+import com.exam.demo.entity.UserTestPaperScore;
 
 import java.util.List;
 
 public interface ScoreService {
 
-    List<Score> findByUserId(Integer userId);
+    List<UserTestPaperScore> findByUserId(Integer userId);
 
-    Double AvgScoreByTestPaperId(Integer testPaperId);
+    List<UserTestPaperScore> findByTestPaperId(Integer testPaperId);
+
+    Double avgScoreByTestPaperId(Integer testPaperId);
 }

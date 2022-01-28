@@ -1,7 +1,6 @@
 package com.exam.demo.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.exam.demo.entity.Score;
+import com.exam.demo.entity.UserTestPaperScore;
 import com.exam.demo.mapper.ScoreMapper;
 import com.exam.demo.service.ScoreService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,15 +15,23 @@ public class ScoreServiceImpl implements ScoreService {
     private ScoreMapper scoreMapper;
 
     /**
-     * 根据用户ID查询试卷
+     * 根据用户ID查询试卷成绩
      * @param userId
      * @return
      */
     @Override
-    public List<Score> findByUserId(Integer userId) {
-        QueryWrapper<Score> scoreQueryWrapper = new QueryWrapper<>();
-        scoreQueryWrapper.eq("userId", userId);
-        return scoreMapper.selectList(scoreQueryWrapper);
+    public List<UserTestPaperScore> findByUserId(Integer userId) {
+        return scoreMapper.findByUserId(userId);
+    }
+
+    /**
+     * 根据试卷ID查询参加考试的用户成绩
+     * @param testPaperId
+     * @return
+     */
+    @Override
+    public List<UserTestPaperScore> findByTestPaperId(Integer testPaperId) {
+        return scoreMapper.findByTestPaperId(testPaperId);
     }
 
     /**
@@ -33,7 +40,7 @@ public class ScoreServiceImpl implements ScoreService {
      * @return
      */
     @Override
-    public Double AvgScoreByTestPaperId(Integer testPaperId) {
-        return null;
+    public Double avgScoreByTestPaperId(Integer testPaperId) {
+        return scoreMapper.avgScoreByTestPaperId(testPaperId);
     }
 }

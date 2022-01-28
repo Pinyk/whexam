@@ -35,6 +35,4 @@ public class TestPaperController {
         jsonObject.put(Consts.MSG, "试卷信息添加成功");
         return jsonObject;
     }
-
-
 }

@@ -6,9 +6,11 @@ import com.exam.demo.entity.ExamSubject;
 import com.exam.demo.mapper.ExamSubjectMapper;
 import com.exam.demo.service.ExamSubjectService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class ExamSubjectServiceImpl implements ExamSubjectService {
 
     @Autowired
