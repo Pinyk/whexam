@@ -12,9 +12,9 @@ public interface ExamJudgeService {
 
     List<ExamJudge> search(ExamJudge judgeSearch);
 
-    void saveExamJudge(ExamJudge examJudge);
+    Integer saveExamJudge(ExamJudge examJudge);
 
-    void updateExamJudge(ExamJudge examJudge);
+    Integer updateExamJudge(ExamJudge examJudge);
 
-    void deleteExamJudge(Integer id);
+    Integer deleteExamJudge(Integer id);
 }

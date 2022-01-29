@@ -34,17 +34,17 @@ public class ExamSelectServiceImpl implements ExamSelectService {
     }
 
     @Override
-    public void saveExamSelect(ExamSelect examSelect) {
-        examSelectMapper.insert(examSelect);
+    public Integer saveExamSelect(ExamSelect examSelect) {
+        return examSelectMapper.insert(examSelect);
     }
 
     @Override
-    public void updateExamSelect(ExamSelect examSelect) {
-        examSelectMapper.updateById(examSelect);
+    public Integer updateExamSelect(ExamSelect examSelect) {
+        return examSelectMapper.updateById(examSelect);
     }
 
     @Override
-    public void deleteExamSelect(Integer id) {
-        examSelectMapper.deleteById(id);
+    public Integer deleteExamSelect(Integer id) {
+        return examSelectMapper.deleteById(id);
     }
 }

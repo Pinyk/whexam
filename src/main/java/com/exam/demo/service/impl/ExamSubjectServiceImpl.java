@@ -34,17 +34,17 @@ public class ExamSubjectServiceImpl implements ExamSubjectService {
     }
 
     @Override
-    public void saveExamSubject(ExamSubject examSubject) {
-        examSubjectMapper.insert(examSubject);
+    public Integer saveExamSubject(ExamSubject examSubject) {
+        return examSubjectMapper.insert(examSubject);
     }
 
     @Override
-    public void updateExamSubject(ExamSubject examSubject) {
-        examSubjectMapper.updateById(examSubject);
+    public Integer updateExamSubject(ExamSubject examSubject) {
+        return examSubjectMapper.updateById(examSubject);
     }
 
     @Override
-    public void deleteExamSubject(Integer id) {
-        examSubjectMapper.deleteById(id);
+    public Integer deleteExamSubject(Integer id) {
+        return examSubjectMapper.deleteById(id);
     }
 }

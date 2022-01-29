@@ -8,7 +8,7 @@ public interface ExamService {
 
     List<Exam> findByTestPaperId(Integer testPaperId);
 
-    void addProblem(Exam exam);
+    Integer addProblem(Exam exam);
 
-    void deleteProblem(Integer id);
+    Integer deleteProblem(Integer id);
 }

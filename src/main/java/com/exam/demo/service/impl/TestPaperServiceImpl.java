@@ -55,7 +55,7 @@ public class TestPaperServiceImpl implements TestPaperService {
      * @param testPaper
      */
     @Override
-    public void addTestPaper(TestPaper testPaper) {
-        testPaperMapper.insert(testPaper);
+    public Integer addTestPaper(TestPaper testPaper) {
+        return testPaperMapper.insert(testPaper);
     }
 }

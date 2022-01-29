@@ -34,17 +34,17 @@ public class ExamJudgeServiceImpl implements ExamJudgeService {
     }
 
     @Override
-    public void saveExamJudge(ExamJudge examJudge) {
-        examJudgeMapper.insert(examJudge);
+    public Integer saveExamJudge(ExamJudge examJudge) {
+        return examJudgeMapper.insert(examJudge);
     }
 
     @Override
-    public void updateExamJudge(ExamJudge examJudge) {
-        examJudgeMapper.updateById(examJudge);
+    public Integer updateExamJudge(ExamJudge examJudge) {
+        return examJudgeMapper.updateById(examJudge);
     }
 
     @Override
-    public void deleteExamJudge(Integer id) {
-        examJudgeMapper.deleteById(id);
+    public Integer deleteExamJudge(Integer id) {
+        return examJudgeMapper.deleteById(id);
     }
 }

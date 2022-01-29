@@ -12,9 +12,9 @@ public interface ExamSelectService {
 
     List<ExamSelect> search(ExamSelect selectSearch);
 
-    void saveExamSelect(ExamSelect examSelect);
+    Integer saveExamSelect(ExamSelect examSelect);
 
-    void updateExamSelect(ExamSelect examSelect);
+    Integer updateExamSelect(ExamSelect examSelect);
 
-    void deleteExamSelect(Integer id);
+    Integer deleteExamSelect(Integer id);
 }

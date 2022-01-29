@@ -25,12 +25,12 @@ public class ExamServiceImpl implements ExamService {
     }
 
     @Override
-    public void addProblem(Exam exam) {
-        examMapper.insert(exam);
+    public Integer addProblem(Exam exam) {
+        return examMapper.insert(exam);
     }
 
     @Override
-    public void deleteProblem(Integer id) {
-        examMapper.deleteById(id);
+    public Integer deleteProblem(Integer id) {
+        return examMapper.deleteById(id);
     }
 }

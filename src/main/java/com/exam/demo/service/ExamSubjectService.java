@@ -13,9 +13,9 @@ public interface ExamSubjectService {
 
     List<ExamSubject> search(ExamSubject examSubject);
 
-    void saveExamSubject(ExamSubject examSubject);
+    Integer saveExamSubject(ExamSubject examSubject);
 
-    void updateExamSubject(ExamSubject examSubject);
+    Integer updateExamSubject(ExamSubject examSubject);
 
-    void deleteExamSubject(Integer id);
+    Integer deleteExamSubject(Integer id);
 }

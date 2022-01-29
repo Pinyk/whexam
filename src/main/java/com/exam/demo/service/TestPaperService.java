@@ -12,5 +12,5 @@ public interface TestPaperService {
 
     List<TestPaper> findTested();
 
-    void addTestPaper(TestPaper testPaper);
+    Integer addTestPaper(TestPaper testPaper);
 }
