@@ -23,6 +23,7 @@ import static com.exam.demo.utils.WebResult.REQUEST_STATUS_SUCCESS;
 @RequestMapping("role")
 @Api(value="/role",tags={"角色操作接口"})
 public class RoleController {
+
     @Autowired
     private RoleService roleService;
 
@@ -39,7 +40,9 @@ public class RoleController {
     @PostMapping("addRole")
     @ApiOperation(notes = "gaoyk",value = "新增角色接口")
     public WebResult<Integer> addRole(@RequestParam @ApiParam(name="name",required=true)
+
                                          String name){
+
         return WebResult.<Integer>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)

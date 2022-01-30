@@ -1,0 +1,29 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.exam.demo.mapper.ScoreMapper">
+
+<!--    List<UserTestPaperScore> findByUserId(Integer userId);-->
+    <select id="findByUserId" parameterType="Integer" resultType="UserTestPaperScore">
+        select tp.name as testPaperName,tp.totalScore,tp.passScore,tp.startTime,tp.time,u.name as userName,s.scoreNum
+        from score s, testPaper tp, user u
+        where s.testPaperId = tp.id and s.userId = u.id
+        and s.userId = #{userId}
+    </select>
+
+<!--    List<UserTestPaperScore> findByTestPaperId(Integer testPaperId);-->
+    <select id="findByTestPaperId" parameterType="Integer" resultType="UserTestPaperScore">
+        select tp.name as testPaperName,tp.totalScore,tp.passScore,tp.startTime,tp.time,u.name as userName,s.scoreNum
+        from score s, testPaper tp, user u
+        where s.testPaperId = tp.id and s.userId = u.id
+        and s.testPaperId = #{testPaperId}
+    </select>
+
+<!--    Double avgScoreByTestPaperId(Integer testPaperId);-->
+    <select id="avgScoreByTestPaperId" parameterType="Integer" resultType="Double">
+        select avg(s.scoreNum) from score s, testPaper tp, user u
+        where s.testPaperId = tp.id and s.userId = u.id
+        and s.testPaperId = #{testPaperId}
+    </select>
+</mapper>

@@ -7,6 +7,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 
+
 /**
  * @Author: gaoyk
  * @Date: 2022/1/27 15:58
@@ -47,3 +48,4 @@ public class WebResult<T> implements Serializable {
     private String message;
 
 }
+

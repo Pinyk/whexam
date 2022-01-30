@@ -7,10 +7,12 @@ import lombok.Data;
 
 import java.util.List;
 
+
 /**
  * @Author: gaoyk
  * @Date: 2022/1/27 16:02
  */
+
 @Data
 @Builder
 @ApiModel(value = "分页数据", description = "分页数据统一返回对象")
@@ -47,4 +49,7 @@ public class PageVo<T> {
     private long total;
 
 
+
+
 }
+
