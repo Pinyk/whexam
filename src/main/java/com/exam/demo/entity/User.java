@@ -45,5 +45,18 @@ public class User {
     private int positionId;
 
     @ApiModelProperty(value = "用户密码")
-    private int password;
+    private String password;
+
+    public User(String gender, String openid, int roleId, String image, String wxname,double time, String password) {
+        this.gender = gender;
+        this.openid = openid;
+        this.roleId = roleId;
+        this.image = image;
+        this.wxname = wxname;
+        this.time = time;
+        this.password = password;
+    }
+
+    public User() {
+    }
 }
