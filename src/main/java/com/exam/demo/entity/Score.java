@@ -18,5 +18,5 @@ public class Score {
     private int userId;
 
     @ApiModelProperty(value = "得分")
-    private double scoreNum;
+    private double scorenum;
 }

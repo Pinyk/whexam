@@ -1,6 +1,6 @@
 package com.exam.demo.controller;
 
-import com.exam.demo.entity.TestPaper;
+import com.exam.demo.entity.Testpaper;
 import com.exam.demo.service.TestPaperService;
 import com.exam.demo.utils.WebResult;
 import io.swagger.annotations.Api;
@@ -23,8 +23,8 @@ public class TestPaperController {
 
     @GetMapping("findAllTestPaper")
     @ApiOperation(notes = "xiong",value = "查询所有试卷信息接口")
-    public WebResult<List<TestPaper>> findAllTestPaper() {
-        return WebResult.<List<TestPaper>>builder()
+    public WebResult<List<Testpaper>> findAllTestPaper() {
+        return WebResult.<List<Testpaper>>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
                 .data(testPaperService.findAll())
@@ -33,7 +33,7 @@ public class TestPaperController {
 
     @PostMapping("addTestPaper")
     @ApiOperation(notes = "xiong",value = "添加试卷头信息接口")
-    public WebResult<Integer> addTestPaper(@RequestParam @ApiParam(name="testPaper",required=true) TestPaper testPaper) {
+    public WebResult<Integer> addTestPaper(@RequestParam @ApiParam(name="testPaper",required=true) Testpaper testPaper) {
         return WebResult.<Integer>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)

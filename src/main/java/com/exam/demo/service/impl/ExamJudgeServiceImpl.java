@@ -29,7 +29,7 @@ public class ExamJudgeServiceImpl implements ExamJudgeService {
     @Override
     public List<ExamJudge> search(ExamJudge judgeSearch) {
         QueryWrapper<ExamJudge> wrapperJudge = new QueryWrapper<>();
-        wrapperJudge.like("context", judgeSearch.getContext()).eq("difficulty", judgeSearch.getDifficulty());
+        wrapperJudge.like("context", judgeSearch.getContext()).eq("difficulty", judgeSearch.getDefficulty());
         return examJudgeMapper.selectList(wrapperJudge);
     }
 

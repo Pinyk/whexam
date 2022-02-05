@@ -2,7 +2,7 @@ package com.exam.demo.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.exam.demo.entity.TestPaper;
+import com.exam.demo.entity.Testpaper;
 import com.exam.demo.mapper.TestPaperMapper;
 import com.exam.demo.service.TestPaperService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,7 @@ public class TestPaperServiceImpl implements TestPaperService {
      * @return
      */
     @Override
-    public List<TestPaper> findAll() {
+    public List<Testpaper> findAll() {
         return testPaperMapper.selectList(new LambdaQueryWrapper<>());
     }
 
@@ -31,8 +31,8 @@ public class TestPaperServiceImpl implements TestPaperService {
      * @return
      */
     @Override
-    public List<TestPaper> findTesting() {
-        QueryWrapper<TestPaper> queryWrapper = new QueryWrapper<>();
+    public List<Testpaper> findTesting() {
+        QueryWrapper<Testpaper> queryWrapper = new QueryWrapper<>();
         queryWrapper
                 .gt("startTime", new Date())
                 .lt("deadTime", new Date());
@@ -44,8 +44,8 @@ public class TestPaperServiceImpl implements TestPaperService {
      * @return
      */
     @Override
-    public List<TestPaper> findTested() {
-        QueryWrapper<TestPaper> queryWrapper = new QueryWrapper<>();
+    public List<Testpaper> findTested() {
+        QueryWrapper<Testpaper> queryWrapper = new QueryWrapper<>();
         queryWrapper.gt("deadTime",new Date());
         return testPaperMapper.selectList(queryWrapper);
     }
@@ -55,7 +55,7 @@ public class TestPaperServiceImpl implements TestPaperService {
      * @param testPaper
      */
     @Override
-    public Integer addTestPaper(TestPaper testPaper) {
+    public Integer addTestPaper(Testpaper testPaper) {
         return testPaperMapper.insert(testPaper);
     }
 }
