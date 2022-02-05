@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.exam.demo.entity.course.Study;
 import com.exam.demo.mapper.StudyMapper;
+import com.exam.demo.service.StudyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +15,7 @@ import java.util.List;
  */
 @Service
 
-public class StudyService {
+public class StudyServiceImpl implements StudyService {
      @Autowired
      private StudyMapper studyMapperr;
 
