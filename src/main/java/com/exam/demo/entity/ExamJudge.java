@@ -21,5 +21,5 @@ public class ExamJudge {
     private int subjectId;
 
     @ApiModelProperty(value = "难度")
-    private int difficulty;
+    private int defficulty;
 }
