@@ -33,7 +33,7 @@ public class TestPaperController {
 
     @PostMapping("addTestPaper")
     @ApiOperation(notes = "xiong",value = "添加试卷头信息接口")
-    public WebResult<Integer> addTestPaper(@RequestParam @ApiParam(name="testPaper",required=true) Testpaper testPaper) {
+    public WebResult<Integer> addTestPaper(@RequestBody @ApiParam(name="testPaper",required=true) Testpaper testPaper) {
         return WebResult.<Integer>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
