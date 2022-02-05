@@ -12,7 +12,7 @@ public class Score {
     private int id;
 
     @ApiModelProperty(value = "试卷ID")
-    private int testPaperId;
+    private int testpaperId;
 
     @ApiModelProperty(value = "用户ID")
     private int userId;
