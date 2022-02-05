@@ -21,7 +21,7 @@ public class ExamSelectController {
     @Autowired
     private ExamSelectService examSelectService;
 
-    @RequestMapping("findAll")
+    @GetMapping("findAll")
     @ApiOperation(notes = "xiong",value = "查询所有选择题目接口")
     public WebResult<List<ExamSelect>> findAll() {
         return WebResult.<List<ExamSelect>>builder()
@@ -31,7 +31,7 @@ public class ExamSelectController {
                 .build();
     }
 
-    @RequestMapping("findById")
+    @GetMapping("findById")
     @ApiOperation(notes = "xiong",value = "根据题目ID查询选择题目接口")
     public WebResult<ExamSelect> findById(@RequestParam @ApiParam(name="id",required=true) Integer id) {
         return WebResult.<ExamSelect>builder()
@@ -41,7 +41,7 @@ public class ExamSelectController {
                 .build();
     }
 
-    @RequestMapping("search")
+    @GetMapping("search")
     @ApiOperation(notes = "xiong",value = "根据条件查询选择题目接口")
     public WebResult<List<ExamSelect>> search(@RequestBody @ApiParam(name="examSelect",required=true) ExamSelect examSelect) {
         return WebResult.<List<ExamSelect>>builder()
@@ -51,7 +51,7 @@ public class ExamSelectController {
                 .build();
     }
 
-    @RequestMapping("save")
+    @PostMapping("save")
     @ApiOperation(notes = "xiong",value = "向题库添加选择题目接口")
     public WebResult<Integer> saveExamSelect(@RequestBody @ApiParam(name="examSelect",required=true) ExamSelect examSelect) {
         return WebResult.<Integer>builder()
@@ -61,7 +61,7 @@ public class ExamSelectController {
                 .build();
     }
 
-    @RequestMapping("update")
+    @PostMapping("update")
     @ApiOperation(notes = "xiong",value = "修改题库的选择题目接口")
     public WebResult<Integer> updateExamSelect(@RequestBody @ApiParam(name="examSelect",required=true) ExamSelect examSelect) {
         return WebResult.<Integer>builder()
@@ -71,7 +71,7 @@ public class ExamSelectController {
                 .build();
     }
 
-    @RequestMapping("delete")
+    @DeleteMapping("delete")
     @ApiOperation(notes = "xiong",value = "删除题库中的选择题目接口")
     public WebResult<Integer> deleteExamSelect(@PathVariable @ApiParam(name="id",required=true) Integer id) {
         return WebResult.<Integer>builder()

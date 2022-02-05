@@ -29,8 +29,8 @@ public class ExamController {
     @Autowired
     private TestPaperService testPaperService;
 
-    @RequestMapping("findByTestPaperId")
-    @ApiOperation(notes = "xiong",value = "根据试卷ID查询试卷的所有试题")
+    @GetMapping("findByTestPaperId")
+    @ApiOperation(notes = "xiong",value = "根据试卷ID查询试卷的所有试题接口")
     public WebResult<List<Exam>> findByTestPaperId(@RequestParam @ApiParam(name="testPaperId",required=true) Integer testPaperId) {
         return WebResult.<List<Exam>>builder()
                 .code(200)
@@ -39,7 +39,7 @@ public class ExamController {
                 .build();
     }
 
-    @RequestMapping("addProblem")
+    @PostMapping("addProblem")
     @ApiOperation(notes = "xiong",value = "添加试卷试题接口")
     public WebResult<Integer> addProblem(@RequestBody @ApiParam(name="exam",required=true) Exam exam) {
         return WebResult.<Integer>builder()
@@ -49,7 +49,7 @@ public class ExamController {
                 .build();
     }
 
-    @RequestMapping("deleteProblem")
+    @DeleteMapping("deleteProblem")
     @ApiOperation(notes = "xiong",value = "删除试卷试题接口")
     public WebResult<Integer> deleteProblem(@PathVariable @ApiParam(name="id",required=true) Integer id) {
         return WebResult.<Integer>builder()
@@ -59,7 +59,7 @@ public class ExamController {
                 .build();
     }
 
-    @RequestMapping("findTesting")
+    @GetMapping("findTesting")
     @ApiOperation(notes = "xiong",value = "查询正在考试试卷接口")
     public WebResult<List<TestPaper>> findTesting() {
         return WebResult.<List<TestPaper>>builder()
@@ -69,7 +69,7 @@ public class ExamController {
                 .build();
     }
 
-    @RequestMapping("findTested")
+    @GetMapping("findTested")
     @ApiOperation(notes = "xiong",value = "查询历史考试试卷接口")
     public WebResult<List<TestPaper>> findTested() {
         return WebResult.<List<TestPaper>>builder()
@@ -79,7 +79,7 @@ public class ExamController {
                 .build();
     }
 
-    @RequestMapping("find")
+    @GetMapping("find")
     @ApiOperation(notes = "xiong",value = "查询考试详情接口")
     public WebResult<List<UserTestPaperScore>> find详情(@RequestParam @ApiParam(name="testPaperId",required=true) Integer testPaperId) {
         return WebResult.<List<UserTestPaperScore>>builder()
@@ -89,7 +89,7 @@ public class ExamController {
                 .build();
     }
 
-    @RequestMapping("findByUserId")
+    @GetMapping("findByUserId")
     @ApiOperation(notes = "xiong",value = "查询用户考试详情接口")
     public WebResult<List<UserTestPaperScore>> findByUserId(@RequestParam @ApiParam(name="userId",required=true) Integer userId) {
         return WebResult.<List<UserTestPaperScore>>builder()
