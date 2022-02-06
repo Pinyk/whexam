@@ -1,8 +1,8 @@
-package com.exam.demo.service.course;
+package com.exam.demo.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.exam.demo.entity.course.Study;
+import com.exam.demo.entity.Study;
 import com.exam.demo.mapper.StudyMapper;
 import com.exam.demo.service.StudyService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +16,8 @@ import java.util.List;
 @Service
 
 public class StudyServiceImpl implements StudyService {
-     @Autowired
-     private StudyMapper studyMapperr;
+    @Autowired
+    private StudyMapper studyMapperr;
 
     public List<Study> findAll() {
         //查询所有

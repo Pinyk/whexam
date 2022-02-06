@@ -1,9 +1,8 @@
 package com.exam.demo.controller;
 
 
-import com.exam.demo.entity.course.Study;
+import com.exam.demo.entity.Study;
 import com.exam.demo.service.StudyService;
-import com.exam.demo.service.course.StudyServiceImpl;
 import com.exam.demo.utils.WebResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
