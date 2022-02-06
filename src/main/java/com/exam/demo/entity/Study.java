@@ -1,11 +1,16 @@
-package com.exam.demo.entity.course;
+package com.exam.demo.entity;
 
 
 import com.baomidou.mybatisplus.annotation.TableName;
+import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import org.apache.ibatis.annotations.Options;
 
+/**
+ * 学习类对应实体
+ */
 @Data
+@ApiModel(value = "study")
 @TableName("data")
 public class Study {
 

@@ -1,9 +1,13 @@
 package com.exam.demo.service;
 
-import com.exam.demo.entity.course.Study;
+import com.exam.demo.entity.Study;
 
 import java.util.List;
-
+/**
+ * @Author: csx
+ * @Date: 2022/1/19 13:42
+ * 学习service
+ */
 public interface StudyService {
 
     public List<Study> findAll() ;

@@ -1,10 +1,9 @@
 package com.exam.demo.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.exam.demo.entity.course.Study;
+import com.exam.demo.entity.Study;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 /**
  * @Author: csx
  * @Date: 2022/1/23
