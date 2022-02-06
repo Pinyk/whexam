@@ -40,7 +40,9 @@ public class RoleController {
     @PostMapping("addRole")
     @ApiOperation(notes = "gaoyk",value = "新增角色接口")
     public WebResult<Integer> addRole(@RequestParam @ApiParam(name="name",required=true)
-                                              String name){
+
+                                         String name){
+
         return WebResult.<Integer>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
@@ -51,11 +53,14 @@ public class RoleController {
     @GetMapping("findById")
     @ApiOperation(notes = "gaoyk",value = "查找角色接口")
     public WebResult<Role> addRole(@RequestParam @ApiParam(name="id",required=true)
-                                           Integer id){
+                                              Integer id){
         return WebResult.<Role>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
                 .data(roleService.findById(id))
                 .build();
     }
+
+
+
 }

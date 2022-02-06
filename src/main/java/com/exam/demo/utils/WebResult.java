@@ -7,6 +7,11 @@ import lombok.Data;
 
 import java.io.Serializable;
 
+
+/**
+ * @Author: gaoyk
+ * @Date: 2022/1/27 15:58
+ */
 @Data
 @Builder
 @ApiModel(value = "统一数据返回对象",
@@ -37,8 +42,10 @@ public class WebResult<T> implements Serializable {
      * msg信息
      */
     @ApiModelProperty(required = true,
-            value = "返回message信息",
+            value = "返回message 信息",
             dataType = "string",
             example = "success", position = 2)
     private String message;
+
 }
+

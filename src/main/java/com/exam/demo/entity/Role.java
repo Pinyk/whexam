@@ -1,5 +1,7 @@
 package com.exam.demo.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -25,4 +27,6 @@ public class Role {
     public Role(String name) {
         this.name = name;
     }
+
 }
+
