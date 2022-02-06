@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-@Mapper
+//@Mapper
 public interface ScoreMapper extends BaseMapper<Score> {
 
     List<UserTestPaperScore> findByUserId(Integer userId);

@@ -13,6 +13,14 @@ public interface ExamSelectService {
     List<ExamSelect> findAll();
 
     /**
+     * 分页查询选择题目
+     * @param current
+     * @param pageSize
+     * @return
+     */
+    List<ExamSelect> findPage(int current, int pageSize);
+
+    /**
      * 根据题目ID查询选择题目
      * @param id
      * @return

@@ -31,6 +31,17 @@ public class ExamSelectController {
                 .build();
     }
 
+    @GetMapping("findPage")
+    @ApiOperation(notes = "xiong",value = "分页查询所有选择题目接口")
+    public WebResult<List<ExamSelect>> findPage(@RequestParam @ApiParam(name="currentPage") Integer currentPage,
+                                                @RequestParam @ApiParam(name="pageSize") Integer pageSize) {
+        return WebResult.<List<ExamSelect>>builder()
+                .code(200)
+                .message(REQUEST_STATUS_SUCCESS)
+                .data(examSelectService.findPage(currentPage, pageSize))
+                .build();
+    }
+
     @GetMapping("findById")
     @ApiOperation(notes = "xiong",value = "根据题目ID查询选择题目接口")
     public WebResult<ExamSelect> findById(@RequestParam @ApiParam(name="id",required=true) Integer id) {

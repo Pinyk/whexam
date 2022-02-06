@@ -31,6 +31,17 @@ public class ExamSubjectController {
                 .build();
     }
 
+    @GetMapping("findPage")
+    @ApiOperation(notes = "xiong",value = "分页查询所有主观题目接口")
+    public WebResult<List<ExamSubject>> findPage(@RequestParam @ApiParam(name="currentPage") Integer currentPage,
+                                                 @RequestParam @ApiParam(name="pageSize") Integer pageSize) {
+        return WebResult.<List<ExamSubject>>builder()
+                .code(200)
+                .message(REQUEST_STATUS_SUCCESS)
+                .data(examSubjectService.findPage(currentPage, pageSize))
+                .build();
+    }
+
     @GetMapping("findById")
     @ApiOperation(notes = "xiong",value = "根据题目ID查询主观题目接口")
     public WebResult<ExamSubject> findById(@RequestParam @ApiParam(name="id",required=true) Integer id) {

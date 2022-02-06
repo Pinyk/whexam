@@ -13,6 +13,14 @@ public interface ExamJudgeService {
     List<ExamJudge> findAll();
 
     /**
+     * 分页查询判断题目
+     * @param current
+     * @param pageSize
+     * @return
+     */
+    List<ExamJudge> findPage(int current, int pageSize);
+
+    /**
      * 根据题目ID查询判断题目
      * @param id
      * @return
@@ -21,10 +29,11 @@ public interface ExamJudgeService {
 
     /**
      * 根据条件查询判断题目
-     * @param judgeSearch
+     * @param context
+     * @param difficulty
      * @return
      */
-    List<ExamJudge> search(ExamJudge judgeSearch);
+    List<ExamJudge> search(String context, Integer difficulty);
 
     /**
      * 向题库添加判断题目

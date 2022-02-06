@@ -25,6 +25,12 @@ public interface TestPaperService {
     List<Testpaper> findTested();
 
     /**
+     * 查询尚未开始考试的试卷信息
+     * @return
+     */
+    List<Testpaper> findNotStartTest();
+
+    /**
      * 添加试卷头信息
      * @param testPaper
      * @return

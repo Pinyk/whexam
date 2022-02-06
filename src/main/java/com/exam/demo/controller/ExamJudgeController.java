@@ -32,6 +32,17 @@ public class ExamJudgeController {
                 .build();
     }
 
+    @GetMapping("findPage")
+    @ApiOperation(notes = "xiong",value = "分页查询所有判断题目接口")
+    public WebResult<List<ExamJudge>> findPage(@RequestParam @ApiParam(name="currentPage") Integer currentPage,
+                                               @RequestParam @ApiParam(name="pageSize") Integer pageSize) {
+        return WebResult.<List<ExamJudge>>builder()
+                .code(200)
+                .message(REQUEST_STATUS_SUCCESS)
+                .data(examJudgeService.findPage(currentPage, pageSize))
+                .build();
+    }
+
     @GetMapping("findById")
     @ApiOperation(notes = "xiong",value = "根据题目ID查询判断题目接口")
     public WebResult<ExamJudge> findById(@RequestParam @ApiParam(name="id",required=true) Integer id) {
@@ -44,11 +55,12 @@ public class ExamJudgeController {
 
     @GetMapping("search")
     @ApiOperation(notes = "xiong",value = "根据条件查询判断题目接口")
-    public WebResult<List<ExamJudge>> search(@RequestBody @ApiParam(name="judgeSearch",required=true) ExamJudge judgeSearch) {
+    public WebResult<List<ExamJudge>> search(@RequestParam @ApiParam(name="context",required=true) String context,
+                                             @RequestParam @ApiParam(name="difficulty",required=true) Integer difficulty) {
         return WebResult.<List<ExamJudge>>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
-                .data(examJudgeService.search(judgeSearch))
+                .data(examJudgeService.search(context,difficulty))
                 .build();
     }
 

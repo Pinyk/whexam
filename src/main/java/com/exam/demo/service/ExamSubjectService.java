@@ -14,6 +14,12 @@ public interface ExamSubjectService {
     List<ExamSubject> findAll();
 
     /**
+     * 分页查询所有主观题目
+     * @return
+     */
+    List<ExamSubject> findPage(int current, int pageSize);
+
+    /**
      * 根据题目ID查询主观题目
      * @param id
      * @return

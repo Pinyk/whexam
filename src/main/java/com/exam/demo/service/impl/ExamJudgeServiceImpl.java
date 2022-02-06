@@ -2,6 +2,7 @@ package com.exam.demo.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.exam.demo.entity.ExamJudge;
 import com.exam.demo.mapper.ExamJudgeMapper;
 import com.exam.demo.service.ExamJudgeService;
@@ -22,20 +23,27 @@ public class ExamJudgeServiceImpl implements ExamJudgeService {
     }
 
     @Override
+    public List<ExamJudge> findPage(int current, int pageSize) {
+        Page<ExamJudge> page = new Page<>(current, pageSize);
+        Page<ExamJudge> examJudgePage = examJudgeMapper.selectPage(page, new LambdaQueryWrapper<>());
+        return examJudgePage.getRecords();
+    }
+
+    @Override
     public ExamJudge findById(Integer id) {
         return examJudgeMapper.selectById(id);
     }
 
     @Override
-    public List<ExamJudge> search(ExamJudge judgeSearch) {
+    public List<ExamJudge> search(String context, Integer difficulty) {
         QueryWrapper<ExamJudge> wrapperJudge = new QueryWrapper<>();
-        if(!"".equals(judgeSearch.getContext())) {
-            wrapperJudge.like("context", judgeSearch.getContext());
-        }
-        if(judgeSearch.getDefficulty() != 0) {
-            wrapperJudge.eq("defficulty", judgeSearch.getDefficulty());
-        }
-//        wrapperJudge.like("context", judgeSearch.getContext()).eq("defficulty", judgeSearch.getDefficulty());
+//        if(!"".equals(judgeSearch.getContext())) {
+//            wrapperJudge.like("context", judgeSearch.getContext());
+//        }
+//        if(judgeSearch.getDefficulty() != 0) {
+//            wrapperJudge.eq("defficulty", judgeSearch.getDefficulty());
+//        }
+        wrapperJudge.like("context", context).eq("defficulty", difficulty);
         return examJudgeMapper.selectList(wrapperJudge);
     }
 

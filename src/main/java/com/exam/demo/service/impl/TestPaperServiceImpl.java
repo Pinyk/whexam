@@ -8,6 +8,8 @@ import com.exam.demo.service.TestPaperService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -34,8 +36,8 @@ public class TestPaperServiceImpl implements TestPaperService {
     public List<Testpaper> findTesting() {
         QueryWrapper<Testpaper> queryWrapper = new QueryWrapper<>();
         queryWrapper
-                .gt("startTime", new Date())
-                .lt("deadTime", new Date());
+                .ge("dead_time", new Timestamp(new Date().getTime()))
+                .le("start_time", new Timestamp(new Date().getTime()));
         return testPaperMapper.selectList(queryWrapper);
     }
 
@@ -46,8 +48,19 @@ public class TestPaperServiceImpl implements TestPaperService {
     @Override
     public List<Testpaper> findTested() {
         QueryWrapper<Testpaper> queryWrapper = new QueryWrapper<>();
-        queryWrapper.gt("deadTime",new Date());
+        queryWrapper.lt("dead_time", new Timestamp(new Date().getTime()));
         return testPaperMapper.selectList(queryWrapper);
+    }
+
+    /**
+     * 查询尚未开始的考试
+     * @return
+     */
+    @Override
+    public List<Testpaper> findNotStartTest() {
+        QueryWrapper<Testpaper> queryWrapper = new QueryWrapper<>();
+        queryWrapper.gt("start_time", new Timestamp(new Date().getTime()));
+        return null;
     }
 
     /**

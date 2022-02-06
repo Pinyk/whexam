@@ -79,9 +79,19 @@ public class ExamController {
                 .build();
     }
 
-    @GetMapping("find")
-    @ApiOperation(notes = "xiong",value = "查询考试详情接口")
-    public WebResult<List<UserTestPaperScore>> find详情(@RequestParam @ApiParam(name="testPaperId",required=true) Integer testPaperId) {
+    @GetMapping("findNotStartTest")
+    @ApiOperation(notes = "xiong",value = "查询尚未开始的考试试卷接口")
+    public WebResult<List<Testpaper>> findNotStartTest() {
+        return WebResult.<List<Testpaper>>builder()
+                .code(200)
+                .message(REQUEST_STATUS_SUCCESS)
+                .data(testPaperService.findNotStartTest())
+                .build();
+    }
+
+    @GetMapping("findDetail")
+    @ApiOperation(notes = "xiong",value = "查询考试成绩详情接口")
+    public WebResult<List<UserTestPaperScore>> findDetail(@RequestParam @ApiParam(name="testPaperId",required=true) Integer testPaperId) {
         return WebResult.<List<UserTestPaperScore>>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
@@ -90,7 +100,7 @@ public class ExamController {
     }
 
     @GetMapping("findByUserId")
-    @ApiOperation(notes = "xiong",value = "查询用户考试详情接口")
+    @ApiOperation(notes = "xiong",value = "查询用户考试成绩详情接口")
     public WebResult<List<UserTestPaperScore>> findByUserId(@RequestParam @ApiParam(name="userId",required=true) Integer userId) {
         return WebResult.<List<UserTestPaperScore>>builder()
                 .code(200)

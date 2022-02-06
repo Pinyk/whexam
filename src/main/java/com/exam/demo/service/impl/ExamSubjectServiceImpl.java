@@ -2,6 +2,7 @@ package com.exam.demo.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.exam.demo.entity.ExamSubject;
 import com.exam.demo.mapper.ExamSubjectMapper;
 import com.exam.demo.service.ExamSubjectService;
@@ -19,6 +20,13 @@ public class ExamSubjectServiceImpl implements ExamSubjectService {
     @Override
     public List<ExamSubject> findAll() {
         return examSubjectMapper.selectList(new LambdaQueryWrapper<>());
+    }
+
+    @Override
+    public List<ExamSubject> findPage(int current, int pageSize) {
+        Page<ExamSubject> page = new Page<>(current, pageSize);
+        Page<ExamSubject> examSubjectPage = examSubjectMapper.selectPage(page, new LambdaQueryWrapper<>());
+        return examSubjectPage.getRecords();
     }
 
     @Override
