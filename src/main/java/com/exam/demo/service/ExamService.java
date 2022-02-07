@@ -3,6 +3,7 @@ package com.exam.demo.service;
 import com.exam.demo.entity.Exam;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ExamService {
 
@@ -11,7 +12,8 @@ public interface ExamService {
      * @param testPaperId
      * @return
      */
-    List<Exam> findByTestPaperId(Integer testPaperId);
+//    List<Exam> findByTestPaperId(Integer testPaperId);
+    Map<String, List<Object>> findByTestPaperId(Integer testPaperId);
 
     /**
      * 添加试卷试题

@@ -60,7 +60,7 @@ public class TestPaperServiceImpl implements TestPaperService {
     public List<Testpaper> findNotStartTest() {
         QueryWrapper<Testpaper> queryWrapper = new QueryWrapper<>();
         queryWrapper.gt("start_time", new Timestamp(new Date().getTime()));
-        return null;
+        return testPaperMapper.selectList(queryWrapper);
     }
 
     /**

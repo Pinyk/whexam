@@ -85,7 +85,7 @@ public class ExamSubjectController {
                 .build();
     }
 
-    @DeleteMapping("delete")
+    @DeleteMapping("delete/{id}")
     @ApiOperation(notes = "xiong",value = "删除题库中的主观题目接口")
     public WebResult<Integer> deleteExamSubject(@PathVariable @ApiParam(name="id",required=true) Integer id) {
         return WebResult.<Integer>builder()

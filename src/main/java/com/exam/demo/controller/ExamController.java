@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 import static com.exam.demo.utils.WebResult.REQUEST_STATUS_SUCCESS;
 
@@ -31,8 +32,8 @@ public class ExamController {
 
     @GetMapping("findByTestPaperId")
     @ApiOperation(notes = "xiong",value = "根据试卷ID查询试卷的所有试题接口")
-    public WebResult<List<Exam>> findByTestPaperId(@RequestParam @ApiParam(name="testPaperId",required=true) Integer testPaperId) {
-        return WebResult.<List<Exam>>builder()
+    public WebResult<Map<String, List<Object>>> findByTestPaperId(@RequestParam @ApiParam(name="testPaperId",required=true) Integer testPaperId) {
+        return WebResult.<Map<String, List<Object>>>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
                 .data(examService.findByTestPaperId(testPaperId))
@@ -49,7 +50,7 @@ public class ExamController {
                 .build();
     }
 
-    @DeleteMapping("deleteProblem")
+    @DeleteMapping("deleteProblem/{id}")
     @ApiOperation(notes = "xiong",value = "删除试卷试题接口")
     public WebResult<Integer> deleteProblem(@PathVariable @ApiParam(name="id",required=true) Integer id) {
         return WebResult.<Integer>builder()

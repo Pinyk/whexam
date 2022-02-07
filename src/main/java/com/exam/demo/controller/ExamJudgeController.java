@@ -7,7 +7,6 @@ import com.exam.demo.utils.WebResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import org.apache.ibatis.annotations.Delete;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -86,7 +85,7 @@ public class ExamJudgeController {
                 .build();
     }
 
-    @DeleteMapping("delete")
+    @DeleteMapping("delete/{id}")
     @ApiOperation(notes = "xiong",value = "删除题库中的判断题目接口")
     public WebResult<Integer> deleteExamJudge(@PathVariable @ApiParam(name="id",required=true) Integer id) {
         return WebResult.<Integer>builder()
