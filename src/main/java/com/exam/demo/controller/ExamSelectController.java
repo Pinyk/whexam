@@ -1,6 +1,7 @@
 package com.exam.demo.controller;
 
 import com.exam.demo.entity.ExamSelect;
+import com.exam.demo.entity.QueryQuestion;
 import com.exam.demo.service.ExamSelectService;
 import com.exam.demo.utils.WebResult;
 import io.swagger.annotations.Api;
@@ -52,13 +53,15 @@ public class ExamSelectController {
                 .build();
     }
 
-    @GetMapping("search")
+    @PostMapping("search")
     @ApiOperation(notes = "xiong",value = "根据条件查询选择题目接口")
-    public WebResult<List<ExamSelect>> search(@RequestBody @ApiParam(name="examSelect",required=true) ExamSelect examSelect) {
+    public WebResult<List<ExamSelect>> search(@RequestParam @ApiParam(name="current") Integer current,
+                                              @RequestParam @ApiParam(name="pageSize") Integer pageSize,
+                                              @RequestBody @ApiParam(name="queryQuestion") QueryQuestion queryQuestion) {
         return WebResult.<List<ExamSelect>>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
-                .data(examSelectService.search(examSelect))
+                .data(examSelectService.search(current, pageSize, queryQuestion))
                 .build();
     }
 

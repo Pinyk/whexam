@@ -4,10 +4,12 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.exam.demo.entity.ExamJudge;
+import com.exam.demo.entity.QueryQuestion;
 import com.exam.demo.mapper.ExamJudgeMapper;
 import com.exam.demo.service.ExamJudgeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -35,16 +37,20 @@ public class ExamJudgeServiceImpl implements ExamJudgeService {
     }
 
     @Override
-    public List<ExamJudge> search(String context, Integer difficulty) {
+    public List<ExamJudge> search(Integer current, Integer pageSize, QueryQuestion queryQuestion) {
+        Page<ExamJudge> page = new Page<>(current, pageSize);
+
         QueryWrapper<ExamJudge> wrapperJudge = new QueryWrapper<>();
-//        if(!"".equals(judgeSearch.getContext())) {
-//            wrapperJudge.like("context", judgeSearch.getContext());
-//        }
-//        if(judgeSearch.getDefficulty() != 0) {
-//            wrapperJudge.eq("defficulty", judgeSearch.getDefficulty());
-//        }
-        wrapperJudge.like("context", context).eq("defficulty", difficulty);
-        return examJudgeMapper.selectList(wrapperJudge);
+        String context = queryQuestion.getContext();
+        int difficulty = queryQuestion.getDifficulty();
+        if(!StringUtils.isEmpty(context)) {
+            wrapperJudge.like("context", context);
+        }
+        if(!StringUtils.isEmpty(difficulty)) {
+            wrapperJudge.eq("defficulty", difficulty);
+        }
+        Page<ExamJudge> examJudgePage = examJudgeMapper.selectPage(page, wrapperJudge);
+        return examJudgePage.getRecords();
     }
 
     @Override

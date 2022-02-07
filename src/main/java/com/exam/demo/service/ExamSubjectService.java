@@ -1,6 +1,7 @@
 package com.exam.demo.service;
 
 import com.exam.demo.entity.ExamSubject;
+import com.exam.demo.entity.QueryQuestion;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,10 +29,12 @@ public interface ExamSubjectService {
 
     /**
      * 根据条件查询主观题目
-     * @param examSubject
+     * @param current
+     * @param pageSize
+     * @param queryQuestion
      * @return
      */
-    List<ExamSubject> search(ExamSubject examSubject);
+    List<ExamSubject> search(Integer current, Integer pageSize, QueryQuestion queryQuestion);
 
     /**
      * 向题库添加主观题目

@@ -1,6 +1,7 @@
 package com.exam.demo.service;
 
 import com.exam.demo.entity.ExamJudge;
+import com.exam.demo.entity.QueryQuestion;
 
 import java.util.List;
 
@@ -29,11 +30,12 @@ public interface ExamJudgeService {
 
     /**
      * 根据条件查询判断题目
-     * @param context
-     * @param difficulty
+     * @param current
+     * @param pageSize
+     * @param queryQuestion
      * @return
      */
-    List<ExamJudge> search(String context, Integer difficulty);
+    List<ExamJudge> search(Integer current, Integer pageSize, QueryQuestion queryQuestion);
 
     /**
      * 向题库添加判断题目

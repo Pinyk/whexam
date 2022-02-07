@@ -1,6 +1,7 @@
 package com.exam.demo.service;
 
 import com.exam.demo.entity.ExamSelect;
+import com.exam.demo.entity.QueryQuestion;
 
 import java.util.List;
 
@@ -29,10 +30,12 @@ public interface ExamSelectService {
 
     /**
      * 根据条件查询选择题目
-     * @param selectSearch
+     * @param current
+     * @param pageSize
+     * @param queryQuestion
      * @return
      */
-    List<ExamSelect> search(ExamSelect selectSearch);
+    List<ExamSelect> search(Integer current, Integer pageSize, QueryQuestion queryQuestion);
 
     /**
      * 向题库添加选择题目
