@@ -21,10 +21,6 @@ public class ExamServiceImpl implements ExamService {
      * @param testPaperId
      * @return
      */
-//    @Override
-//    public List<Exam> findByTestPaperId(Integer testPaperId) {
-//        return null;
-//    }
     @Override
     public Map<String, List<Object>> findByTestPaperId(Integer testPaperId) {
         Map<String, List<Object>> map = new HashMap<>();

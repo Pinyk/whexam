@@ -1,5 +1,6 @@
 package com.exam.demo.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.json.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.exam.demo.entity.User;
@@ -25,6 +26,13 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserMapper userMapper;
 
+
+    /**
+     * 微信小程序登录服务层
+     *
+     * @param user
+     * @return
+     */
     @Override
     public User loginWx(User user) {
         String s = UserServiceImpl.sendGet("https://api.weixin.qq.com/sns/jscode2session?appid=wxfe52cfbbf230d5ee&secret=3b61d56a43ce72243813b1f71b017c90&js_code=" + user.getOpenid() + "&grant_type=authorization_code", "");
@@ -47,6 +55,63 @@ public class UserServiceImpl implements UserService {
             userMapper.insert(now);
             return now;
         }
+    }
+
+    /**
+     * Web登录服务层
+     *
+     * @param user
+     * @return
+     */
+    @Override
+    public User loginWeb(User user) {
+        QueryWrapper<User> wrapper = new QueryWrapper<>();
+        wrapper.eq("name",user.getName());
+        User p = userMapper.selectOne(wrapper);
+
+        if (p != null){
+            if (p.getPassword().equals(user.getPassword())){
+                return p;
+            }else {
+                return null;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 修改用户信息
+     *
+     * @param user
+     * @return
+     */
+    @Override
+    public Boolean updateUser(User user) {
+        if(userMapper.updateById(user) == 1){
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 返回所有用户
+     *
+     * @return
+     */
+    @Override
+    public List<User> findAll() {
+        return userMapper.selectList(new LambdaQueryWrapper<>());
+    }
+
+    /**
+     * 根据Id删除用户
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public Integer deleteById(Integer id) {
+        return userMapper.deleteById(id);
     }
 
     public static String sendGet(String url, String param) {
