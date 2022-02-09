@@ -100,7 +100,17 @@ public class UserController {
         }
     }
 
-
-
+    @PostMapping("grantRole")
+    @ApiOperation(notes = "gaoyk",value = "根据roleId授权")
+    public WebResult<Boolean> grantRole(@RequestParam @ApiParam(name="role_id",required=true)
+                                                 Integer role_id, @RequestParam @ApiParam(name="user_id",required=true)
+                                                Integer user_id){
+        Boolean msg = userService.grantRole(role_id,user_id);
+        return WebResult.<Boolean>builder()
+                .code(200)
+                .message(REQUEST_STATUS_SUCCESS)
+                .data(msg)
+                .build();
+    }
 
 }

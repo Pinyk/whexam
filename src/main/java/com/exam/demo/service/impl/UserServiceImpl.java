@@ -114,6 +114,23 @@ public class UserServiceImpl implements UserService {
         return userMapper.deleteById(id);
     }
 
+    /**
+     * 给用户授权
+     *
+     * @param role_id
+     * @param user_id
+     * @return
+     */
+    @Override
+    public Boolean grantRole(Integer role_id, Integer user_id) {
+        User user = userMapper.selectById(user_id);
+        user.setRoleId(role_id);
+        if(userMapper.updateById(user) == 1){
+            return true;
+        }
+        return false;
+    }
+
     public static String sendGet(String url, String param) {
         String result = "";
         BufferedReader in = null;
