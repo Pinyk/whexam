@@ -45,4 +45,12 @@ public interface UserService {
      * @return
      */
     public Integer deleteById(Integer id);
+
+    /**
+     * 给用户授权
+     * @param role_id
+     * @param user_id
+     * @return
+     */
+    public Boolean grantRole(Integer role_id, Integer user_id);
 }

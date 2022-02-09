@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static com.exam.demo.utils.WebResult.REQUEST_STATUS_ERROR;
 import static com.exam.demo.utils.WebResult.REQUEST_STATUS_SUCCESS;
 
 /**
@@ -61,6 +62,25 @@ public class RoleController {
                 .build();
     }
 
+    @DeleteMapping("deleteById")
+    @ApiOperation(notes = "gaoyk",value = "根据Id删除角色")
+    public WebResult<Boolean> deleteById(@RequestParam @ApiParam(name="id",required=true)
+                                                 Integer id){
+        Integer i = roleService.deleteById(id);
+        if (i != 1){
+            return WebResult.<Boolean>builder()
+                    .code(404)
+                    .message(REQUEST_STATUS_ERROR)
+                    .data(false)
+                    .build();
+        }else {
+            return WebResult.<Boolean>builder()
+                    .code(200)
+                    .data(true)
+                    .message(REQUEST_STATUS_SUCCESS)
+                    .build();
+        }
+    }
 
 
 }
