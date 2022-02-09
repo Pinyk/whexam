@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.exam.demo.mapper.StudyMapper">
+
+        <select id="findStudyByType" parameterType="int" resultType="com.exam.demo.entity.Study">
+            select * from data where datatype_id = #{datatype}
+        </select>
+
+</mapper>
