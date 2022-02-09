@@ -14,10 +14,10 @@ public class UserTestPaperScore {
     private String testPaperName;
 
     @ApiModelProperty(value = "试卷总分")
-    private double totalScore;
+    private double totalscore;
 
     @ApiModelProperty(value = "试卷及格分")
-    private double passScore;
+    private double passscore;
 
     @ApiModelProperty(value = "开始考试时间")
     private Date startTime;
@@ -29,5 +29,5 @@ public class UserTestPaperScore {
     private String userName;
 
     @ApiModelProperty(value = "用户得分")
-    private double scoreNum;
+    private double scorenum;
 }

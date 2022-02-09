@@ -7,12 +7,13 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static com.exam.demo.utils.WebResult.REQUEST_STATUS_ERROR;
 import static com.exam.demo.utils.WebResult.REQUEST_STATUS_SUCCESS;
+import static com.exam.demo.utils.WebResult.REQUEST_STATUS_ERROR;
 
 /**
  * @Author: gaoyk
@@ -30,7 +31,7 @@ public class UserController {
     @PostMapping("loginWx")
     @ApiOperation(notes = "gaoyk",value = "微信小程序登录接口")
     public WebResult<User> loginWx(@RequestBody @ApiParam(name="用户对象",required=true,
-            value = "传入[openid][wxname][image][gender]参数") User user){
+            value = "传入json格式") User user){
         User msg = userService.loginWx(user);
         return WebResult.<User>builder()
                 .code(200)

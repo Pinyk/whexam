@@ -1,16 +1,39 @@
 package com.exam.demo.service;
 
-import com.exam.demo.entity.TestPaper;
+import com.exam.demo.entity.Testpaper;
 
 import java.util.List;
 
 public interface TestPaperService {
 
-    List<TestPaper> findAll();
+    /**
+     * 查询所有试卷信息
+     * @return
+     */
+    List<Testpaper> findAll();
 
-    List<TestPaper> findTesting();
+    /**
+     * 查询正在考试的试卷信息
+     * @return
+     */
+    List<Testpaper> findTesting();
 
-    List<TestPaper> findTested();
+    /**
+     * 查询历史考试的试卷信息
+     * @return
+     */
+    List<Testpaper> findTested();
 
-    Integer addTestPaper(TestPaper testPaper);
+    /**
+     * 查询尚未开始考试的试卷信息
+     * @return
+     */
+    List<Testpaper> findNotStartTest();
+
+    /**
+     * 添加试卷头信息
+     * @param testPaper
+     * @return
+     */
+    Integer addTestPaper(Testpaper testPaper);
 }

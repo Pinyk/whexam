@@ -12,7 +12,7 @@ public class Exam {
     private int id;
 
     @ApiModelProperty(value = "试卷ID")
-    private int testPaperId;
+    private int testpaperId;
 
     @ApiModelProperty(value = "题目类型")
     private int type;
