@@ -2,6 +2,7 @@ package com.exam.demo.service;
 
 import com.exam.demo.entity.ExamSelect;
 import com.exam.demo.entity.QueryQuestion;
+import com.exam.demo.rtEntity.SelectQuestion;
 
 import java.util.List;
 
@@ -11,7 +12,7 @@ public interface ExamSelectService {
      * 查询所有选择题目
      * @return
      */
-    List<ExamSelect> findAll();
+    List<SelectQuestion> findAll();
 
     /**
      * 分页查询选择题目
@@ -19,14 +20,14 @@ public interface ExamSelectService {
      * @param pageSize
      * @return
      */
-    List<ExamSelect> findPage(int current, int pageSize);
+    List<SelectQuestion> findPage(int current, int pageSize);
 
     /**
      * 根据题目ID查询选择题目
      * @param id
      * @return
      */
-    ExamSelect findById(Integer id);
+    SelectQuestion findById(Integer id);
 
     /**
      * 根据条件查询选择题目
@@ -35,7 +36,7 @@ public interface ExamSelectService {
      * @param queryQuestion
      * @return
      */
-    List<ExamSelect> search(Integer current, Integer pageSize, QueryQuestion queryQuestion);
+    List<SelectQuestion> search(Integer current, Integer pageSize, QueryQuestion queryQuestion);
 
     /**
      * 向题库添加选择题目

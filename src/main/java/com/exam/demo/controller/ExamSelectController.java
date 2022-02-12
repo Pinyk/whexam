@@ -2,6 +2,7 @@ package com.exam.demo.controller;
 
 import com.exam.demo.entity.ExamSelect;
 import com.exam.demo.entity.QueryQuestion;
+import com.exam.demo.rtEntity.SelectQuestion;
 import com.exam.demo.service.ExamSelectService;
 import com.exam.demo.utils.WebResult;
 import io.swagger.annotations.Api;
@@ -24,8 +25,8 @@ public class ExamSelectController {
 
     @GetMapping("findAll")
     @ApiOperation(notes = "xiong",value = "查询所有选择题目接口")
-    public WebResult<List<ExamSelect>> findAll() {
-        return WebResult.<List<ExamSelect>>builder()
+    public WebResult<List<SelectQuestion>> findAll() {
+        return WebResult.<List<SelectQuestion>>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
                 .data(examSelectService.findAll())
@@ -34,9 +35,9 @@ public class ExamSelectController {
 
     @GetMapping("findPage")
     @ApiOperation(notes = "xiong",value = "分页查询所有选择题目接口")
-    public WebResult<List<ExamSelect>> findPage(@RequestParam @ApiParam(name="currentPage") Integer currentPage,
-                                                @RequestParam @ApiParam(name="pageSize") Integer pageSize) {
-        return WebResult.<List<ExamSelect>>builder()
+    public WebResult<List<SelectQuestion>> findPage(@RequestParam @ApiParam(name="currentPage") Integer currentPage,
+                                                    @RequestParam @ApiParam(name="pageSize") Integer pageSize) {
+        return WebResult.<List<SelectQuestion>>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
                 .data(examSelectService.findPage(currentPage, pageSize))
@@ -45,8 +46,8 @@ public class ExamSelectController {
 
     @GetMapping("findById")
     @ApiOperation(notes = "xiong",value = "根据题目ID查询选择题目接口")
-    public WebResult<ExamSelect> findById(@RequestParam @ApiParam(name="id",required=true) Integer id) {
-        return WebResult.<ExamSelect>builder()
+    public WebResult<SelectQuestion> findById(@RequestParam @ApiParam(name="id",required=true) Integer id) {
+        return WebResult.<SelectQuestion>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
                 .data(examSelectService.findById(id))
@@ -55,10 +56,10 @@ public class ExamSelectController {
 
     @PostMapping("search")
     @ApiOperation(notes = "xiong",value = "根据条件查询选择题目接口")
-    public WebResult<List<ExamSelect>> search(@RequestParam @ApiParam(name="current") Integer current,
+    public WebResult<List<SelectQuestion>> search(@RequestParam @ApiParam(name="current") Integer current,
                                               @RequestParam @ApiParam(name="pageSize") Integer pageSize,
                                               @RequestBody @ApiParam(name="queryQuestion") QueryQuestion queryQuestion) {
-        return WebResult.<List<ExamSelect>>builder()
+        return WebResult.<List<SelectQuestion>>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
                 .data(examSelectService.search(current, pageSize, queryQuestion))

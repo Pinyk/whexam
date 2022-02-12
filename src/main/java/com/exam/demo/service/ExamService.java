@@ -12,7 +12,6 @@ public interface ExamService {
      * @param testPaperId
      * @return
      */
-//    List<Exam> findByTestPaperId(Integer testPaperId);
     Map<String, List<Object>> findByTestPaperId(Integer testPaperId);
 
     /**

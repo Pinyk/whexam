@@ -1,0 +1,29 @@
+package com.exam.demo.rtEntity;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+
+import java.util.List;
+
+@Data
+@ApiModel(value = "selectQuestion")
+public class SelectQuestion {
+    @ApiModelProperty(value = "选择题主键")
+    private int id;
+
+    @ApiModelProperty(value = "题目内容")
+    private String context;
+
+    @ApiModelProperty(value = "选项内容")
+    private List<String> selections;
+
+    @ApiModelProperty(value = "答案")
+    private String answer;
+
+    @ApiModelProperty(value = "所属科目ID")
+    private int subjectId;
+
+    @ApiModelProperty(value = "难度")
+    private int difficulty;
+}
