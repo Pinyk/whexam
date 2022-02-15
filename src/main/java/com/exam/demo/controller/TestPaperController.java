@@ -1,6 +1,7 @@
 package com.exam.demo.controller;
 
 import com.exam.demo.entity.Testpaper;
+import com.exam.demo.rtEntity.RtTestpaper;
 import com.exam.demo.service.TestPaperService;
 import com.exam.demo.utils.WebResult;
 import io.swagger.annotations.Api;
@@ -24,8 +25,8 @@ public class TestPaperController {
 
     @GetMapping("findAllTestPaper")
     @ApiOperation(notes = "xiong",value = "查询所有试卷信息接口")
-    public WebResult<List<Testpaper>> findAllTestPaper() {
-        return WebResult.<List<Testpaper>>builder()
+    public WebResult<List<RtTestpaper>> findAllTestPaper() {
+        return WebResult.<List<RtTestpaper>>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
                 .data(testPaperService.findAll())

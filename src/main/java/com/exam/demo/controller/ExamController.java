@@ -3,6 +3,7 @@ package com.exam.demo.controller;
 import com.exam.demo.entity.Exam;
 import com.exam.demo.entity.Testpaper;
 import com.exam.demo.entity.UserTestPaperScore;
+import com.exam.demo.rtEntity.RtTestpaper;
 import com.exam.demo.service.ExamService;
 import com.exam.demo.service.ScoreService;
 import com.exam.demo.service.TestPaperService;
@@ -62,8 +63,8 @@ public class ExamController {
 
     @GetMapping("findTesting")
     @ApiOperation(notes = "xiong",value = "查询正在考试试卷接口")
-    public WebResult<List<Testpaper>> findTesting() {
-        return WebResult.<List<Testpaper>>builder()
+    public WebResult<List<RtTestpaper>> findTesting() {
+        return WebResult.<List<RtTestpaper>>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
                 .data(testPaperService.findTesting())
@@ -72,8 +73,8 @@ public class ExamController {
 
     @GetMapping("findTested")
     @ApiOperation(notes = "xiong",value = "查询历史考试试卷接口")
-    public WebResult<List<Testpaper>> findTested() {
-        return WebResult.<List<Testpaper>>builder()
+    public WebResult<List<RtTestpaper>> findTested() {
+        return WebResult.<List<RtTestpaper>>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
                 .data(testPaperService.findTested())
@@ -82,8 +83,8 @@ public class ExamController {
 
     @GetMapping("findNotStartTest")
     @ApiOperation(notes = "xiong",value = "查询尚未开始的考试试卷接口")
-    public WebResult<List<Testpaper>> findNotStartTest() {
-        return WebResult.<List<Testpaper>>builder()
+    public WebResult<List<RtTestpaper>> findNotStartTest() {
+        return WebResult.<List<RtTestpaper>>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
                 .data(testPaperService.findNotStartTest())
