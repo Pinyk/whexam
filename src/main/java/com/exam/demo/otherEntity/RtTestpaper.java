@@ -1,4 +1,4 @@
-package com.exam.demo.rtEntity;
+package com.exam.demo.otherEntity;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

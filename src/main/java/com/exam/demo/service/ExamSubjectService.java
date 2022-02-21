@@ -2,7 +2,6 @@ package com.exam.demo.service;
 
 import com.exam.demo.entity.ExamSubject;
 import com.exam.demo.entity.QueryQuestion;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -26,6 +25,13 @@ public interface ExamSubjectService {
      * @return
      */
     ExamSubject findById(Integer id);
+
+    /**
+     * 根据科目ID查询主观题目
+     * @param subjectId
+     * @return
+     */
+    List<ExamSubject> findBySubjectId(Integer subjectId);
 
     /**
      * 根据条件查询主观题目

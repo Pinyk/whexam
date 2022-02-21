@@ -67,7 +67,7 @@ public class ExamSubjectController {
 
     @PostMapping("save")
     @ApiOperation(notes = "xiong",value = "向题库添加主观题目接口")
-    public WebResult<Integer> saveExamSubject(@RequestBody @ApiParam(name="examSubject",required=true) ExamSubject examSubject) {
+    public WebResult<Integer> saveExamSubject(@RequestBody @ApiParam(name="examSubject",required=true,value = "id传入null") ExamSubject examSubject) {
         return WebResult.<Integer>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
@@ -77,7 +77,7 @@ public class ExamSubjectController {
 
     @PostMapping("update")
     @ApiOperation(notes = "xiong",value = "修改题库的主观题目接口")
-    public WebResult<Integer> updateExamSubject(@RequestBody @ApiParam(name="examSubject",required=true) ExamSubject examSubject) {
+    public WebResult<Integer> updateExamSubject(@RequestBody @ApiParam(name="examSubject",required=true,value = "id传入null") ExamSubject examSubject) {
         return WebResult.<Integer>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)

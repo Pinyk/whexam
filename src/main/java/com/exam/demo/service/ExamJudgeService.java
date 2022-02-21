@@ -29,6 +29,13 @@ public interface ExamJudgeService {
     ExamJudge findById(Integer id);
 
     /**
+     * 根据科目ID查询判断题目
+     * @param subjectId
+     * @return
+     */
+    List<ExamJudge> findBySubjectId(Integer subjectId);
+
+    /**
      * 根据条件查询判断题目
      * @param current
      * @param pageSize

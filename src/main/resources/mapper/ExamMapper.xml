@@ -6,7 +6,7 @@
 
     <!-- List<ExamJudge> findExamJudgeByTestPaperId(Integer testPaperId);  -->
     <select id="findExamJudgeByTestPaperId" parameterType="Integer" resultType="ExamJudge">
-        select ej.context
+        select ej.context, ej.score
         from exam e, exam_judge ej
         where e.problem_id = ej.id and e.type = 1
         and e.testpaper_id = #{testPaperId}
@@ -14,7 +14,7 @@
 
     <!--  List<ExamSelect> findExamSelectByTestPaperId(Integer testPaperId);  -->
     <select id="findExamSelectByTestPaperId" parameterType="Integer" resultType="ExamSelect">
-        select es.context, es.selection
+        select es.context, es.selection, es.score
         from exam e, exam_select es
         where e.problem_id = es.id and e.type = 2
         and e.testpaper_id = #{testPaperId}
@@ -22,7 +22,7 @@
 
     <!--  List<ExamSubject> findExamSubjectByTestPaperId(Integer testPaperId);  -->
     <select id="findExamSubjectByTestPaperId" parameterType="Integer" resultType="ExamSubject">
-        select es.context
+        select es.context, es.score
         from exam e, exam_subject es
         where e.problem_id = es.id and e.type = 3
         and e.testpaper_id = #{testPaperId}
