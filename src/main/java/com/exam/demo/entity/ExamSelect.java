@@ -25,4 +25,10 @@ public class ExamSelect {
 
     @ApiModelProperty(value = "难度")
     private int difficulty;
+
+    @ApiModelProperty(value = "分数")
+    private double score;
+
+    @ApiModelProperty(value = "选择题目类型")
+    private int type;
 }

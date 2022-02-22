@@ -67,7 +67,7 @@ public class ExamJudgeController {
 
     @PostMapping("save")
     @ApiOperation(notes = "xiong",value = "向题库添加判断题目接口")
-    public WebResult<Integer> saveExamJudge(@RequestBody @ApiParam(name="examJudge",required=true) ExamJudge examJudge) {
+    public WebResult<Integer> saveExamJudge(@RequestBody @ApiParam(name="examJudge",required=true,value = "id传入null") ExamJudge examJudge) {
         return WebResult.<Integer>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
@@ -87,7 +87,7 @@ public class ExamJudgeController {
 
     @DeleteMapping("delete/{id}")
     @ApiOperation(notes = "xiong",value = "删除题库中的判断题目接口")
-    public WebResult<Integer> deleteExamJudge(@PathVariable @ApiParam(name="id",required=true) Integer id) {
+    public WebResult<Integer> deleteExamJudge(@PathVariable @ApiParam(name="id",required=true,value = "id传入null") Integer id) {
         return WebResult.<Integer>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)

@@ -3,10 +3,11 @@ package com.exam.demo.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.exam.demo.entity.ExamJudge;
 import com.exam.demo.entity.ExamSelect;
 import com.exam.demo.entity.QueryQuestion;
 import com.exam.demo.mapper.ExamSelectMapper;
-import com.exam.demo.rtEntity.SelectQuestion;
+import com.exam.demo.otherEntity.SelectQuestion;
 import com.exam.demo.service.ExamSelectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,6 +34,8 @@ public class ExamSelectServiceImpl implements ExamSelectService {
         selectQuestion.setAnswer(examSelect.getAnswer());
         selectQuestion.setSubjectId(examSelect.getSubjectId());
         selectQuestion.setDifficulty(examSelect.getDifficulty());
+        selectQuestion.setScore(examSelect.getScore());
+        selectQuestion.setType(examSelect.getType());
         return selectQuestion;
     }
 
@@ -49,11 +52,28 @@ public class ExamSelectServiceImpl implements ExamSelectService {
     }
 
     @Override
-    public List<SelectQuestion> findPage(int current, int pageSize) {
+    public List<SelectQuestion> findSingleOrMultipleSelection(int type) {
+        List<SelectQuestion> selectQuestionList = new ArrayList<>();
+
+        QueryWrapper<ExamSelect> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("type", type);
+        List<ExamSelect> examSelectList = examSelectMapper.selectList(queryWrapper);
+        for(ExamSelect examSelect : examSelectList) {
+            SelectQuestion selectQuestion = change(examSelect);
+            selectQuestionList.add(selectQuestion);
+        }
+        return selectQuestionList;
+    }
+
+    @Override
+    public List<SelectQuestion> findPage(int current, int pageSize, int type) {
         List<SelectQuestion> selectQuestions = new ArrayList<>();
 
+        QueryWrapper<ExamSelect> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("type", type);
+
         Page<ExamSelect> page = new Page<>(current, pageSize);
-        Page<ExamSelect> examSelectPage = examSelectMapper.selectPage(page, new LambdaQueryWrapper<>());
+        Page<ExamSelect> examSelectPage = examSelectMapper.selectPage(page, queryWrapper);
         List<ExamSelect> examSelectList = examSelectPage.getRecords();
         for(ExamSelect examSelect : examSelectList) {
             SelectQuestion selectQuestion = change(examSelect);
@@ -70,18 +90,26 @@ public class ExamSelectServiceImpl implements ExamSelectService {
     }
 
     @Override
-    public List<SelectQuestion> search(Integer current, Integer pageSize, QueryQuestion queryQuestion) {
+    public List<ExamSelect> findBySubjectId(Integer subjectId, Integer type) {
+        QueryWrapper<ExamSelect> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("subject_id",subjectId);
+        queryWrapper.eq("type",type);
+        return examSelectMapper.selectList(queryWrapper);
+    }
+
+    @Override
+    public List<SelectQuestion> search(Integer current, Integer pageSize, QueryQuestion queryQuestion, Integer type) {
         List<SelectQuestion> selectQuestions = new ArrayList<>();
 
         Page<ExamSelect> page = new Page<>(current, pageSize);
         QueryWrapper<ExamSelect> wrapperSelect = new QueryWrapper<>();
         String context = queryQuestion.getContext();
-        int difficulty = queryQuestion.getDifficulty();
+        wrapperSelect.eq("type", type);
         if(!StringUtils.isEmpty(context)) {
             wrapperSelect.like("context", context);
         }
-        if(!StringUtils.isEmpty(difficulty)) {
-            wrapperSelect.eq("difficulty", difficulty);
+        if(queryQuestion.getDifficulty() != null) {
+            wrapperSelect.eq("difficulty", queryQuestion.getDifficulty());
         }
         Page<ExamSelect> examSelectPage = examSelectMapper.selectPage(page, wrapperSelect);
         List<ExamSelect> examSelectList = examSelectPage.getRecords();

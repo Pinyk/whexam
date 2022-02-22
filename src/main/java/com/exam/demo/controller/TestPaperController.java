@@ -1,7 +1,7 @@
 package com.exam.demo.controller;
 
 import com.exam.demo.entity.Testpaper;
-import com.exam.demo.rtEntity.RtTestpaper;
+import com.exam.demo.otherEntity.RtTestpaper;
 import com.exam.demo.service.TestPaperService;
 import com.exam.demo.utils.WebResult;
 import io.swagger.annotations.Api;
@@ -35,8 +35,7 @@ public class TestPaperController {
 
     @PostMapping("addTestPaper")
     @ApiOperation(notes = "xiong",value = "添加试卷头信息接口")
-    public WebResult<Integer> addTestPaper(@RequestParam @ApiParam(name="id",required=true) Integer id,
-                                           @RequestParam @ApiParam(name="subjectId",required=true) Integer subjectId,
+    public WebResult<Integer> addTestPaper(@RequestParam @ApiParam(name="subjectId",required=true) Integer subjectId,
                                            @RequestParam @ApiParam(name="name",required=true) String name,
                                            @RequestParam @ApiParam(name="totalscore",required=true) Double totalscore,
                                            @RequestParam @ApiParam(name="passscore",required=true) Double passscore,
@@ -47,7 +46,6 @@ public class TestPaperController {
                                            @RequestParam @ApiParam(name="departmentId",required=true) Integer departmentId,
                                            @RequestParam @ApiParam(name="shuffle",required=true) Integer shuffle) {
         Testpaper testpaper = new Testpaper();
-        testpaper.setId(id);
         testpaper.setSubjectId(subjectId);
         testpaper.setName(name);
         testpaper.setTotalscore(totalscore);

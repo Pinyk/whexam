@@ -7,13 +7,12 @@ import com.exam.demo.mapper.DepartmentMapper;
 import com.exam.demo.mapper.SubjectMapper;
 import com.exam.demo.mapper.TestPaperMapper;
 import com.exam.demo.mapper.UserMapper;
-import com.exam.demo.rtEntity.RtTestpaper;
+import com.exam.demo.otherEntity.RtTestpaper;
 import com.exam.demo.service.TestPaperService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -62,18 +61,6 @@ public class TestPaperServiceImpl implements TestPaperService {
     public List<RtTestpaper> findAll() {
         List<RtTestpaper> rtTestpaperList = new ArrayList<>();
         for(Testpaper testpaper : testPaperMapper.selectList(new LambdaQueryWrapper<>())) {
-//            RtTestpaper rtTestpaper = new RtTestpaper();
-//            rtTestpaper.setId(testpaper.getId());
-//            rtTestpaper.setSubjectName(subjectMapper.selectById(testpaper.getSubjectId()).getName());
-//            rtTestpaper.setName(testpaper.getName());
-//            rtTestpaper.setTotalscore(testpaper.getTotalscore());
-//            rtTestpaper.setPassscore(testpaper.getPassscore());
-//            rtTestpaper.setStartTime(testpaper.getStartTime());
-//            rtTestpaper.setDeadTime(testpaper.getDeadTime());
-//            rtTestpaper.setTime(testpaper.getTime());
-//            rtTestpaper.setUserName(userMapper.selectById(testpaper.getUserId()).getName());
-//            rtTestpaper.setDepartmentName(departmentMapper.selectById(testpaper.getDepartmentId()).getName());
-//            rtTestpaper.setShuffle(testpaper.getShuffle());
             RtTestpaper rtTestpaper = change(testpaper);
             rtTestpaperList.add(rtTestpaper);
         }

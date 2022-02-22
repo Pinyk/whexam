@@ -1,4 +1,4 @@
-package com.exam.demo.rtEntity;
+package com.exam.demo.otherEntity;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -26,4 +26,10 @@ public class SelectQuestion {
 
     @ApiModelProperty(value = "难度")
     private int difficulty;
+
+    @ApiModelProperty(value = "分数")
+    private double score;
+
+    @ApiModelProperty(value = "选择题目类型")
+    private int type;
 }

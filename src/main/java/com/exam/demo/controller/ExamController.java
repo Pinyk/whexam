@@ -1,9 +1,8 @@
 package com.exam.demo.controller;
 
-import com.exam.demo.entity.Exam;
-import com.exam.demo.entity.Testpaper;
-import com.exam.demo.entity.UserTestPaperScore;
-import com.exam.demo.rtEntity.RtTestpaper;
+import com.exam.demo.entity.*;
+import com.exam.demo.otherEntity.RtTestpaper;
+import com.exam.demo.otherEntity.UserAnswer;
 import com.exam.demo.service.ExamService;
 import com.exam.demo.service.ScoreService;
 import com.exam.demo.service.TestPaperService;
@@ -41,13 +40,40 @@ public class ExamController {
                 .build();
     }
 
+    @PostMapping("submitTest")
+    @ApiOperation(notes = "xiong",value = "试卷提交接口")
+    public WebResult<Integer> submitTest(@RequestBody @ApiParam(name="userAnswer",required=true) UserAnswer userAnswer) {
+        return WebResult.<Integer>builder()
+                .code(200)
+                .message(REQUEST_STATUS_SUCCESS)
+                .data(1)
+                .data(examService.submitTest(userAnswer.getTestPaperId(), userAnswer.getUserId(),
+                        userAnswer.getExamJudges(), userAnswer.getExamSelects(), userAnswer.getExamSubjects()))
+                .build();
+    }
+
     @PostMapping("addProblem")
-    @ApiOperation(notes = "xiong",value = "添加试卷试题接口")
-    public WebResult<Integer> addProblem(@RequestBody @ApiParam(name="exam",required=true) Exam exam) {
+    @ApiOperation(notes = "xiong",value = "添加试卷试题接口")//一道一道题目的添加
+    public WebResult<Integer> addProblem(@RequestBody @ApiParam(name="exam",required=true,value = "id传入null") Exam exam) {
         return WebResult.<Integer>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
                 .data(examService.addProblem(exam))
+                .build();
+    }
+
+    @PostMapping("randomComponentPaper")
+    @ApiOperation(notes = "xiong",value = "组建试卷试题接口")
+    public WebResult<Integer> randomComponentPaper(@RequestParam @ApiParam(name="testPaperId",required=true) Integer testPaperId,
+                                        @RequestParam @ApiParam(name="subjectId",required=true) Integer subjectId,
+                                        @RequestParam @ApiParam(name="judgeCount",required=true) Integer judgeCount,
+                                        @RequestParam @ApiParam(name="singleCount",required=true) Integer singleCount,
+                                        @RequestParam @ApiParam(name="multipleCount",required=true) Integer multipleCount,
+                                        @RequestParam @ApiParam(name="subjectCount",required=true) Integer subjectCount) {
+        return WebResult.<Integer>builder()
+                .code(200)
+                .message(REQUEST_STATUS_SUCCESS)
+                .data(examService.randomComponentPaper(testPaperId, subjectId, judgeCount, singleCount, multipleCount, subjectCount))
                 .build();
     }
 

@@ -37,17 +37,23 @@ public class ExamSubjectServiceImpl implements ExamSubjectService {
     }
 
     @Override
+    public List<ExamSubject> findBySubjectId(Integer subjectId) {
+        QueryWrapper<ExamSubject> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("subject_id",subjectId);
+        return examSubjectMapper.selectList(queryWrapper);
+    }
+
+    @Override
     public List<ExamSubject> search(Integer current, Integer pageSize, QueryQuestion queryQuestion) {
         Page<ExamSubject> page = new Page<>(current, pageSize);
 
         QueryWrapper<ExamSubject> wrapperSubject = new QueryWrapper<>();
         String context = queryQuestion.getContext();
-        int difficulty = queryQuestion.getDifficulty();
         if(!StringUtils.isEmpty(context)) {
             wrapperSubject.like("context", context);
         }
-        if(!StringUtils.isEmpty(difficulty)) {
-            wrapperSubject.eq("difficulty", difficulty);
+        if(queryQuestion.getDifficulty() != null) {
+            wrapperSubject.eq("difficulty", queryQuestion.getDifficulty());
         }
 
         Page<ExamSubject> examSubjectPage = examSubjectMapper.selectPage(page, wrapperSubject);
