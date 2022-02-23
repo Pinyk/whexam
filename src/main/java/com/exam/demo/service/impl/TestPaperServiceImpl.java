@@ -60,9 +60,12 @@ public class TestPaperServiceImpl implements TestPaperService {
     @Override
     public List<RtTestpaper> findAll() {
         List<RtTestpaper> rtTestpaperList = new ArrayList<>();
-        for(Testpaper testpaper : testPaperMapper.selectList(new LambdaQueryWrapper<>())) {
-            RtTestpaper rtTestpaper = change(testpaper);
-            rtTestpaperList.add(rtTestpaper);
+        List<Testpaper> testpaperList = testPaperMapper.selectList(new LambdaQueryWrapper<>());
+        if(testpaperList.size() != 0) {
+            for (Testpaper testpaper : testpaperList) {
+                RtTestpaper rtTestpaper = change(testpaper);
+                rtTestpaperList.add(rtTestpaper);
+            }
         }
         return rtTestpaperList;
     }
