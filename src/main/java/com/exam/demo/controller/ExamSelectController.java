@@ -1,6 +1,8 @@
 package com.exam.demo.controller;
 
 import com.exam.demo.entity.ExamSelect;
+import com.exam.demo.entity.QueryQuestion;
+import com.exam.demo.otherEntity.SelectQuestion;
 import com.exam.demo.service.ExamSelectService;
 import com.exam.demo.utils.WebResult;
 import io.swagger.annotations.Api;
@@ -21,39 +23,99 @@ public class ExamSelectController {
     @Autowired
     private ExamSelectService examSelectService;
 
-    @RequestMapping("findAll")
-    @ApiOperation(notes = "xiong",value = "查询所有选择题目接口")
-    public WebResult<List<ExamSelect>> findAll() {
-        return WebResult.<List<ExamSelect>>builder()
+//    @GetMapping("findAll")
+//    @ApiOperation(notes = "xiong",value = "查询所有选择题目接口")
+//    public WebResult<List<SelectQuestion>> findAll() {
+//        return WebResult.<List<SelectQuestion>>builder()
+//                .code(200)
+//                .message(REQUEST_STATUS_SUCCESS)
+//                .data(examSelectService.findAll())
+//                .build();
+//    }
+
+    @GetMapping("findSingleSelection")
+    @ApiOperation(notes = "xiong",value = "查询所有单选题目接口")
+    public WebResult<List<SelectQuestion>> findSingleSelection() {
+        return WebResult.<List<SelectQuestion>>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
-                .data(examSelectService.findAll())
+                .data(examSelectService.findSingleOrMultipleSelection(1))
                 .build();
     }
 
-    @RequestMapping("findById")
+    @GetMapping("findMultipleSelection")
+    @ApiOperation(notes = "xiong",value = "查询所有多选题目接口")
+    public WebResult<List<SelectQuestion>> findMultipleSelection() {
+        return WebResult.<List<SelectQuestion>>builder()
+                .code(200)
+                .message(REQUEST_STATUS_SUCCESS)
+                .data(examSelectService.findSingleOrMultipleSelection(2))
+                .build();
+    }
+
+    @GetMapping("findSingleSelectionByPage")
+    @ApiOperation(notes = "xiong",value = "分页查询所有单选题目接口")
+    public WebResult<List<SelectQuestion>> findSingleSelectionByPage(
+            @RequestParam @ApiParam(name="currentPage") Integer currentPage,
+            @RequestParam @ApiParam(name="pageSize") Integer pageSize) {
+        return WebResult.<List<SelectQuestion>>builder()
+                .code(200)
+                .message(REQUEST_STATUS_SUCCESS)
+                .data(examSelectService.findPage(currentPage, pageSize, 1))
+                .build();
+    }
+
+    @GetMapping("findMultipleSelectionByPage")
+    @ApiOperation(notes = "xiong",value = "分页查询所有多选题目接口")
+    public WebResult<List<SelectQuestion>> findMultipleSelectionByPage(
+            @RequestParam @ApiParam(name="currentPage") Integer currentPage,
+            @RequestParam @ApiParam(name="pageSize") Integer pageSize) {
+        return WebResult.<List<SelectQuestion>>builder()
+                .code(200)
+                .message(REQUEST_STATUS_SUCCESS)
+                .data(examSelectService.findPage(currentPage, pageSize, 2))
+                .build();
+    }
+
+    @GetMapping("findById")
     @ApiOperation(notes = "xiong",value = "根据题目ID查询选择题目接口")
-    public WebResult<ExamSelect> findById(@RequestParam @ApiParam(name="id",required=true) Integer id) {
-        return WebResult.<ExamSelect>builder()
+    public WebResult<SelectQuestion> findById(@RequestParam @ApiParam(name="id",required=true) Integer id) {
+        return WebResult.<SelectQuestion>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
                 .data(examSelectService.findById(id))
                 .build();
     }
 
-    @RequestMapping("search")
-    @ApiOperation(notes = "xiong",value = "根据条件查询选择题目接口")
-    public WebResult<List<ExamSelect>> search(@RequestBody @ApiParam(name="examSelect",required=true) ExamSelect examSelect) {
-        return WebResult.<List<ExamSelect>>builder()
+    @PostMapping("searchSingleSelection")
+    @ApiOperation(notes = "xiong",value = "根据条件查询单选题目接口")
+    public WebResult<List<SelectQuestion>> searchSingleSelection(
+            @RequestParam @ApiParam(name="current") Integer current,
+            @RequestParam @ApiParam(name="pageSize") Integer pageSize,
+            @RequestBody @ApiParam(name="queryQuestion") QueryQuestion queryQuestion) {
+        return WebResult.<List<SelectQuestion>>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
-                .data(examSelectService.search(examSelect))
+                .data(examSelectService.search(current, pageSize, queryQuestion, 1))
                 .build();
     }
 
-    @RequestMapping("save")
+    @PostMapping("searchMultipleSelection")
+    @ApiOperation(notes = "xiong",value = "根据条件查询多选题目接口")
+    public WebResult<List<SelectQuestion>> searchMultipleSelection(
+            @RequestParam @ApiParam(name="current") Integer current,
+            @RequestParam @ApiParam(name="pageSize") Integer pageSize,
+            @RequestBody @ApiParam(name="queryQuestion") QueryQuestion queryQuestion) {
+        return WebResult.<List<SelectQuestion>>builder()
+                .code(200)
+                .message(REQUEST_STATUS_SUCCESS)
+                .data(examSelectService.search(current, pageSize, queryQuestion, 2))
+                .build();
+    }
+
+    @PostMapping("save")
     @ApiOperation(notes = "xiong",value = "向题库添加选择题目接口")
-    public WebResult<Integer> saveExamSelect(@RequestBody @ApiParam(name="examSelect",required=true) ExamSelect examSelect) {
+    public WebResult<Integer> saveExamSelect(@RequestBody @ApiParam(name="examSelect",required=true,value = "id传入null") ExamSelect examSelect) {
         return WebResult.<Integer>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
@@ -61,9 +123,9 @@ public class ExamSelectController {
                 .build();
     }
 
-    @RequestMapping("update")
+    @PostMapping("update")
     @ApiOperation(notes = "xiong",value = "修改题库的选择题目接口")
-    public WebResult<Integer> updateExamSelect(@RequestBody @ApiParam(name="examSelect",required=true) ExamSelect examSelect) {
+    public WebResult<Integer> updateExamSelect(@RequestBody @ApiParam(name="examSelect",required=true,value = "id传入null") ExamSelect examSelect) {
         return WebResult.<Integer>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
@@ -71,7 +133,7 @@ public class ExamSelectController {
                 .build();
     }
 
-    @RequestMapping("delete")
+    @DeleteMapping("delete/{id}")
     @ApiOperation(notes = "xiong",value = "删除题库中的选择题目接口")
     public WebResult<Integer> deleteExamSelect(@PathVariable @ApiParam(name="id",required=true) Integer id) {
         return WebResult.<Integer>builder()

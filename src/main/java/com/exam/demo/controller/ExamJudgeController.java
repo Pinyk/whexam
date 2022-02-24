@@ -1,6 +1,7 @@
 package com.exam.demo.controller;
 
 import com.exam.demo.entity.ExamJudge;
+import com.exam.demo.entity.QueryQuestion;
 import com.exam.demo.service.ExamJudgeService;
 import com.exam.demo.utils.WebResult;
 import io.swagger.annotations.Api;
@@ -21,7 +22,7 @@ public class ExamJudgeController {
     @Autowired
     private ExamJudgeService examJudgeService;
 
-    @RequestMapping("findAll")
+    @GetMapping("findAll")
     @ApiOperation(notes = "xiong",value = "查询所有判断题目接口")
     public WebResult<List<ExamJudge>> findAll() {
         return WebResult.<List<ExamJudge>>builder()
@@ -31,8 +32,19 @@ public class ExamJudgeController {
                 .build();
     }
 
-    @RequestMapping("findById")
-    @ApiOperation(notes = "xiong",value = "根据题目ID查询判断接口")
+    @GetMapping("findPage")
+    @ApiOperation(notes = "xiong",value = "分页查询所有判断题目接口")
+    public WebResult<List<ExamJudge>> findPage(@RequestParam @ApiParam(name="currentPage") Integer currentPage,
+                                               @RequestParam @ApiParam(name="pageSize") Integer pageSize) {
+        return WebResult.<List<ExamJudge>>builder()
+                .code(200)
+                .message(REQUEST_STATUS_SUCCESS)
+                .data(examJudgeService.findPage(currentPage, pageSize))
+                .build();
+    }
+
+    @GetMapping("findById")
+    @ApiOperation(notes = "xiong",value = "根据题目ID查询判断题目接口")
     public WebResult<ExamJudge> findById(@RequestParam @ApiParam(name="id",required=true) Integer id) {
         return WebResult.<ExamJudge>builder()
                 .code(200)
@@ -41,19 +53,21 @@ public class ExamJudgeController {
                 .build();
     }
 
-    @RequestMapping("search")
+    @PostMapping("search")
     @ApiOperation(notes = "xiong",value = "根据条件查询判断题目接口")
-    public WebResult<List<ExamJudge>> search(@RequestBody @ApiParam(name="judgeSearch",required=true) ExamJudge judgeSearch) {
+    public WebResult<List<ExamJudge>> search(@RequestParam @ApiParam(name="current") Integer current,
+                                             @RequestParam @ApiParam(name="pageSize") Integer pageSize,
+                                             @RequestBody @ApiParam(name="queryQuestion")QueryQuestion queryQuestion) {
         return WebResult.<List<ExamJudge>>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
-                .data(examJudgeService.search(judgeSearch))
+                .data(examJudgeService.search(current, pageSize, queryQuestion))
                 .build();
     }
 
-    @RequestMapping("save")
+    @PostMapping("save")
     @ApiOperation(notes = "xiong",value = "向题库添加判断题目接口")
-    public WebResult<Integer> saveExamJudge(@RequestBody @ApiParam(name="examJudge",required=true) ExamJudge examJudge) {
+    public WebResult<Integer> saveExamJudge(@RequestBody @ApiParam(name="examJudge",required=true,value = "id传入null") ExamJudge examJudge) {
         return WebResult.<Integer>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
@@ -61,7 +75,7 @@ public class ExamJudgeController {
                 .build();
     }
 
-    @RequestMapping("update")
+    @PostMapping("update")
     @ApiOperation(notes = "xiong",value = "修改题库的判断题目接口")
     public WebResult<Integer> updateExamJudge(@RequestBody @ApiParam(name="examJudge",required=true) ExamJudge examJudge) {
         return WebResult.<Integer>builder()
@@ -71,9 +85,9 @@ public class ExamJudgeController {
                 .build();
     }
 
-    @RequestMapping("delete")
+    @DeleteMapping("delete/{id}")
     @ApiOperation(notes = "xiong",value = "删除题库中的判断题目接口")
-    public WebResult<Integer> deleteExamJudge(@PathVariable @ApiParam(name="id",required=true) Integer id) {
+    public WebResult<Integer> deleteExamJudge(@PathVariable @ApiParam(name="id",required=true,value = "id传入null") Integer id) {
         return WebResult.<Integer>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)

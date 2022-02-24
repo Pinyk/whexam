@@ -20,18 +20,48 @@ public class RoleServiceImpl implements RoleService {
     @Autowired
     private RoleMapper roleMapper;
 
+    /**
+     * 查询所有角色
+     *
+     * @return
+     */
     @Override
     public List<Role> findAll() {
         return roleMapper.selectList(new LambdaQueryWrapper<>());
     }
 
+    /**
+     * 根据添加角色
+     *
+     * @param name
+     * @return
+     */
     @Override
     public Integer addRole(String name) {
         return roleMapper.insert(new Role(name));
     }
 
+
+    /**
+     * 根据Id查找角色
+     *
+     * @param id
+     * @return
+     */
     @Override
     public Role findById(Integer id) {
         return roleMapper.selectById(id);
+    }
+
+
+    /**
+     * 根据Id删除角色
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public Integer deleteById(Integer id) {
+        return roleMapper.deleteById(id);
     }
 }

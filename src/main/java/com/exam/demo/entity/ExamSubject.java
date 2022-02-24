@@ -22,4 +22,7 @@ public class ExamSubject {
 
     @ApiModelProperty(value = "难度")
     private int difficulty;
+
+    @ApiModelProperty(value = "分数")
+    private double score;
 }

@@ -1,13 +1,14 @@
-package com.exam.demo.entity;
+package com.exam.demo.otherEntity;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-@Data
-@ApiModel(value = "examSelect")
-public class ExamSelect {
+import java.util.List;
 
+@Data
+@ApiModel(value = "selectQuestion")
+public class SelectQuestion {
     @ApiModelProperty(value = "选择题主键")
     private int id;
 
@@ -15,7 +16,7 @@ public class ExamSelect {
     private String context;
 
     @ApiModelProperty(value = "选项内容")
-    private String selection;
+    private List<String> selections;
 
     @ApiModelProperty(value = "答案")
     private String answer;
