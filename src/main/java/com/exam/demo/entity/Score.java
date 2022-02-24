@@ -19,4 +19,7 @@ public class Score {
 
     @ApiModelProperty(value = "得分")
     private double scorenum;
+
+    @ApiModelProperty(value = "试卷状态")
+    private String status;
 }

@@ -6,7 +6,7 @@
 
     <!--    List<UserTestPaperScore> findByUserId(Integer userId);-->
     <select id="findByUserId" parameterType="Integer" resultType="UserTestPaperScore">
-        select tp.name as testPaperName,tp.totalscore,tp.passscore,tp.start_time,tp.time,u.name as userName,s.scorenum
+        select tp.name as testPaperName,tp.totalscore,tp.passscore,tp.start_time,tp.time,u.name as userName,s.scorenum,s.status
         from score s, testpaper tp, user u
         where s.testpaper_id = tp.id and s.user_id = u.id
         and s.user_id = #{userId}
@@ -14,7 +14,7 @@
 
     <!--    List<UserTestPaperScore> findByTestPaperId(Integer testPaperId);-->
     <select id="findByTestPaperId" parameterType="Integer" resultType="UserTestPaperScore">
-        select tp.name as testPaperName,tp.totalscore,tp.passscore,tp.start_time,tp.time,u.name as userName,s.scorenum
+        select tp.name as testPaperName,tp.totalscore,tp.passscore,tp.start_time,tp.time,u.name as userName,s.scorenum,s.status
         from score s, testpaper tp, user u
         where s.testpaper_id = tp.id and s.user_id = u.id
         and s.testpaper_id = #{testPaperId}

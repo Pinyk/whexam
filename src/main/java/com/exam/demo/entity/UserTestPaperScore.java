@@ -30,4 +30,7 @@ public class UserTestPaperScore {
 
     @ApiModelProperty(value = "用户得分")
     private double scorenum;
+
+    @ApiModelProperty(value = "试卷状态")
+    private String status;
 }
