@@ -3,6 +3,7 @@ package com.exam.demo.service.impl;
 import com.exam.demo.entity.*;
 import com.exam.demo.mapper.ExamMapper;
 import com.exam.demo.mapper.ScoreDataMapper;
+import com.exam.demo.mapper.ScoreMapper;
 import com.exam.demo.mapper.UserMapper;
 import com.exam.demo.otherEntity.SelectQuestion;
 import com.exam.demo.service.ExamJudgeService;
@@ -19,6 +20,9 @@ public class ExamServiceImpl implements ExamService {
 
     @Autowired
     private ExamMapper examMapper;
+
+    @Autowired
+    private ScoreMapper scoreMapper;
 
     @Autowired
     private ScoreDataMapper scoreDataMapper;
@@ -62,9 +66,12 @@ public class ExamServiceImpl implements ExamService {
      */
     @Override
     public Integer submitTest(Integer testPaperId, Integer userId, List<ExamJudge> examJudges, List<ExamSelect> examSelects, List<ExamSubject> examSubjects) {
-        // 遍历每道题目用户的作答情况
-        // 同时对客观题目，找出标准答案（类型，题号 找到标准答案），与用户答案对比，给分，保存到数据
-
+        // 遍历每道题目用户的作答情况，同时对客观题目，找出标准答案（类型，题号 找到标准答案），与用户答案对比，给分，保存到数据
+        // 将用户考试记录插入数据库
+        Score score = new Score();
+        score.setTestpaperId(testPaperId);
+        score.setUserId(userId);
+        scoreMapper.insert(score);
         // 判断题
         for(ExamJudge examJudge : examJudges) {
             int answer = examJudgeService.findById(examJudge.getId()).getAnswer();
