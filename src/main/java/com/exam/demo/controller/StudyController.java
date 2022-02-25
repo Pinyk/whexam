@@ -135,15 +135,21 @@ public class StudyController {
 
     @RequestMapping(value = "/add",method = RequestMethod.POST)
     @ApiOperation(notes = "csx",value = "插入课程接口")
-    public Object addSong(HttpServletRequest request, @RequestParam("file") MultipartFile mpFile){
+    public Object addSong(@RequestParam @ApiParam(name="id") Integer id,
+                          @RequestParam @ApiParam(name="name") String name,
+                          @RequestParam @ApiParam(name="datatype_id") Integer datatype_id,
+                          @RequestParam @ApiParam(name="url") String url,
+                          @RequestParam @ApiParam(name="subject_id",defaultValue = "0") Integer subject_id,
+                          @RequestParam @ApiParam(name="department_id") Integer departement_id,
+                          @RequestParam("file") MultipartFile mpFile){
         JSONObject jsonObject = new JSONObject();
         //获取前端传来的参数
-        int id = Integer.parseInt(request.getParameter("StudyId").trim());  //学习资料ID
-        String name = request.getParameter("name").trim();    //学习资料名称
-        int datatype_id = Integer.parseInt(request.getParameter("datatype_id").trim());          //所属学习类型
-        String url = "/img/songPic/tubiao.jpg";                     //url
-        int subject_id = Integer.parseInt(request.getParameter("subject_id").trim());     //所属学科id
-        int department_id = Integer.parseInt(request.getParameter("department_id").trim());     //所属资料部门id
+//        int id = Integer.parseInt(request.getParameter("StudyId").trim());  //学习资料ID
+//        String name = request.getParameter("name").trim();    //学习资料名称
+//        int datatype_id = Integer.parseInt(request.getParameter("datatype_id").trim());          //所属学习类型
+//        String url = "/img/songPic/tubiao.jpg";                     //url
+//        int subject_id = Integer.parseInt(request.getParameter("subject_id").trim());     //所属学科id
+//        int department_id = Integer.parseInt(request.getParameter("department_id").trim());     //所属资料部门id
         //上传歌曲文件
         if(mpFile.isEmpty()){
             jsonObject.put(Consts.CODE,0);
