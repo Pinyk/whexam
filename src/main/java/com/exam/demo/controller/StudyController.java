@@ -134,13 +134,12 @@ public class StudyController {
 
 
     @RequestMapping(value = "/add",method = RequestMethod.POST)
-    @ApiOperation(notes = "csx",value = "插入课程接口")
+    @ApiOperation(notes = "csx",value = "插入学习资料接口")
     public Object addSong(@RequestParam @ApiParam(name="id") Integer id,
                           @RequestParam @ApiParam(name="name") String name,
                           @RequestParam @ApiParam(name="datatype_id") Integer datatype_id,
-                          @RequestParam @ApiParam(name="url") String url,
                           @RequestParam @ApiParam(name="subject_id",defaultValue = "0") Integer subject_id,
-                          @RequestParam @ApiParam(name="department_id") Integer departement_id,
+                          @RequestParam @ApiParam(name="department_id") Integer department_id,
                           @RequestParam("file") MultipartFile mpFile){
         JSONObject jsonObject = new JSONObject();
         //获取前端传来的参数
@@ -151,54 +150,66 @@ public class StudyController {
 //        int subject_id = Integer.parseInt(request.getParameter("subject_id").trim());     //所属学科id
 //        int department_id = Integer.parseInt(request.getParameter("department_id").trim());     //所属资料部门id
         //上传歌曲文件
+
         if(mpFile.isEmpty()){
             jsonObject.put(Consts.CODE,0);
-            jsonObject.put(Consts.MSG,"歌曲上传失败");
+            jsonObject.put(Consts.MSG,"资料上传失败");
             return jsonObject;
         }
-        //文件名=当前时间到毫秒+原来的文件名
-        String fileName = System.currentTimeMillis()+mpFile.getOriginalFilename();
-        //文件路径
-        String filePath = System.getProperty("user.dir")+System.getProperty("file.separator")+"study";
-        //如果文件路径不存在，新增该路径
-        File file1 = new File(filePath);
-        if(!file1.exists()){
-            file1.mkdir();
-        }
-        //实际的文件地址
-        File dest = new File(filePath+System.getProperty("file.separator")+fileName);
-        //存储到数据库里的相对文件地址
-        String storeUrlPath = "/study/"+fileName;
+
         try {
-            mpFile.transferTo(dest);
+            //文件名=当前时间到毫秒+原来的文件名
+            String fileName = System.currentTimeMillis()+mpFile.getOriginalFilename();
+            //文件路径
+            String filePath = System.getProperty("user.dir")+System.getProperty("file.separator")+"study";
+            //如果文件路径不存在，新增该路径
+            File file1 = new File(filePath);
+            if(!file1.exists()){
+                file1.mkdir();
+            }
+            //实际的文件地址
+            File dest = new File(filePath+System.getProperty("file.separator")+fileName);
+            //存储到数据库里的相对文件地址
+            String url = "/study/"+fileName;
+//
+//            if (!dest.getParentFile().exists()) {
+//                dest.getParentFile().mkdirs();
+//            }
+
             Study study=new Study();
             study.setId(id);
             study.setName(name);
-            study.setDepartment_id(datatype_id);
+            study.setDepartment_id(department_id);
             study.setUrl(url);
             study.setSubject_id(subject_id);
             study.setDatatype_id(datatype_id);
-            int flag = studyService.insert(study);
-            if(flag==1){
+//            int flag = studyService.insert(study);
+//            mpFile.transferTo(dest);
+
 //                jsonObject.put(Consts.CODE,1);
 //                jsonObject.put(Consts.MSG,"保存成功");
 //                jsonObject.put("avator",storeUrlPath);
 //                return jsonObject;
+//            System.out.println("1");
+            studyService.insert(study);
+            mpFile.transferTo(dest);
+            return WebResult.<Integer>builder()
+                    .code(200)
+                    .message(REQUEST_STATUS_SUCCESS)
+                    .data(1)
+                    .build();
 
-                return WebResult.<Integer>builder()
-                        .code(200)
-                        .message(REQUEST_STATUS_SUCCESS)
-                        .build();
-            }
-            jsonObject.put(Consts.CODE,0);
-            jsonObject.put(Consts.MSG,"保存失败");
-            return jsonObject;
-        } catch (IOException e) {
+
+                   } catch (IOException e) {
             jsonObject.put(Consts.CODE,0);
             jsonObject.put(Consts.MSG,"保存失败"+e.getMessage());
-        }finally {
+            return jsonObject;
+        }catch (Exception e){
+            jsonObject.put(Consts.CODE,0);
+            jsonObject.put(Consts.MSG,"新增失败"+e.getMessage());
             return jsonObject;
         }
+
     }
 
 

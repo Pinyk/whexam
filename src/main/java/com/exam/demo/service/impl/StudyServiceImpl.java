@@ -52,10 +52,6 @@ public class StudyServiceImpl implements StudyService {
         return studyMapperr.updateById(study);
     }
 
-    @Override
-    public int InsertFile() {
-        return 0;
-    }
 
 
 }
