@@ -162,7 +162,7 @@ public class StudyController {
         //实际的文件地址
         File dest = new File(filePath+System.getProperty("file.separator")+fileName);
         //存储到数据库里的相对文件地址
-        String storeUrlPath = "/song/"+fileName;
+        String storeUrlPath = "/study/"+fileName;
         try {
             mpFile.transferTo(dest);
             Study study=new Study();
