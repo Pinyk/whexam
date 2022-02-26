@@ -42,20 +42,49 @@ public class ExamServiceImpl implements ExamService {
      * @return
      */
     @Override
+//    public Map<String, List<Object>> findByTestPaperId(Integer testPaperId) {
+//        Map<String, List<Object>> map = new HashMap<>();
+//        List<Object> selectQuestionList = new ArrayList<>();
+//        List<Object> examSelectList = examMapper.findExamSelectByTestPaperId(testPaperId);
+//        for(Object object : examSelectList) {
+//            ExamSelect examSelect = (ExamSelect) object;
+//            SelectQuestion selectQuestion = new SelectQuestion();
+//            selectQuestion.setContext(examSelect.getContext());
+//            selectQuestion.setSelections(Arrays.asList(examSelect.getSelection().split("；")));
+//            selectQuestion.setScore(examSelect.getScore());
+//            selectQuestionList.add(selectQuestion);
+//        }
+//        map.put("examJudge", examMapper.findExamJudgeByTestPaperId(testPaperId));
+//        map.put("examSelect", selectQuestionList);
+//
+//        map.put("examSubject", examMapper.findExamSubjectByTestPaperId(testPaperId));
+//        return map;
+//    }
     public Map<String, List<Object>> findByTestPaperId(Integer testPaperId) {
         Map<String, List<Object>> map = new HashMap<>();
-        List<Object> selectQuestionList = new ArrayList<>();
-        List<Object> examSelectList = examMapper.findExamSelectByTestPaperId(testPaperId);
-        for(Object object : examSelectList) {
+        List<Object> singleSelection = new ArrayList<>();
+        for(Object object : examMapper.findSingleSelectionByTestPaperId(testPaperId)) {
             ExamSelect examSelect = (ExamSelect) object;
             SelectQuestion selectQuestion = new SelectQuestion();
             selectQuestion.setContext(examSelect.getContext());
             selectQuestion.setSelections(Arrays.asList(examSelect.getSelection().split("；")));
             selectQuestion.setScore(examSelect.getScore());
-            selectQuestionList.add(selectQuestion);
+            singleSelection.add(selectQuestion);
         }
+
+        List<Object> multipleSelections = new ArrayList<>();
+        for(Object object : examMapper.findMultipleSelectionByTestPaperId(testPaperId)) {
+            ExamSelect examSelect = (ExamSelect) object;
+            SelectQuestion selectQuestion = new SelectQuestion();
+            selectQuestion.setContext(examSelect.getContext());
+            selectQuestion.setSelections(Arrays.asList(examSelect.getSelection().split("；")));
+            selectQuestion.setScore(examSelect.getScore());
+            multipleSelections.add(selectQuestion);
+        }
+
         map.put("examJudge", examMapper.findExamJudgeByTestPaperId(testPaperId));
-        map.put("examSelect", selectQuestionList);
+        map.put("singleSelection", singleSelection);
+        map.put("multipleSelection", multipleSelections);
         map.put("examSubject", examMapper.findExamSubjectByTestPaperId(testPaperId));
         return map;
     }

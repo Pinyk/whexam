@@ -24,6 +24,20 @@ public interface ExamMapper extends BaseMapper<Exam> {
     List<Object> findExamSelectByTestPaperId(Integer testPaperId);
 
     /**
+     * 根据试卷ID查询组成试卷的单选题目
+     * @param testPaperId
+     * @return
+     */
+    List<Object> findSingleSelectionByTestPaperId(Integer testPaperId);
+
+    /**
+     * 根据试卷ID查询组成试卷的多选题目
+     * @param testPaperId
+     * @return
+     */
+    List<Object> findMultipleSelectionByTestPaperId(Integer testPaperId);
+
+    /**
      * 根据试卷ID查询组成试卷的主观题目
      * @param testPaperId
      * @return

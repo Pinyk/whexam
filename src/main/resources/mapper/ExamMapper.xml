@@ -20,6 +20,22 @@
         and e.testpaper_id = #{testPaperId}
     </select>
 
+    <!--  List<Object> findSingleSelectionByTestPaperId(Integer testPaperId);  -->
+    <select id="findSingleSelectionByTestPaperId" parameterType="Integer" resultType="ExamSelect">
+        select es.context, es.selection, es.score
+        from exam e, exam_select es
+        where e.problem_id = es.id and e.type = 2
+        and es.type = 1 and e.testpaper_id = #{testPaperId}
+    </select>
+
+    <!--  List<Object> findMultipleSelectionByTestPaperId(Integer testPaperId);  -->
+    <select id="findMultipleSelectionByTestPaperId" parameterType="Integer" resultType="ExamSelect">
+        select es.context, es.selection, es.score
+        from exam e, exam_select es
+        where e.problem_id = es.id and e.type = 2
+        and es.type = 2 and e.testpaper_id = #{testPaperId}
+    </select>
+
     <!--  List<ExamSubject> findExamSubjectByTestPaperId(Integer testPaperId);  -->
     <select id="findExamSubjectByTestPaperId" parameterType="Integer" resultType="ExamSubject">
         select es.context, es.score
