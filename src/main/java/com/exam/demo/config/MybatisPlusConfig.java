@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @MapperScan("com.exam.demo.mapper")
 public class MybatisPlusConfig {
+
     @Bean
     public MybatisPlusInterceptor mybatisPlusInterceptor(){
         //分页插件
