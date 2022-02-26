@@ -47,6 +47,12 @@ public class User {
     @ApiModelProperty(value = "用户密码")
     private String password;
 
+    @ApiModelProperty(value = "地址")
+    private String address;
+
+    @ApiModelProperty(value = "员工编号")
+    private String nums;
+
     public User(String gender, String openid, int roleId, String image, String wxname,double time, String password) {
         this.gender = gender;
         this.openid = openid;

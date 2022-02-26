@@ -1,6 +1,7 @@
 package com.exam.demo.controller;
 
 import com.exam.demo.entity.User;
+import com.exam.demo.otherEntity.UserPojo;
 import com.exam.demo.service.UserService;
 import com.exam.demo.utils.WebResult;
 import io.swagger.annotations.Api;
@@ -80,6 +81,16 @@ public class UserController {
                 .build();
     }
 
+    @GetMapping("findPart")
+    @ApiOperation(notes = "gaoyk",value = "返回所有用户部分信息")
+    public WebResult<List<UserPojo>> findPart(){
+        return WebResult.<List<UserPojo>>builder()
+                .code(200)
+                .message(REQUEST_STATUS_SUCCESS)
+                .data(userService.findPart())
+                .build();
+    }
+
     @DeleteMapping("deleteById")
     @ApiOperation(notes = "gaoyk",value = "根据Id删除用户")
     public WebResult<Boolean> deleteById(@RequestParam @ApiParam(name="id",required=true)
@@ -101,11 +112,10 @@ public class UserController {
     }
 
     @PostMapping("grantRole")
-    @ApiOperation(notes = "gaoyk",value = "根据roleId授权")
-    public WebResult<Boolean> grantRole(@RequestParam @ApiParam(name="role_id",required=true)
-                                                 Integer role_id, @RequestParam @ApiParam(name="user_id",required=true)
+    @ApiOperation(notes = "gaoyk",value = "更改权限")
+    public WebResult<Boolean> grantRole(@RequestParam @ApiParam(name="user_id",required=true)
                                                 Integer user_id){
-        Boolean msg = userService.grantRole(role_id,user_id);
+        Boolean msg = userService.grantRole(user_id);
         return WebResult.<Boolean>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
