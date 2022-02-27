@@ -46,4 +46,7 @@ public class UserPojo {
 
     @ApiModelProperty(value = "员工编号")
     private String nums;
+
+    @ApiModelProperty(value = "身份证号")
+    private String identity;
 }

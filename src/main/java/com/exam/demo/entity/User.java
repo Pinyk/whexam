@@ -53,6 +53,9 @@ public class User {
     @ApiModelProperty(value = "员工编号")
     private String nums;
 
+    @ApiModelProperty(value = "身份证号")
+    private String identity;
+
     public User(String gender, String openid, int roleId, String image, String wxname,double time, String password) {
         this.gender = gender;
         this.openid = openid;
