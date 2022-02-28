@@ -26,4 +26,9 @@
         where s.testpaper_id = tp.id and s.user_id = u.id
         and s.testpaper_id = #{testPaperId}
     </select>
+
+    <update id="updateScoreByUserId" parameterType="score">
+        update score set scorenum = #{scorenum}
+        where testpaper_id = #{testpaperId} and user_id = #{userId}
+    </update>
 </mapper>

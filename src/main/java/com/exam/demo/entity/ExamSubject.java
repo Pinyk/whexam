@@ -25,4 +25,7 @@ public class ExamSubject {
 
     @ApiModelProperty(value = "分数")
     private double score;
+
+    @ApiModelProperty(value = "图片URL")
+    private String imgUrl;
 }

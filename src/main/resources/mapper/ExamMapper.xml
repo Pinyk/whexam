@@ -6,7 +6,7 @@
 
     <!-- List<ExamJudge> findExamJudgeByTestPaperId(Integer testPaperId);  -->
     <select id="findExamJudgeByTestPaperId" parameterType="Integer" resultType="ExamJudge">
-        select ej.context, ej.score
+        select ej.context, ej.score, ej.img_url
         from exam e, exam_judge ej
         where e.problem_id = ej.id and e.type = 1
         and e.testpaper_id = #{testPaperId}
@@ -14,15 +14,31 @@
 
     <!--  List<ExamSelect> findExamSelectByTestPaperId(Integer testPaperId);  -->
     <select id="findExamSelectByTestPaperId" parameterType="Integer" resultType="ExamSelect">
-        select es.context, es.selection, es.score
+        select es.context, es.selection, es.score, es.img_url
         from exam e, exam_select es
         where e.problem_id = es.id and e.type = 2
         and e.testpaper_id = #{testPaperId}
     </select>
 
+    <!--  List<Object> findSingleSelectionByTestPaperId(Integer testPaperId);  -->
+    <select id="findSingleSelectionByTestPaperId" parameterType="Integer" resultType="ExamSelect">
+        select es.context, es.selection, es.score, es.img_url
+        from exam e, exam_select es
+        where e.problem_id = es.id and e.type = 2
+        and es.type = 1 and e.testpaper_id = #{testPaperId}
+    </select>
+
+    <!--  List<Object> findMultipleSelectionByTestPaperId(Integer testPaperId);  -->
+    <select id="findMultipleSelectionByTestPaperId" parameterType="Integer" resultType="ExamSelect">
+        select es.context, es.selection, es.score, es.img_url
+        from exam e, exam_select es
+        where e.problem_id = es.id and e.type = 2
+        and es.type = 2 and e.testpaper_id = #{testPaperId}
+    </select>
+
     <!--  List<ExamSubject> findExamSubjectByTestPaperId(Integer testPaperId);  -->
     <select id="findExamSubjectByTestPaperId" parameterType="Integer" resultType="ExamSubject">
-        select es.context, es.score
+        select es.context, es.score, es.img_url
         from exam e, exam_subject es
         where e.problem_id = es.id and e.type = 3
         and e.testpaper_id = #{testPaperId}

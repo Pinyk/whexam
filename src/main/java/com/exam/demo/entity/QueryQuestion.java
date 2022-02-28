@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 @ApiModel(value = "queryQuestion")
 public class QueryQuestion {
-
+// 编号（id）、名称、所属部门
     @ApiModelProperty(value = "题目内容")
     private String context;
 

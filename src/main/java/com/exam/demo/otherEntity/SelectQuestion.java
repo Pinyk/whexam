@@ -32,4 +32,7 @@ public class SelectQuestion {
 
     @ApiModelProperty(value = "选择题目类型")
     private int type;
+
+    @ApiModelProperty(value = "图片URL")
+    private String imgUrl;
 }
