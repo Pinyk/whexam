@@ -292,6 +292,70 @@ public class ExamServiceImpl implements ExamService {
     }
 
     /**
+     * 查询所有正在进行的考试
+     * @return
+     */
+    @Override
+    public List<TestpaperVo> findAllCurrentExam() {
+
+        List<Testpaper> testpaperList = findExamByCombinedQuery(null, null, null, null);
+
+        //将查询对象转为交互返回对象
+        LinkedList<TestpaperVo> testpaperVos = new LinkedList<>();
+        //遍历查询结果，并将符合条件的存入交互对象中
+        long currentTime  = System.currentTimeMillis();
+        for (Testpaper testpaper : testpaperList) {
+            if (compareDate(testpaper.getStartTime(), testpaper.getDeadTime(), currentTime) == 0) {
+                testpaperVos.add(copyTestpaperBean(new TestpaperVo(), testpaper));
+            }
+        }
+        return testpaperVos;
+    }
+
+    /**
+     * 查询所有历史考试
+     * @return
+     */
+    @Override
+    public List<TestpaperVo> findAllHistoricalExam() {
+
+        List<Testpaper> testpaperList = findExamByCombinedQuery(null, null, null, null);
+
+        //将查询对象转为交互返回对象
+        LinkedList<TestpaperVo> testpaperVos = new LinkedList<>();
+        //遍历查询结果，并将符合条件的存入交互对象中
+        long currentTime  = System.currentTimeMillis();
+        for (Testpaper testpaper : testpaperList) {
+            if (compareDate(testpaper.getStartTime(), testpaper.getDeadTime(), currentTime) == 1) {
+                testpaperVos.add(copyTestpaperBean(new TestpaperVo(), testpaper));
+            }
+        }
+        return testpaperVos;
+
+    }
+
+    /**
+     * 查询所有未来考试
+     * @return
+     */
+    @Override
+    public List<TestpaperVo> findAllFutureExam() {
+
+        List<Testpaper> testpaperList = findExamByCombinedQuery(null, null, null, null);
+
+        //将查询对象转为交互返回对象
+        LinkedList<TestpaperVo> testpaperVos = new LinkedList<>();
+        //遍历查询结果，并将符合条件的存入交互对象中
+        long currentTime  = System.currentTimeMillis();
+        for (Testpaper testpaper : testpaperList) {
+            if (compareDate(testpaper.getStartTime(), testpaper.getDeadTime(), currentTime) == -1) {
+                testpaperVos.add(copyTestpaperBean(new TestpaperVo(), testpaper));
+            }
+        }
+        return testpaperVos;
+    }
+
+    /**
      * 比较查询的考试与查询时刻的大小
      * @param targetStartTime 要查询的考试的开始时间
      * @param targetDeadTime 要查询的考试的结束时间

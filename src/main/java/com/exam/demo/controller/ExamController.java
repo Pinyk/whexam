@@ -138,6 +138,15 @@ public class ExamController {
                 .build();
     }
 
+    @GetMapping("findAllCurrentExam")
+    @ApiOperation(notes = "LBX", value = "查询所有正在进行的考试")
+    public WebResult<List<TestpaperVo>> findAllCurrentExam() {
+        return WebResult.<List<TestpaperVo>>builder()
+                .code(200)
+                .message(REQUEST_STATUS_SUCCESS)
+                .data(examService.findAllCurrentExam())
+                .build();
+    }
 
     @GetMapping("findCurrentExam")
     @ApiOperation(notes = "LBX", value = "正在考试——组合查询")
@@ -152,6 +161,16 @@ public class ExamController {
                 .build();
     }
 
+    @GetMapping("findAllHistoricalExam")
+    @ApiOperation(notes = "LBX", value = "查询所有正在进行的考试")
+    public WebResult<List<TestpaperVo>> findAllHistoricalExam() {
+        return WebResult.<List<TestpaperVo>>builder()
+                .code(200)
+                .message(REQUEST_STATUS_SUCCESS)
+                .data(examService.findAllHistoricalExam())
+                .build();
+    }
+
     @GetMapping("findHistoricalExam")
     @ApiOperation(notes = "LBX", value = "历史考试——组合查询")
     public WebResult<List<TestpaperVo>> findHistoricalExam(@RequestParam(required = false) @ApiParam(name = "testPaperId", value = "试卷id", required = true) Integer testPaperId,
@@ -162,6 +181,16 @@ public class ExamController {
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
                 .data(examService.findHistoricalExam(testPaperId, testPaperName, departmentName, subject))
+                .build();
+    }
+
+    @GetMapping("findAllFutureExam")
+    @ApiOperation(notes = "LBX", value = "查询所有正在进行的考试")
+    public WebResult<List<TestpaperVo>> findAllFutureExam() {
+        return WebResult.<List<TestpaperVo>>builder()
+                .code(200)
+                .message(REQUEST_STATUS_SUCCESS)
+                .data(examService.findAllFutureExam())
                 .build();
     }
 

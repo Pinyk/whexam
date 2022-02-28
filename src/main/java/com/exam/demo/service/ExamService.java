@@ -81,4 +81,22 @@ public interface ExamService {
      */
     List<TestpaperVo> findFutureExam(Integer testPaperId, String testPaperName, String departmentName, String subject);
 
+    /**
+     * 查询所有正在进行的考试
+     * @return
+     */
+    List<TestpaperVo> findAllCurrentExam();
+
+    /**
+     * 查询所有历史考试
+     * @return
+     */
+    List<TestpaperVo> findAllHistoricalExam();
+
+    /**
+     * 查询所有未来考试
+     * @return
+     */
+    List<TestpaperVo> findAllFutureExam();
+
 }
