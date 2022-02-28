@@ -210,8 +210,6 @@ public class StudyController {
                     .message(REQUEST_STATUS_SUCCESS)
                     .data(1)
                     .build();
-
-
                    } catch (IOException e) {
             jsonObject.put(Consts.CODE,0);
             jsonObject.put(Consts.MSG,"保存失败"+e.getMessage());
