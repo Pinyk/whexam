@@ -1,9 +1,6 @@
 package com.exam.demo.service;
 
-import com.exam.demo.entity.Exam;
-import com.exam.demo.entity.ExamJudge;
-import com.exam.demo.entity.ExamSelect;
-import com.exam.demo.entity.ExamSubject;
+import com.exam.demo.entity.*;
 import com.exam.demo.utils.TestpaperVo;
 
 import java.util.List;
@@ -45,12 +42,43 @@ public interface ExamService {
     Integer deleteProblem(Integer id);
 
     /**
-     * 组合查询试卷
+     * 正在考试——组合查询
      * @param testPaperId
      * @param testPaperName
      * @param departmentName
      * @param subject
      * @return
      */
-    List<TestpaperVo> combinedQueryTestPaper(Integer testPaperId, String testPaperName, String departmentName, String subject);
+    List<TestpaperVo> findCurrentExam(Integer testPaperId, String testPaperName, String departmentName, String subject);
+
+    /**
+     * 历史考试——组合查询
+     * @param testPaperId
+     * @param testPaperName
+     * @param departmentName
+     * @param subject
+     * @return
+     */
+    List<TestpaperVo> findHistoricalExam(Integer testPaperId, String testPaperName, String departmentName, String subject);
+
+    /**
+     * 组合查询考试
+     * @param testPaperId
+     * @param testPaperName
+     * @param departmentName
+     * @param subject
+     * @return
+     */
+    List<Testpaper> findExamByCombinedQuery(Integer testPaperId, String testPaperName, String departmentName, String subject);
+
+    /**
+     * 未来考试——组合查询
+     * @param testPaperId
+     * @param testPaperName
+     * @param departmentName
+     * @param subject
+     * @return
+     */
+    List<TestpaperVo> findFutureExam(Integer testPaperId, String testPaperName, String departmentName, String subject);
+
 }

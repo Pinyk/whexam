@@ -139,17 +139,42 @@ public class ExamController {
     }
 
 
-    @GetMapping("findTestPaperDetail")
-    @ApiOperation(notes = "LBX", value = "组合查询试卷（试卷ID，试卷名字，试卷所属部门，科目）")
-    public WebResult<List<TestpaperVo>> combinedQueryTestPaper(@RequestParam(required = false) @ApiParam(name = "试卷id", required = true) Integer testPaperId,
-                                                         @RequestParam(required = false) @ApiParam(name = "试卷名称", required = true) String testPaperName,
-                                                         @RequestParam(required = false) @ApiParam(name = "试卷所属部门", required = true) String departmentName,
-                                                         @RequestParam(required = false) @ApiParam(name = "科目", required = true) String subject) {
+    @GetMapping("findCurrentExam")
+    @ApiOperation(notes = "LBX", value = "正在考试——组合查询")
+    public WebResult<List<TestpaperVo>> findCurrentExam(@RequestParam(required = false) @ApiParam(name = "testPaperId", value = "试卷id", required = true) Integer testPaperId,
+                                                        @RequestParam(required = false) @ApiParam(name = "testPaperName", value = "试卷名称", required = true) String testPaperName,
+                                                        @RequestParam(required = false) @ApiParam(name = "departmentName", value = "试卷所属部门", required = true) String departmentName,
+                                                        @RequestParam(required = false) @ApiParam(name = "subject", value = "科目", required = true) String subject) {
         return WebResult.<List<TestpaperVo>>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
-                .data(examService.combinedQueryTestPaper(testPaperId, testPaperName, departmentName, subject))
+                .data(examService.findCurrentExam(testPaperId, testPaperName, departmentName, subject))
                 .build();
     }
 
+    @GetMapping("findHistoricalExam")
+    @ApiOperation(notes = "LBX", value = "历史考试——组合查询")
+    public WebResult<List<TestpaperVo>> findHistoricalExam(@RequestParam(required = false) @ApiParam(name = "testPaperId", value = "试卷id", required = true) Integer testPaperId,
+                                                           @RequestParam(required = false) @ApiParam(name = "testPaperName", value = "试卷名称", required = true) String testPaperName,
+                                                           @RequestParam(required = false) @ApiParam(name = "departmentName", value = "试卷所属部门", required = true) String departmentName,
+                                                           @RequestParam(required = false) @ApiParam(name = "subject", value = "科目", required = true) String subject) {
+        return WebResult.<List<TestpaperVo>>builder()
+                .code(200)
+                .message(REQUEST_STATUS_SUCCESS)
+                .data(examService.findHistoricalExam(testPaperId, testPaperName, departmentName, subject))
+                .build();
+    }
+
+    @GetMapping("findFutureExam")
+    @ApiOperation(notes = "LBX", value = "未来考试——组合查询")
+    public WebResult<List<TestpaperVo>> findFutureExam(@RequestParam(required = false) @ApiParam(name = "testPaperId", value = "试卷id", required = true) Integer testPaperId,
+                                                       @RequestParam(required = false) @ApiParam(name = "testPaperName", value = "试卷名称", required = true) String testPaperName,
+                                                       @RequestParam(required = false) @ApiParam(name = "departmentName", value = "试卷所属部门", required = true) String departmentName,
+                                                       @RequestParam(required = false) @ApiParam(name = "subject", value = "科目", required = true) String subject) {
+        return WebResult.<List<TestpaperVo>>builder()
+                .code(200)
+                .message(REQUEST_STATUS_SUCCESS)
+                .data(examService.findFutureExam(testPaperId, testPaperName, departmentName, subject))
+                .build();
+    }
 }

@@ -16,6 +16,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
@@ -47,6 +49,9 @@ public class ExamServiceImpl implements ExamService {
 
     @Autowired
     TestPaperMapper testPaperMapper;
+
+    @Autowired
+    UserMapper userMapper;
 
     /**
      * 查找每张试卷对应的所有试题
@@ -208,9 +213,10 @@ public class ExamServiceImpl implements ExamService {
         return examMapper.deleteById(id);
     }
 
+
+
     /**
-     * 组合查询试卷
-     * @Author: LBX
+     * 正在考试——组合查询
      * @param testPaperId
      * @param testPaperName
      * @param departmentName
@@ -218,8 +224,128 @@ public class ExamServiceImpl implements ExamService {
      * @return
      */
     @Override
-    public List<TestpaperVo> combinedQueryTestPaper(Integer testPaperId, String testPaperName, String departmentName, String subject) {
+    public List<TestpaperVo> findCurrentExam(Integer testPaperId, String testPaperName, String departmentName, String subject) {
 
+        List<Testpaper> testpapers = findExamByCombinedQuery(testPaperId, testPaperName, departmentName, subject);
+
+        //将查询对象转为交互返回对象
+        LinkedList<TestpaperVo> testpaperVos = new LinkedList<>();
+        //遍历查询结果，并将符合条件的存入交互对象中
+        long currentTime  = System.currentTimeMillis();
+        for (Testpaper testpaper : testpapers) {
+            Integer compareDate = compareDate(testpaper.getStartTime(), testpaper.getDeadTime(), currentTime);
+            if (compareDate == 0 || compareDate == -1) {
+                testpaperVos.add(copyTestpaperBean(new TestpaperVo(), testpaper));
+            }
+        }
+        return testpaperVos;
+    }
+
+    /**
+     * 历史考试——组合查询
+     * @param testPaperId
+     * @param testPaperName
+     * @param departmentName
+     * @param subject
+     * @return
+     */
+    @Override
+    public List<TestpaperVo> findHistoricalExam(Integer testPaperId, String testPaperName, String departmentName, String subject) {
+
+        List<Testpaper> testpapers = findExamByCombinedQuery(testPaperId, testPaperName, departmentName, subject);
+
+        //将查询对象转为交互返回对象
+        LinkedList<TestpaperVo> testpaperVos = new LinkedList<>();
+        //遍历查询结果，并将符合条件的存入交互对象中
+        long currentTime  = System.currentTimeMillis();
+        for (Testpaper testpaper : testpapers) {
+            if (compareDate(testpaper.getStartTime(), testpaper.getDeadTime(), currentTime) == 1) {
+                testpaperVos.add(copyTestpaperBean(new TestpaperVo(), testpaper));
+            }
+        }
+        return testpaperVos;
+    }
+
+    /**
+     * 未来考试——组合查询
+     * @param testPaperId
+     * @param testPaperName
+     * @param departmentName
+     * @param subject
+     * @return
+     */
+    @Override
+    public List<TestpaperVo> findFutureExam(Integer testPaperId, String testPaperName, String departmentName, String subject) {
+
+        List<Testpaper> testpapers = findExamByCombinedQuery(testPaperId, testPaperName, departmentName, subject);
+
+        //将查询对象转为交互返回对象
+        LinkedList<TestpaperVo> testpaperVos = new LinkedList<>();
+        //遍历查询结果，并将符合条件的存入交互对象中
+        long currentTime  = System.currentTimeMillis();
+        for (Testpaper testpaper : testpapers) {
+            if (compareDate(testpaper.getStartTime(), testpaper.getDeadTime(), currentTime) == -1) {
+                testpaperVos.add(copyTestpaperBean(new TestpaperVo(), testpaper));
+            }
+        }
+        return testpaperVos;
+    }
+
+    /**
+     * 比较查询的考试与查询时刻的大小
+     * @param targetStartTime 要查询的考试的开始时间
+     * @param targetDeadTime 要查询的考试的结束时间
+     * @param currentTime 当前的查询时间
+     * @return
+     */
+    private Integer compareDate(Date targetStartTime, Date targetDeadTime, long currentTime) {
+        //三个时间的毫秒值
+        //考试开始时间
+        long time1 = targetStartTime.getTime();
+        //考试结束时间
+        long time2 = targetDeadTime.getTime();
+        //当前查询时间
+
+        //若当前时间小于考试开始时间，则说明考试未开始
+        if (currentTime < time1) {
+            return -1;
+        } else if (currentTime >= time1 && currentTime <= time2){ //若当前查询时间大于等于开始时间，小于等于结束时间，则正在考试
+            return 0;
+        } else {
+            return 1;//历史考试
+        }
+    }
+
+    /**
+     * 将Testpaper转换为TestpaperVo
+     * @param testpaperVo
+     * @param testpaper
+     * @return
+     */
+    private TestpaperVo copyTestpaperBean(TestpaperVo testpaperVo, Testpaper testpaper) {
+
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+
+        BeanUtils.copyProperties(testpaper, testpaperVo);
+        testpaperVo.setStartTime(df.format(testpaper.getStartTime()));
+        testpaperVo.setDeadTime(df.format(testpaper.getDeadTime()));
+        testpaperVo.setDepartment(departmentMapper.selectById(testpaper.getDepartmentId()).getName());
+        testpaperVo.setSubject(subjectMapper.selectById(testpaper.getSubjectId()).getName());
+        testpaperVo.setUserName(userMapper.selectById(testpaper.getUserId()).getName());
+        return testpaperVo;
+
+    }
+
+    /**
+     * 组合查询考试
+     * @param testPaperId
+     * @param testPaperName
+     * @param departmentName
+     * @param subject
+     * @return
+     */
+    @Override
+    public List<Testpaper> findExamByCombinedQuery(Integer testPaperId, String testPaperName, String departmentName, String subject) {
         LambdaQueryWrapper<Testpaper> wrapper = new LambdaQueryWrapper<>();
 
         if (testPaperId != null) {
@@ -249,18 +375,8 @@ public class ExamServiceImpl implements ExamService {
                 return null;
             }
         }
-        List<Testpaper> testpapers = testPaperMapper.selectList(wrapper);
-        //将查询对象转为交互返回对象
-        LinkedList<TestpaperVo> testpaperVos = new LinkedList<>();
-        for (Testpaper testpaper : testpapers) {
-            TestpaperVo testpaperVo = new TestpaperVo();
-            BeanUtils.copyProperties(testpaper, testpaperVo);
-            testpaperVo.setDepartment(departmentName);
-            testpaperVo.setSubject(subject);
-            testpaperVos.add(testpaperVo);
-        }
-        return testpaperVos;
-
+        return testPaperMapper.selectList(wrapper);
     }
+
 
 }
