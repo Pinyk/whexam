@@ -15,4 +15,6 @@ public interface ScoreMapper extends BaseMapper<Score> {
     List<UserTestPaperScore> findByTestPaperId(Integer testPaperId);
 
     Double avgScoreByTestPaperId(Integer testPaperId);
+
+    Integer updateScoreByUserId(Score score);
 }

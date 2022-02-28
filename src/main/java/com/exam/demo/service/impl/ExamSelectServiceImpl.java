@@ -36,6 +36,7 @@ public class ExamSelectServiceImpl implements ExamSelectService {
         selectQuestion.setDifficulty(examSelect.getDifficulty());
         selectQuestion.setScore(examSelect.getScore());
         selectQuestion.setType(examSelect.getType());
+        selectQuestion.setImgUrl(examSelect.getImgUrl());
         return selectQuestion;
     }
 

@@ -4,6 +4,7 @@ import com.exam.demo.entity.Exam;
 import com.exam.demo.entity.ExamJudge;
 import com.exam.demo.entity.ExamSelect;
 import com.exam.demo.entity.ExamSubject;
+import com.exam.demo.utils.TestpaperVo;
 
 import java.util.List;
 import java.util.Map;
@@ -42,4 +43,30 @@ public interface ExamService {
      * @return
      */
     Integer deleteProblem(Integer id);
+
+    /**
+     * 组合查询试卷
+     * @param testPaperId
+     * @param testPaperName
+     * @param departmentName
+     * @param subject
+     * @return
+     */
+    List<TestpaperVo> combinedQueryTestPaper(Integer testPaperId, String testPaperName, String departmentName, String subject);
+
+    /**
+     * 根据用户ID和试卷ID修改试卷总分
+     * @param testPaperId
+     * @param userId
+     * @return
+     */
+    Integer updateScoreByUserId(Double score, Integer testPaperId, Integer userId);
+
+    /**
+     * 根据用户ID和试卷ID查询考试明细接口
+     * @param testPaperId
+     * @param userId
+     * @return
+     */
+    Map<String, List<Object>> findScoreDetailByUIdAndTPId(Integer testPaperId, Integer userId);
 }
