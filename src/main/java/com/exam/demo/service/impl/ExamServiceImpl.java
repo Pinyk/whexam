@@ -234,7 +234,7 @@ public class ExamServiceImpl implements ExamService {
         long currentTime  = System.currentTimeMillis();
         for (Testpaper testpaper : testpapers) {
             Integer compareDate = compareDate(testpaper.getStartTime(), testpaper.getDeadTime(), currentTime);
-            if (compareDate == 0 || compareDate == -1) {
+            if (compareDate == 0) {
                 testpaperVos.add(copyTestpaperBean(new TestpaperVo(), testpaper));
             }
         }
