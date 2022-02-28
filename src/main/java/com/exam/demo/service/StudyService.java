@@ -12,6 +12,7 @@ public interface StudyService {
 
     public List<Study> findAll() ;
     public List<Study> findByType(int datatype);
+    public List<Study> findBySubject(int datatype);
     public List<Study> findPage(int current, int pageSize);
 
     public int delete (int study_id );

@@ -59,6 +59,18 @@ public class StudyController {
     }
 
     //按学习类型查询
+    @GetMapping("/findBySubject")
+    @ApiOperation(notes = "csx",value = "安学习类型查询接口")
+    public WebResult<List<Study>> findBySubject(@RequestParam @ApiParam(name="datatype") Integer datatype){
+
+
+        return WebResult.<List<Study>>builder()
+                .code(200)
+                .message(REQUEST_STATUS_SUCCESS)
+                .data(studyService.findBySubject(datatype))
+                .build();
+    }
+    //按科目类型查询
     @GetMapping("/findByType")
     @ApiOperation(notes = "csx",value = "课程类型查询接口")
     public WebResult<List<Study>> findByType(@RequestParam @ApiParam(name="datatype") Integer datatype){
