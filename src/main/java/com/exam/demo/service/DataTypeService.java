@@ -18,7 +18,7 @@ public interface DataTypeService {
      * 根据id查询
      * @return
      */
-    List<Datatype> findById(int id);
+    Datatype findById(int id);
 
     int add (Datatype datatype);
 

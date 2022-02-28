@@ -14,16 +14,16 @@ public class DataTypeServiceImpl implements DataTypeService {
 
     /**
      * @Author: csx
-     * @Date: 2022/1/23
+     * @Date: 2022/2/28
      */
     @Autowired
     private DatatypeMapper datatypeMapper;
 
     @Override
-    public List<Datatype> findById(int id) {
+    public Datatype findById(int id) {
         LambdaQueryWrapper<Datatype> queryWrapper=new LambdaQueryWrapper<>();
         queryWrapper.eq(Datatype::getId,id);
-        return datatypeMapper.selectList(queryWrapper);
+        return datatypeMapper.selectById(id);
     }
 
     @Override

@@ -28,7 +28,7 @@ public class StudyServiceImpl implements StudyService {
     public List<Study> findByType(int datatype){
         //根据学习类型进行查询
         LambdaQueryWrapper<Study> queryWrapper=new LambdaQueryWrapper<>();
-        queryWrapper.eq(Study::getDatatype_id,datatype);
+        queryWrapper.eq(Study::getDatatypeid,datatype);
         return studyMapperr.selectList(queryWrapper);
 
 //        return studyMapperr.findStudyByType(datatype);
@@ -37,7 +37,7 @@ public class StudyServiceImpl implements StudyService {
     @Override
     public List<Study> findBySubject(int datatype) {
         LambdaQueryWrapper<Study> queryWrapper=new LambdaQueryWrapper<>();
-        queryWrapper.eq(Study::getSubject_id,datatype);
+        queryWrapper.eq(Study::getSubjectid,datatype);
         return studyMapperr.selectList(queryWrapper);
     }
 

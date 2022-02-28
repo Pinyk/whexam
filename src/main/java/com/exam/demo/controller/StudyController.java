@@ -2,8 +2,14 @@ package com.exam.demo.controller;
 
 
 import com.alibaba.fastjson.JSONObject;
+import com.exam.demo.entity.Datatype;
+import com.exam.demo.entity.ShowStudy;
 import com.exam.demo.entity.Study;
+import com.exam.demo.mapper.DatatypeMapper;
+import com.exam.demo.service.DataTypeService;
+import com.exam.demo.service.DepartmentService;
 import com.exam.demo.service.StudyService;
+import com.exam.demo.service.SubjectService;
 import com.exam.demo.utils.Consts;
 import com.exam.demo.utils.WebResult;
 import io.swagger.annotations.Api;
@@ -16,9 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.exam.demo.utils.WebResult.REQUEST_STATUS_SUCCESS;
@@ -34,16 +38,48 @@ import static com.exam.demo.utils.WebResult.REQUEST_STATUS_SUCCESS;
 public class StudyController {
     @Autowired
     private StudyService studyService;
-
+    @Autowired
+    private DataTypeService dataTypeService;
+    @Autowired
+    private DepartmentService departmentService;
+    @Autowired
+    private SubjectService subjectService;
 
     @GetMapping("findAll")
     @ApiOperation(notes = "csx",value = "全部学习资料查询接口")
 
-    public WebResult<List<Study>> findAll(){
-        return  WebResult.<List<Study>>builder()
+    public WebResult<List<ShowStudy>> findAll(){
+
+
+
+        List<Study> study=studyService.findAll();
+        ArrayList<ShowStudy> showStudies=new ArrayList<>();
+//        while (study.isEmpty()) ;
+        Iterator<Study> it = study.iterator();
+        while(it.hasNext()){//判断是否有迭代元素
+            Study study1= it.next();
+
+            ShowStudy showStudy=new ShowStudy();
+            showStudy.setId(study1.getId());
+            showStudy.setName(study1.getName());
+//            int id=it.next().getSubjectid();
+            showStudy.setDatatype_id(study1.getDatatypeid());
+            Datatype datatype=dataTypeService.findById(study1.getDatatypeid());
+            String name=(datatype.getName());
+            showStudy.setDatatype_name(name);
+            showStudy.setUrl(study1.getUrl());
+            showStudy.setBeizhu(study1.getBeizhu());
+            showStudy.setDepartment_id(study1.getDepartmentid());
+            showStudy.setDepartment_name(departmentService.findById(study1.getDepartmentid()).getName());
+            showStudy.setSubject_id(study1.getSubjectid());
+            showStudy.setSubject_name(subjectService.findById(study1.getSubjectid()).getName());
+            showStudies.add(showStudy);
+        }
+
+        return  WebResult.<List<ShowStudy>>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
-                .data(studyService.findAll())
+                .data(showStudies)
                 .build();
 
     }
@@ -135,10 +171,10 @@ public class StudyController {
         Study study=new Study();
         study.setId(id);
         study.setName(name);
-        study.setDepartment_id(datatype_id);
+        study.setDepartmentid(datatype_id);
         study.setUrl(url);
-        study.setSubject_id(subject_id);
-        study.setDatatype_id(datatype_id);
+        study.setSubjectid(subject_id);
+        study.setDatatypeid(datatype_id);
         study.setTime(time);
 
         return WebResult.<Integer>builder()
@@ -198,10 +234,10 @@ public class StudyController {
 //            study.setId(study.getId());
 
             study.setName(name);
-            study.setDepartment_id(department_id);
+            study.setDepartmentid(department_id);
             study.setUrl(url);
-            study.setSubject_id(subject_id);
-            study.setDatatype_id(datatype_id);
+            study.setSubjectid(subject_id);
+            study.setDatatypeid(datatype_id);
             study.setTime(time);
 //            int flag = studyService.insert(study);
 //            mpFile.transferTo(dest);

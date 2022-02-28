@@ -30,8 +30,8 @@ public class DataTypeController {
     @GetMapping("findById")
     @ApiOperation(notes = "csx",value = "根据id查询类型名称接口")
 
-    public WebResult<List<Datatype>> findById(@RequestParam @ApiParam(name="id") Integer id){
-        return  WebResult.<List<Datatype>>builder()
+    public WebResult<Datatype> findById(@RequestParam @ApiParam(name="id") Integer id){
+        return  WebResult.<Datatype>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
                 .data(dataTypeService.findById(id))

@@ -21,10 +21,10 @@ public class Study {
     @TableId(type = IdType.AUTO)
     private Integer id;
     private String name;
-    private Integer datatype_id;
+    private int datatypeid;
     private String url;
-    private int subject_id;
-    private int department_id;
+    private int subjectid;
+    private int departmentid;
     private String time;
     private String beizhu;
 }
