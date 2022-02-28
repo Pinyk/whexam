@@ -12,6 +12,4 @@ import org.springframework.stereotype.Repository;
 public interface StudyMapper extends BaseMapper<Study> {
 
 
-
-
 }

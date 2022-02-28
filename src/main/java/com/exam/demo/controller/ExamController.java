@@ -6,6 +6,7 @@ import com.exam.demo.otherEntity.UserAnswer;
 import com.exam.demo.service.ExamService;
 import com.exam.demo.service.ScoreService;
 import com.exam.demo.service.TestPaperService;
+import com.exam.demo.utils.TestpaperVo;
 import com.exam.demo.utils.WebResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -136,4 +137,19 @@ public class ExamController {
                 .data(scoreService.findByUserId(userId))
                 .build();
     }
+
+
+    @GetMapping("findTestPaperDetail")
+    @ApiOperation(notes = "LBX", value = "组合查询试卷（试卷ID，试卷名字，试卷所属部门，科目）")
+    public WebResult<List<TestpaperVo>> combinedQueryTestPaper(@RequestParam(required = false) @ApiParam(name = "试卷id", required = true) Integer testPaperId,
+                                                         @RequestParam(required = false) @ApiParam(name = "试卷名称", required = true) String testPaperName,
+                                                         @RequestParam(required = false) @ApiParam(name = "试卷所属部门", required = true) String departmentName,
+                                                         @RequestParam(required = false) @ApiParam(name = "科目", required = true) String subject) {
+        return WebResult.<List<TestpaperVo>>builder()
+                .code(200)
+                .message(REQUEST_STATUS_SUCCESS)
+                .data(examService.combinedQueryTestPaper(testPaperId, testPaperName, departmentName, subject))
+                .build();
+    }
+
 }
