@@ -27,4 +27,17 @@
         where e.problem_id = es.id and e.type = 3
         and e.testpaper_id = #{testPaperId}
     </select>
+
+    <select id="findAllFutureExam" resultType="com.exam.demo.entity.Testpaper">
+        select *
+        from testpaper
+        where testpaper.start_time > (SELECT current_timestamp());
+    </select>
+
+    <select id="findAllHistoricalExam" resultType="com.exam.demo.entity.Testpaper">
+        select *
+        from testpaper
+        where (SELECT current_timestamp()) > testpaper.dead_time;
+    </select>
+
 </mapper>
