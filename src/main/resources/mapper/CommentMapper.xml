@@ -1,0 +1,15 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.exam.demo.mapper.CommentMapper">
+    <insert id="saveComment" parameterType="com.exam.demo.entity.Comment">
+        insert into comment (id,image,name,context,date,blogid) values (#{id},#{image},#{name},#{context},#{date},#{blogid})
+    </insert>
+    <select id="findByBlogId" parameterType="Integer" resultType="com.exam.demo.entity.Comment">
+        select * from comment where blogid=#{blogid}
+    </select>
+    <delete id="deleteComment" parameterType="Integer" >
+        delete from comment where commentid=#{commentid}
+    </delete>
+</mapper>
