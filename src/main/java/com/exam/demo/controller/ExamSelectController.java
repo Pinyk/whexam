@@ -23,15 +23,15 @@ public class ExamSelectController {
     @Autowired
     private ExamSelectService examSelectService;
 
-//    @GetMapping("findAll")
-//    @ApiOperation(notes = "xiong",value = "查询所有选择题目接口")
-//    public WebResult<List<SelectQuestion>> findAll() {
-//        return WebResult.<List<SelectQuestion>>builder()
-//                .code(200)
-//                .message(REQUEST_STATUS_SUCCESS)
-//                .data(examSelectService.findAll())
-//                .build();
-//    }
+    @GetMapping("findAll")
+    @ApiOperation(notes = "xiong",value = "查询所有选择题目接口")
+    public WebResult<List<SelectQuestion>> findAll() {
+        return WebResult.<List<SelectQuestion>>builder()
+                .code(200)
+                .message(REQUEST_STATUS_SUCCESS)
+                .data(examSelectService.findAll())
+                .build();
+    }
 
     @GetMapping("findSingleSelection")
     @ApiOperation(notes = "xiong",value = "查询所有单选题目接口")
@@ -71,7 +71,6 @@ public class ExamSelectController {
             @RequestParam @ApiParam(name="currentPage") Integer currentPage,
             @RequestParam @ApiParam(name="pageSize") Integer pageSize) {
         return WebResult.<List<SelectQuestion>>builder()
-                .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
                 .data(examSelectService.findPage(currentPage, pageSize, 2))
                 .build();
