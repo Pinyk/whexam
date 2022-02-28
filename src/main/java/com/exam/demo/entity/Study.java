@@ -6,6 +6,8 @@ import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import org.apache.ibatis.annotations.Options;
 
+import java.util.Date;
+
 /**
  * 学习类对应实体
  */
