@@ -32,6 +32,14 @@ public class StudyServiceImpl implements StudyService {
 
 //        return studyMapperr.findStudyByType(datatype);
     }
+
+    @Override
+    public List<Study> findBySubject(int datatype) {
+        LambdaQueryWrapper<Study> queryWrapper=new LambdaQueryWrapper<>();
+        queryWrapper.eq(Study::getSubject_id,datatype);
+        return studyMapperr.selectList(queryWrapper);
+    }
+
     public List<Study> findPage(int current, int pageSize){
         //分页查询
         Page<Study> page=new Page<>(current,pageSize);
@@ -45,11 +53,14 @@ public class StudyServiceImpl implements StudyService {
     }
 
     public int insert(Study study){
+
         return studyMapperr.insert(study);
     }
     public int update(Study study){
         //根据ID进行修改课程
         return studyMapperr.updateById(study);
     }
+
+
 
 }

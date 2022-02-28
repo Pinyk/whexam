@@ -172,6 +172,7 @@ public class UserServiceImpl implements UserService {
             userPojo.setTime(x.getTime());
             userPojo.setWxname(x.getWxname());
             userPojo.setNums(x.getNums());
+            userPojo.setIdentity(x.getIdentity());
             userPojos.add(userPojo);
         }
         return userPojos;

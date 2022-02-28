@@ -17,8 +17,4 @@ public class Department {
     @ApiModelProperty(value = "部门人数")
     private int nums;
 
-    public Department(int id, String name) {
-        this.id = id;
-        this.name = name;
-    }
 }
