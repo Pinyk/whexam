@@ -53,6 +53,7 @@ public class StudyServiceImpl implements StudyService {
     }
 
     public int insert(Study study){
+
         return studyMapperr.insert(study);
     }
     public int update(Study study){

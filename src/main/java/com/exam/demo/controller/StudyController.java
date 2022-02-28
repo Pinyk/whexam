@@ -17,6 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.exam.demo.utils.WebResult.REQUEST_STATUS_SUCCESS;
 
@@ -147,8 +149,7 @@ public class StudyController {
 
     @RequestMapping(value = "/add",method = RequestMethod.POST)
     @ApiOperation(notes = "csx",value = "插入学习资料接口")
-    public Object addSong(@RequestParam @ApiParam(name="id") Integer id,
-                          @RequestParam @ApiParam(name="name") String name,
+    public Object addSong(@RequestParam @ApiParam(name="name") String name,
                           @RequestParam @ApiParam(name="datatype_id") Integer datatype_id,
                           @RequestParam @ApiParam(name="subject_id",defaultValue = "0") Integer subject_id,
                           @RequestParam @ApiParam(name="department_id") Integer department_id,
@@ -189,7 +190,8 @@ public class StudyController {
 //            }
 
             Study study=new Study();
-            study.setId(id);
+//            study.setId(study.getId());
+
             study.setName(name);
             study.setDepartment_id(department_id);
             study.setUrl(url);
