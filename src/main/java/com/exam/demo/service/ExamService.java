@@ -4,6 +4,7 @@ import com.exam.demo.entity.Exam;
 import com.exam.demo.entity.ExamJudge;
 import com.exam.demo.entity.ExamSelect;
 import com.exam.demo.entity.ExamSubject;
+import com.exam.demo.utils.TestpaperVo;
 
 import java.util.List;
 import java.util.Map;
@@ -42,4 +43,14 @@ public interface ExamService {
      * @return
      */
     Integer deleteProblem(Integer id);
+
+    /**
+     * 组合查询试卷
+     * @param testPaperId
+     * @param testPaperName
+     * @param departmentName
+     * @param subject
+     * @return
+     */
+    List<TestpaperVo> combinedQueryTestPaper(Integer testPaperId, String testPaperName, String departmentName, String subject);
 }

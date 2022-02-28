@@ -1,6 +1,10 @@
 package com.exam.demo.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.exam.demo.mapper.DepartmentMapper;
+import com.exam.demo.mapper.PositionMapper;
+import com.exam.demo.mapper.RoleMapper;
+import com.exam.demo.otherEntity.UserPojo;
 import org.json.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.exam.demo.entity.User;
@@ -13,6 +17,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -25,6 +30,15 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private RoleMapper roleMapper;
+
+    @Autowired
+    private DepartmentMapper departmentMapper;
+
+    @Autowired
+    private PositionMapper positionMapper;
 
 
     /**
@@ -122,13 +136,46 @@ public class UserServiceImpl implements UserService {
      * @return
      */
     @Override
-    public Boolean grantRole(Integer role_id, Integer user_id) {
+    public Boolean grantRole(Integer user_id) {
         User user = userMapper.selectById(user_id);
-        user.setRoleId(role_id);
+        if (user.getRoleId() == 1){
+            user.setRoleId(2);
+        }else{
+            user.setRoleId(1);
+        }
         if(userMapper.updateById(user) == 1){
             return true;
         }
         return false;
+    }
+
+    /**
+     * 返回部分信息
+     *
+     * @return
+     */
+    @Override
+    public List<UserPojo> findPart() {
+        List<User> users = userMapper.selectList(new LambdaQueryWrapper<>());
+        List<UserPojo> userPojos = new ArrayList<>();
+        for (User x : users) {
+            UserPojo userPojo = new UserPojo();
+            userPojo.setId(x.getId());
+            userPojo.setName(x.getName());
+            userPojo.setGender(x.getGender());
+            userPojo.setRole(roleMapper.selectById(x.getRoleId()).getName());
+            userPojo.setDepartment(departmentMapper.selectById(x.getDepartmentId()).getName());
+            userPojo.setPosition(positionMapper.selectById(x.getPositionId()).getName());
+            userPojo.setAddress(x.getAddress());
+            userPojo.setEmail(x.getEmail());
+            userPojo.setTele(x.getTele());
+            userPojo.setTime(x.getTime());
+            userPojo.setWxname(x.getWxname());
+            userPojo.setNums(x.getNums());
+            userPojo.setIdentity(x.getIdentity());
+            userPojos.add(userPojo);
+        }
+        return userPojos;
     }
 
     public static String sendGet(String url, String param) {

@@ -1,14 +1,18 @@
 package com.exam.demo.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.exam.demo.entity.*;
-import com.exam.demo.mapper.ExamMapper;
-import com.exam.demo.mapper.ScoreDataMapper;
-import com.exam.demo.mapper.UserMapper;
+import com.exam.demo.mapper.*;
 import com.exam.demo.otherEntity.SelectQuestion;
 import com.exam.demo.service.ExamJudgeService;
 import com.exam.demo.service.ExamSelectService;
 import com.exam.demo.service.ExamService;
 import com.exam.demo.service.ExamSubjectService;
+import com.exam.demo.utils.TestpaperVo;
+import io.swagger.models.auth.In;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +25,9 @@ public class ExamServiceImpl implements ExamService {
     private ExamMapper examMapper;
 
     @Autowired
+    private ScoreMapper scoreMapper;
+
+    @Autowired
     private ScoreDataMapper scoreDataMapper;
 
     @Autowired
@@ -31,6 +38,15 @@ public class ExamServiceImpl implements ExamService {
 
     @Autowired
     private ExamSubjectService examSubjectService;
+
+    @Autowired
+    private DepartmentMapper departmentMapper;
+
+    @Autowired
+    private SubjectMapper subjectMapper;
+
+    @Autowired
+    TestPaperMapper testPaperMapper;
 
     /**
      * 查找每张试卷对应的所有试题
@@ -62,9 +78,12 @@ public class ExamServiceImpl implements ExamService {
      */
     @Override
     public Integer submitTest(Integer testPaperId, Integer userId, List<ExamJudge> examJudges, List<ExamSelect> examSelects, List<ExamSubject> examSubjects) {
-        // 遍历每道题目用户的作答情况
-        // 同时对客观题目，找出标准答案（类型，题号 找到标准答案），与用户答案对比，给分，保存到数据
-
+        // 遍历每道题目用户的作答情况，同时对客观题目，找出标准答案（类型，题号 找到标准答案），与用户答案对比，给分，保存到数据
+        // 将用户考试记录插入数据库
+        Score score = new Score();
+        score.setTestpaperId(testPaperId);
+        score.setUserId(userId);
+        scoreMapper.insert(score);
         // 判断题
         for(ExamJudge examJudge : examJudges) {
             int answer = examJudgeService.findById(examJudge.getId()).getAnswer();
@@ -188,4 +207,59 @@ public class ExamServiceImpl implements ExamService {
     public Integer deleteProblem(Integer id) {
         return examMapper.deleteById(id);
     }
+
+    /**
+     * 组合查询试卷
+     * @Author: LBX
+     * @param testPaperId
+     * @param testPaperName
+     * @param departmentName
+     * @param subject
+     * @return
+     */
+    @Override
+    public List<TestpaperVo> combinedQueryTestPaper(Integer testPaperId, String testPaperName, String departmentName, String subject) {
+
+        LambdaQueryWrapper<Testpaper> wrapper = new LambdaQueryWrapper<>();
+
+        if (testPaperId != null) {
+            wrapper.eq(Testpaper::getId, testPaperId);
+        }
+        if (!StringUtils.isBlank(testPaperName)) {
+            wrapper.eq(Testpaper::getName, testPaperName);
+        }
+        if (!StringUtils.isBlank(departmentName)) {
+            //验证该部门是否存在
+            QueryWrapper<Department> depWrapper = new QueryWrapper<>();
+            depWrapper.select("id").eq("name", departmentName);
+            Department department = departmentMapper.selectOne(depWrapper);
+            if (department != null) { //该部门存在
+                wrapper.eq(Testpaper::getDepartmentId, department.getId());
+            } else {
+                return null; //该部门不存在，则直接返回
+            }
+        }
+        if (!StringUtils.isBlank(subject)) {
+            QueryWrapper<Subject> subjectWrapper = new QueryWrapper<>();
+            subjectWrapper.select("id").eq("name", subject);
+            Subject sub = subjectMapper.selectOne(subjectWrapper);
+            if (sub != null) {
+                wrapper.eq(Testpaper::getSubjectId, sub.getId());
+            } else {
+                return null;
+            }
+        }
+        List<Testpaper> testpapers = testPaperMapper.selectList(wrapper);
+        //将查询对象转为交互返回对象
+        LinkedList<TestpaperVo> testpaperVos = new LinkedList<>();
+        for (Testpaper testpaper : testpapers) {
+            TestpaperVo testpaperVo = new TestpaperVo();
+            BeanUtils.copyProperties(testpaper, testpaperVo);
+            testpaperVo.setDepartment(departmentName);
+            testpaperVo.setSubject(subject);
+            testpaperVos.add(testpaperVo);
+        }
+        return testpaperVos;
+    }
+
 }

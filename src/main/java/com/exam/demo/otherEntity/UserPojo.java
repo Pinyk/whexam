@@ -1,13 +1,16 @@
-package com.exam.demo.entity;
+package com.exam.demo.otherEntity;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+/**
+ * @Author: gaoyk
+ * @Date: 2022/2/24 17:10
+ */
 @Data
-@ApiModel(value = "user")
-public class User {
-
+@ApiModel(value = "userPojo")
+public class UserPojo {
     @ApiModelProperty(value = "用户主键")
     private int id;
 
@@ -17,14 +20,8 @@ public class User {
     @ApiModelProperty(value = "用户性别")
     private String gender;
 
-    @ApiModelProperty(value = "微信唯一标识")
-    private String openid;
-
-    @ApiModelProperty(value = "角色ID")
-    private int roleId;
-
-    @ApiModelProperty(value = "用户头像")
-    private String image;
+    @ApiModelProperty(value = "角色")
+    private String role;
 
     @ApiModelProperty(value = "用户昵称")
     private String wxname;
@@ -39,13 +36,10 @@ public class User {
     private double time;
 
     @ApiModelProperty(value = "用户所属部门")
-    private int departmentId;
+    private String department;
 
-    @ApiModelProperty(value = "用户地址")
-    private int positionId;
-
-    @ApiModelProperty(value = "用户密码")
-    private String password;
+    @ApiModelProperty(value = "用户职位")
+    private String position;
 
     @ApiModelProperty(value = "地址")
     private String address;
@@ -55,17 +49,4 @@ public class User {
 
     @ApiModelProperty(value = "身份证号")
     private String identity;
-
-    public User(String gender, String openid, int roleId, String image, String wxname,double time, String password) {
-        this.gender = gender;
-        this.openid = openid;
-        this.roleId = roleId;
-        this.image = image;
-        this.wxname = wxname;
-        this.time = time;
-        this.password = password;
-    }
-
-    public User() {
-    }
 }

@@ -1,6 +1,7 @@
 package com.exam.demo.service;
 
 import com.exam.demo.entity.User;
+import com.exam.demo.otherEntity.UserPojo;
 import io.swagger.models.auth.In;
 
 import java.util.List;
@@ -48,9 +49,14 @@ public interface UserService {
 
     /**
      * 给用户授权
-     * @param role_id
      * @param user_id
      * @return
      */
-    public Boolean grantRole(Integer role_id, Integer user_id);
+    public Boolean grantRole(Integer user_id);
+
+    /**
+     * 返回部分信息
+     * @return
+     */
+    public List<UserPojo> findPart();
 }
