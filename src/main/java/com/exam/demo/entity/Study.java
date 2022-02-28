@@ -8,6 +8,8 @@ import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import org.apache.ibatis.annotations.Options;
 
+import java.sql.Date;
+
 /**
  * 学习类对应实体
  */
@@ -23,4 +25,6 @@ public class Study {
     private String url;
     private int subject_id;
     private int department_id;
+    private String time;
+    private String beizhu;
 }

@@ -21,6 +21,7 @@ public class StudyServiceImpl implements StudyService {
 
     public List<Study> findAll() {
         //查询所有
+
         return studyMapperr.selectList(new LambdaQueryWrapper<>());
 
     }

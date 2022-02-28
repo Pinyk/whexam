@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -36,7 +37,7 @@ public class StudyController {
 
 
     @GetMapping("findAll")
-    @ApiOperation(notes = "csx",value = "全部课程查询接口")
+    @ApiOperation(notes = "csx",value = "全部学习资料查询接口")
 
     public WebResult<List<Study>> findAll(){
         return  WebResult.<List<Study>>builder()
@@ -63,13 +64,13 @@ public class StudyController {
     //按学习类型查询
     @GetMapping("/findBySubject")
     @ApiOperation(notes = "csx",value = "安学习类型查询接口")
-    public WebResult<List<Study>> findBySubject(@RequestParam @ApiParam(name="datatype") Integer datatype){
+    public WebResult<List<Study>> findBySubject(@RequestParam @ApiParam(name="subject") Integer subject){
 
 
         return WebResult.<List<Study>>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
-                .data(studyService.findBySubject(datatype))
+                .data(studyService.findBySubject(subject))
                 .build();
     }
     //按科目类型查询
@@ -121,14 +122,15 @@ public class StudyController {
 //    }
 
     //修改学习任务
-    @PostMapping("/updata")
+    @PostMapping("/update")
     @ApiOperation(notes = "csx",value = "更新课程信息接口")
     public WebResult<Integer> update2(@RequestParam @ApiParam(name="id") Integer id,
                        @RequestParam @ApiParam(name="name") String name,
                        @RequestParam @ApiParam(name="datatype_id") Integer datatype_id,
                        @RequestParam @ApiParam(name="url") String url,
                        @RequestParam @ApiParam(name="subject_id",defaultValue = "0") Integer subject_id,
-                       @RequestParam @ApiParam(name="department_id") Integer departement_id){
+                       @RequestParam @ApiParam(name="department_id") Integer departement_id,
+                       @RequestParam @ApiParam(name="time") String time){
 
         Study study=new Study();
         study.setId(id);
@@ -137,6 +139,8 @@ public class StudyController {
         study.setUrl(url);
         study.setSubject_id(subject_id);
         study.setDatatype_id(datatype_id);
+        study.setTime(time);
+
         return WebResult.<Integer>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
@@ -149,11 +153,12 @@ public class StudyController {
 
     @RequestMapping(value = "/add",method = RequestMethod.POST)
     @ApiOperation(notes = "csx",value = "插入学习资料接口")
-    public Object addSong(@RequestParam @ApiParam(name="name") String name,
+    public Object add(@RequestParam @ApiParam(name="name") String name,
                           @RequestParam @ApiParam(name="datatype_id") Integer datatype_id,
                           @RequestParam @ApiParam(name="subject_id",defaultValue = "0") Integer subject_id,
                           @RequestParam @ApiParam(name="department_id") Integer department_id,
-                          @RequestParam("file") MultipartFile mpFile){
+                          @RequestParam("file") MultipartFile mpFile,
+                          @RequestParam @ApiParam(name="time") String time){
         JSONObject jsonObject = new JSONObject();
         //获取前端传来的参数
 //        int id = Integer.parseInt(request.getParameter("StudyId").trim());  //学习资料ID
@@ -197,6 +202,7 @@ public class StudyController {
             study.setUrl(url);
             study.setSubject_id(subject_id);
             study.setDatatype_id(datatype_id);
+            study.setTime(time);
 //            int flag = studyService.insert(study);
 //            mpFile.transferTo(dest);
 
