@@ -1,5 +1,6 @@
 package com.exam.demo.service;
 
+import com.exam.demo.entity.RoleMessage;
 import com.exam.demo.entity.User;
 import com.exam.demo.otherEntity.UserPojo;
 import io.swagger.models.auth.In;
@@ -59,4 +60,8 @@ public interface UserService {
      * @return
      */
     public List<UserPojo> findPart();
+    /**
+     * 根据条件查询
+     */
+    public List<RoleMessage>  findUser(String name, String nums, String department, String address);
 }
