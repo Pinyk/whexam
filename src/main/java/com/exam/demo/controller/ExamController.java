@@ -6,7 +6,6 @@ import com.exam.demo.otherEntity.UserAnswer;
 import com.exam.demo.service.ExamService;
 import com.exam.demo.service.ScoreService;
 import com.exam.demo.service.TestPaperService;
-import com.exam.demo.utils.TestpaperVo;
 import com.exam.demo.utils.WebResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

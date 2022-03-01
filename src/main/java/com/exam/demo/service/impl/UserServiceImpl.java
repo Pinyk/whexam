@@ -165,7 +165,7 @@ public class UserServiceImpl implements UserService {
             userPojo.setGender(x.getGender());
             userPojo.setRole(roleMapper.selectById(x.getRoleId()).getName());
             userPojo.setDepartment(departmentMapper.selectById(x.getDepartmentId()).getName());
-            userPojo.setPosition(positionMapper.selectById(x.getPositionId()).getName());
+            userPojo.setPosition(x.getPosition());
             userPojo.setAddress(x.getAddress());
             userPojo.setEmail(x.getEmail());
             userPojo.setTele(x.getTele());

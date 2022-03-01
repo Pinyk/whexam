@@ -73,10 +73,4 @@ public class TestpaperVo {
             example = "1")
     private String department;
 
-    @ApiModelProperty(value = "试题是否打乱",
-            dataType = "Integer",
-            name = "shuffle",
-            example = "0")
-    private Integer shuffle;
-
 }

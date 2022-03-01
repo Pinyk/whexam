@@ -1,16 +1,17 @@
-package com.exam.demo.utils;
+package com.exam.demo.params.postparams;
 
-import io.swagger.models.auth.In;
+import io.swagger.annotations.ApiModel;
 import lombok.Data;
 
 @Data
+@ApiModel(value = "TestManageParam", description = "考试管理模块的前端请求参数接收实体类")
 public class TestManageParam {
 
     private Integer testPaperId;
 
     private String testPaperName;
 
-    private String departmentName;
+    private Integer departmentId;
 
     private String subject;
 

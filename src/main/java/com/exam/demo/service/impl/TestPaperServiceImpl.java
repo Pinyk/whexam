@@ -142,120 +142,119 @@ public class TestPaperServiceImpl implements TestPaperService {
     public Integer addTestPaper(Testpaper testPaper) {
         return testPaperMapper.insert(testPaper);
     }
-
+//==============================================正在考试=================================================================
     /**
-     * 查询所有正在考试
+     * 查询所有正在考试——不支持分页功能
      * @return
      */
     @Override
     public List<TestpaperVo> findAllCurrentExam() {
-        LambdaQueryWrapper<Testpaper> wrapper = new LambdaQueryWrapper<>();
-        wrapper.last("where (SELECT current_timestamp()) BETWEEN testpaper.start_time AND testpaper.dead_time");
-        List<Testpaper> testpaperList = testPaperMapper.selectList(wrapper);
-        //将查询对象转为交互返回对象
-        LinkedList<TestpaperVo> testpaperVos = new LinkedList<>();
-        //遍历查询结果，并将符合条件的存入交互对象中
-        for (Testpaper testpaper : testpaperList) {
-            testpaperVos.add(copyTestpaperBean(new TestpaperVo(), testpaper));
-        }
-        return testpaperVos;
+        return testManageFindAll("(SELECT current_timestamp()) BETWEEN testpaper.start_time AND testpaper.dead_time");
     }
 
     /**
-     * 组合查询正在考试,并进行分页查询
+     * 组合查询并进行分页查询——正在考试
      * @param testPaperId
      * @param testPaperName
-     * @param departmentName
+     * @param departmentId
      * @param subject
      * @return
      */
     @Override
-    public List<TestpaperVo> findCurrentExam(Integer testPaperId, String testPaperName, String departmentName,
+    public List<TestpaperVo> findCurrentExam(Integer testPaperId, String testPaperName, Integer departmentId,
                                              String subject, Integer currentPage, Integer pageSize) {
-        Page<Testpaper> page = new Page<>(currentPage, pageSize);
-        LambdaQueryWrapper<Testpaper> queryWrapper = new LambdaQueryWrapper<>();
-        if (testPaperId != null) {
-            queryWrapper.eq(Testpaper::getId, testPaperId);
-        }
-        if (!StringUtils.isBlank(testPaperName)) {
-            queryWrapper.like(Testpaper::getName, testPaperName);
-        }
-        if (!StringUtils.isBlank(departmentName)) {
-            //根据部门名称查询id
-            LambdaQueryWrapper<Department> deptWrapper = new LambdaQueryWrapper<>();
-            deptWrapper.eq(Department::getName, departmentName);
-            Department department = departmentMapper.selectOne(deptWrapper);
-            queryWrapper.eq(Testpaper::getDepartmentId, department.getId());
-        }
-        if (!StringUtils.isBlank(subject)) {
-            //根据学科名称查询id
-            LambdaQueryWrapper<Subject> subjectWrapper = new LambdaQueryWrapper<>();
-            subjectWrapper.eq(Subject::getName, subject);
-            Subject sub = subjectMapper.selectOne(subjectWrapper);
-            queryWrapper.eq(Testpaper::getSubjectId, sub.getId());
-        }
-        queryWrapper.last("where (SELECT current_timestamp()) BETWEEN testpaper.start_time AND testpaper.dead_time");
-        Page<Testpaper> testpaperPage = testPaperMapper.selectPage(page, queryWrapper);
-        //将查询对象转为交互返回对象
-        LinkedList<TestpaperVo> testpaperVos = new LinkedList<>();
-        //遍历查询结果，并将符合条件的存入交互对象中
-        for (Testpaper testpaper : testpaperPage.getRecords()) {
-            testpaperVos.add(copyTestpaperBean(new TestpaperVo(), testpaper));
-        }
-        return testpaperVos;
+        return testManageCombinedQuery(testPaperId,testPaperName,departmentId,subject,currentPage
+                ,pageSize,"(SELECT current_timestamp()) BETWEEN testpaper.start_time AND testpaper.dead_time");
     }
 
+    /**
+     * 查询所有正在考试——支持分页功能
+     * @param currentPage
+     * @param pageSize
+     * @return
+     */
     @Override
     public List<TestpaperVo> findCurrentExamByPage(Integer currentPage, Integer pageSize) {
-        Page<Testpaper> page = new Page<>(currentPage, pageSize);
-        LambdaQueryWrapper<Testpaper> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.last("where (SELECT current_timestamp()) BETWEEN testpaper.start_time AND testpaper.dead_time");
-        Page<Testpaper> testpaperPage = testPaperMapper.selectPage(page, queryWrapper);
-        LinkedList<TestpaperVo> testpaperVos = new LinkedList<>();
-        for (Testpaper record : testpaperPage.getRecords()) {
-            testpaperVos.add(copyTestpaperBean(new TestpaperVo(), record));
-        }
-        return testpaperVos;
+        return testManageByPage(currentPage, pageSize,
+                "(SELECT current_timestamp()) BETWEEN testpaper.start_time AND testpaper.dead_time");
     }
-
+//=====================================================历史考试==========================================================
+    /**
+     * 查询所有历史考试
+     * @return
+     */
     @Override
     public List<TestpaperVo> findAllHistoricalExam() {
-        LambdaQueryWrapper<Testpaper> wrapper = new LambdaQueryWrapper<>();
-        wrapper.last("where (SELECT current_timestamp()) > testpaper.dead_time");
-        List<Testpaper> testpaperList = testPaperMapper.selectList(wrapper);
-        //将查询对象转为交互返回对象
-        LinkedList<TestpaperVo> testpaperVos = new LinkedList<>();
-        //遍历查询结果，并将符合条件的存入交互对象中
-        for (Testpaper testpaper : testpaperList) {
-            testpaperVos.add(copyTestpaperBean(new TestpaperVo(), testpaper));
-        }
-        return testpaperVos;
+        return testManageFindAll("(SELECT current_timestamp()) > testpaper.dead_time");
     }
 
+    /**
+     * 组合查询并进行分页查询——历史考试
+     * @param testPaperId
+     * @param testPaperName
+     * @param departmentId
+     * @param subject
+     * @param currentPage
+     * @param pageSize
+     * @return
+     */
     @Override
-    public List<TestpaperVo> findHistoricalExam(Integer testPaperId, String testPaperName, String departmentName, String subject) {
-        return null;
+    public List<TestpaperVo> findHistoricalExam(Integer testPaperId, String testPaperName, Integer departmentId,
+                                                String subject, Integer currentPage, Integer pageSize) {
+        return testManageCombinedQuery(testPaperId,testPaperName,departmentId,subject,currentPage
+                ,pageSize,"(SELECT current_timestamp()) > testpaper.dead_time");
     }
 
+    /**
+     * 查询所有历史考试——支持分页功能
+     * @param currentPage
+     * @param pageSize
+     * @return
+     */
+    @Override
+    public List<TestpaperVo> findHistoricalExamByPage(Integer currentPage, Integer pageSize) {
+        return testManageByPage(currentPage, pageSize,
+                "(SELECT current_timestamp()) > testpaper.dead_time");
+    }
+//===================================================未来考试============================================================
+    /**
+     * 查询所有未来考试
+     * @return
+     */
     @Override
     public List<TestpaperVo> findAllFutureExam() {
-        LambdaQueryWrapper<Testpaper> wrapper = new LambdaQueryWrapper<>();
-        wrapper.last("where testpaper.start_time > (SELECT current_timestamp())");
-        List<Testpaper> testpaperList = testPaperMapper.selectList(wrapper);
-        //将查询对象转为交互返回对象
-        LinkedList<TestpaperVo> testpaperVos = new LinkedList<>();
-        //遍历查询结果，并将符合条件的存入交互对象中
-        for (Testpaper testpaper : testpaperList) {
-            testpaperVos.add(copyTestpaperBean(new TestpaperVo(), testpaper));
-        }
-        return testpaperVos;
+        return testManageFindAll("testpaper.start_time > (SELECT current_timestamp())");
     }
 
+    /**
+     * 组合查询并进行分页查询——未来考试
+     * @param testPaperId
+     * @param testPaperName
+     * @param departmentId
+     * @param subject
+     * @param currentPage
+     * @param pageSize
+     * @return
+     */
     @Override
-    public List<TestpaperVo> findFutureExam(Integer testPaperId, String testPaperName, String departmentName, String subject) {
-        return null;
+    public List<TestpaperVo> findFutureExam(Integer testPaperId, String testPaperName, Integer departmentId,
+                                            String subject, Integer currentPage, Integer pageSize) {
+        return testManageCombinedQuery(testPaperId,testPaperName,departmentId,subject,currentPage,
+                pageSize,"testpaper.start_time > (SELECT current_timestamp())");
     }
 
+    /**
+     * 查询所有历史考试——支持分页功能
+     * @param currentPage
+     * @param pageSize
+     * @return
+     */
+    @Override
+    public List<TestpaperVo> findFutureExamByPage(Integer currentPage, Integer pageSize) {
+        return testManageByPage(currentPage, pageSize,
+                "testpaper.start_time > (SELECT current_timestamp())");
+    }
+//==================================================工具方法=============================================================
     /**
      * 将Testpaper转换为TestpaperVo
      * @param testpaperVo
@@ -271,8 +270,81 @@ public class TestPaperServiceImpl implements TestPaperService {
         testpaperVo.setDeadTime(df.format(testpaper.getDeadTime()));
         testpaperVo.setDepartment(departmentMapper.selectById(testpaper.getDepartmentId()).getName());
         testpaperVo.setSubject(subjectMapper.selectById(testpaper.getSubjectId()).getName());
-        //testpaperVo.setUserName(userMapper.selectById(testpaper.getUserId()).getName());
+        testpaperVo.setUserName(userMapper.selectById(testpaper.getUserId()).getName());
         return testpaperVo;
 
     }
+
+    /**
+     * 通用组合查询方法
+     * @param testPaperId
+     * @param testPaperName
+     * @param departmentId
+     * @param subject
+     * @param currentPage
+     * @param pageSize
+     * @param sql
+     * @return
+     */
+    private List<TestpaperVo> testManageCombinedQuery(Integer testPaperId, String testPaperName, Integer departmentId,
+                                                     String subject, Integer currentPage, Integer pageSize, String sql) {
+        Page<Testpaper> page = new Page<>(currentPage, pageSize);
+        LambdaQueryWrapper<Testpaper> queryWrapper = new LambdaQueryWrapper<>();
+        if (testPaperId == null && StringUtils.isBlank(testPaperName) && departmentId == null
+                && StringUtils.isBlank(subject)){
+            queryWrapper.last("where " + sql);
+        } else {
+            if (testPaperId != null) {
+                queryWrapper.eq(Testpaper::getId, testPaperId);
+            }
+            if (!StringUtils.isBlank(testPaperName)) {
+                queryWrapper.like(Testpaper::getName, testPaperName);
+            }
+            if (departmentId != null) {
+                queryWrapper.eq(Testpaper::getDepartmentId, departmentId);
+            }
+            if (!StringUtils.isBlank(subject)) {
+                //根据学科名称查询id
+                LambdaQueryWrapper<Subject> subjectWrapper = new LambdaQueryWrapper<>();
+                subjectWrapper.eq(Subject::getName, subject);
+                Subject sub = subjectMapper.selectOne(subjectWrapper);
+                queryWrapper.eq(Testpaper::getSubjectId, sub.getId());
+            }
+            queryWrapper.last("and " + sql);
+        }
+        Page<Testpaper> testpaperPage = testPaperMapper.selectPage(page, queryWrapper);
+        //将查询对象转为交互返回对象
+        LinkedList<TestpaperVo> testpaperVos = new LinkedList<>();
+        //遍历查询结果，并将符合条件的存入交互对象中
+        for (Testpaper testpaper : testpaperPage.getRecords()) {
+            testpaperVos.add(copyTestpaperBean(new TestpaperVo(), testpaper));
+        }
+        return testpaperVos;
+    }
+
+    private List<TestpaperVo> testManageByPage(Integer currentPage, Integer pageSize, String lastSql) {
+        Page<Testpaper> page = new Page<>(currentPage, pageSize);
+        LambdaQueryWrapper<Testpaper> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.last("where " + lastSql);
+        Page<Testpaper> testpaperPage = testPaperMapper.selectPage(page, queryWrapper);
+        LinkedList<TestpaperVo> testpaperVos = new LinkedList<>();
+        for (Testpaper record : testpaperPage.getRecords()) {
+            testpaperVos.add(copyTestpaperBean(new TestpaperVo(), record));
+        }
+        return testpaperVos;
+    }
+
+    private List<TestpaperVo> testManageFindAll(String lastSql) {
+        LambdaQueryWrapper<Testpaper> wrapper = new LambdaQueryWrapper<>();
+        wrapper.last("where " + lastSql);
+        List<Testpaper> testpaperList = testPaperMapper.selectList(wrapper);
+        //将查询对象转为交互返回对象
+        LinkedList<TestpaperVo> testpaperVos = new LinkedList<>();
+        //遍历查询结果，并将符合条件的存入交互对象中
+        for (Testpaper testpaper : testpaperList) {
+            testpaperVos.add(copyTestpaperBean(new TestpaperVo(), testpaper));
+        }
+        return testpaperVos;
+    }
+
 }

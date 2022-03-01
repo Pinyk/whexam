@@ -49,27 +49,72 @@ public interface TestPaperService {
      * 正在考试——组合查询
      * @param testPaperId
      * @param testPaperName
-     * @param departmentName
+     * @param departmentId
      * @param subject
      * @return
      */
-    List<TestpaperVo> findCurrentExam(Integer testPaperId, String testPaperName, String departmentName,
+    List<TestpaperVo> findCurrentExam(Integer testPaperId, String testPaperName, Integer departmentId,
                                       String subject, Integer currentPage, Integer pageSize);
 
     /**
-     * 分页查询所有正在进行的考试
+     * 分页查询——所有正在进行的考试
      * @param currentPage
      * @param pageSize
      * @return
      */
     List<TestpaperVo> findCurrentExamByPage(Integer currentPage, Integer pageSize);
 
+    /**
+     * 查询所有历史考试——不支持分页
+     * @return
+     */
     List<TestpaperVo> findAllHistoricalExam();
 
-    List<TestpaperVo> findHistoricalExam(Integer testPaperId, String testPaperName, String departmentName, String subject);
+    /**
+     * 组合查询——历史考试
+     * @param testPaperId
+     * @param testPaperName
+     * @param departmentId
+     * @param subject
+     * @param currentPage
+     * @param pageSize
+     * @return
+     */
+    List<TestpaperVo> findHistoricalExam(Integer testPaperId, String testPaperName, Integer departmentId,
+                                         String subject, Integer currentPage, Integer pageSize);
 
+    /**
+     * 分页查询——历史考试
+     * @param currentPage
+     * @param pageSize
+     * @return
+     */
+    List<TestpaperVo> findHistoricalExamByPage(Integer currentPage, Integer pageSize);
+
+    /**
+     * 不支持分页——未来考试
+     * @return
+     */
     List<TestpaperVo> findAllFutureExam();
 
-    List<TestpaperVo> findFutureExam(Integer testPaperId, String testPaperName, String departmentName, String subject);
+    /**
+     * 组合查询——未来考试
+     * @param testPaperId
+     * @param testPaperName
+     * @param departmentId
+     * @param subject
+     * @param currentPage
+     * @param pageSize
+     * @return
+     */
+    List<TestpaperVo> findFutureExam(Integer testPaperId, String testPaperName, Integer departmentId,
+                                     String subject, Integer currentPage, Integer pageSize);
 
+    /**
+     * 分页查询——未来考试
+     * @param currentPage
+     * @param pageSize
+     * @return
+     */
+    List<TestpaperVo> findFutureExamByPage(Integer currentPage, Integer pageSize);
 }

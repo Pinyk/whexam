@@ -2,9 +2,13 @@ package com.exam.demo.entity;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @ApiModel(value = "user")
 public class User {
 
@@ -41,8 +45,8 @@ public class User {
     @ApiModelProperty(value = "用户所属部门")
     private int departmentId;
 
-    @ApiModelProperty(value = "用户地址")
-    private int positionId;
+    @ApiModelProperty(value = "职位")
+    private String position;
 
     @ApiModelProperty(value = "用户密码")
     private String password;
@@ -66,6 +70,4 @@ public class User {
         this.password = password;
     }
 
-    public User() {
-    }
 }
