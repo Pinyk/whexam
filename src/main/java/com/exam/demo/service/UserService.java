@@ -2,6 +2,7 @@ package com.exam.demo.service;
 
 import com.exam.demo.entity.RoleMessage;
 import com.exam.demo.entity.User;
+import com.exam.demo.entity.Userwx;
 import com.exam.demo.otherEntity.UserPojo;
 import io.swagger.models.auth.In;
 
@@ -15,10 +16,10 @@ import java.util.List;
 public interface UserService {
     /**
      * 微信小程序登录服务层
-     * @param user
+     * @param userwx
      * @return
      */
-    public User loginWx(User user);
+    public Userwx loginWx(Userwx userwx);
 
     /**
      * Web登录服务层
@@ -64,4 +65,11 @@ public interface UserService {
      * 根据条件查询
      */
     public List<RoleMessage>  findUser(String name, String nums, String department, String address);
+
+    /**
+     * 根据工号校验
+     * @param userwx
+     * @return
+     */
+    public  User check(Userwx userwx);
 }
