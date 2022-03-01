@@ -46,18 +46,19 @@ public class ExamJudgeServiceImpl implements ExamJudgeService {
 
     @Override
     public List<ExamJudge> search(Integer current, Integer pageSize, SelectParam selectParam) {
-        Page<ExamJudge> page = new Page<>(current, pageSize);
-
-        QueryWrapper<ExamJudge> wrapperJudge = new QueryWrapper<>();
-        String context = selectParam.getContext();
-        if(!StringUtils.isEmpty(context)) {
-            wrapperJudge.like("context", context);
-        }
-        if(selectParam.getDifficulty() != null) {
-            wrapperJudge.eq("defficulty", selectParam.getDifficulty());
-        }
-        Page<ExamJudge> examJudgePage = examJudgeMapper.selectPage(page, wrapperJudge);
-        return examJudgePage.getRecords();
+//        Page<ExamJudge> page = new Page<>(current, pageSize);
+//
+//        QueryWrapper<ExamJudge> wrapperJudge = new QueryWrapper<>();
+//        String context = selectParam.getContext();
+//        if(!StringUtils.isEmpty(context)) {
+//            wrapperJudge.like("context", context);
+//        }
+//        if(selectParam.getDifficulty() != null) {
+//            wrapperJudge.eq("defficulty", selectParam.getDifficulty());
+//        }
+//        Page<ExamJudge> examJudgePage = examJudgeMapper.selectPage(page, wrapperJudge);
+//        return examJudgePage.getRecords();
+        return null;
     }
 
     @Override

@@ -1,10 +1,8 @@
 package com.exam.demo.controller;
 
-import com.exam.demo.entity.ExamJudge;
 import com.exam.demo.entity.ExamSelect;
-import com.exam.demo.entity.ExamSubject;
-import com.exam.demo.entity.QueryQuestion;
-import com.exam.demo.otherEntity.SelectQuestion;
+import com.exam.demo.params.postparams.SelectParam;
+import com.exam.demo.otherEntity.SelectQuestionVo;
 import com.exam.demo.service.ExamSelectService;
 import com.exam.demo.utils.WebResult;
 import io.swagger.annotations.Api;
@@ -30,8 +28,8 @@ public class ExamSelectController {
 
     @GetMapping("findAll")
     @ApiOperation(notes = "xiong",value = "查询所有选择题目接口")
-    public WebResult<List<SelectQuestion>> findAll() {
-        return WebResult.<List<SelectQuestion>>builder()
+    public WebResult<List<SelectQuestionVo>> findAll() {
+        return WebResult.<List<SelectQuestionVo>>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
                 .data(examSelectService.findAll())
@@ -40,8 +38,8 @@ public class ExamSelectController {
 
     @GetMapping("findSingleSelection")
     @ApiOperation(notes = "xiong",value = "查询所有单选题目接口")
-    public WebResult<List<SelectQuestion>> findSingleSelection() {
-        return WebResult.<List<SelectQuestion>>builder()
+    public WebResult<List<SelectQuestionVo>> findSingleSelection() {
+        return WebResult.<List<SelectQuestionVo>>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
                 .data(examSelectService.findSingleOrMultipleSelection(1))
@@ -50,8 +48,8 @@ public class ExamSelectController {
 
     @GetMapping("findMultipleSelection")
     @ApiOperation(notes = "xiong",value = "查询所有多选题目接口")
-    public WebResult<List<SelectQuestion>> findMultipleSelection() {
-        return WebResult.<List<SelectQuestion>>builder()
+    public WebResult<List<SelectQuestionVo>> findMultipleSelection() {
+        return WebResult.<List<SelectQuestionVo>>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
                 .data(examSelectService.findSingleOrMultipleSelection(2))
@@ -60,10 +58,10 @@ public class ExamSelectController {
 
     @GetMapping("findSingleSelectionByPage")
     @ApiOperation(notes = "xiong",value = "分页查询所有单选题目接口")
-    public WebResult<List<SelectQuestion>> findSingleSelectionByPage(
+    public WebResult<List<SelectQuestionVo>> findSingleSelectionByPage(
             @RequestParam @ApiParam(name="currentPage") Integer currentPage,
             @RequestParam @ApiParam(name="pageSize") Integer pageSize) {
-        return WebResult.<List<SelectQuestion>>builder()
+        return WebResult.<List<SelectQuestionVo>>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
                 .data(examSelectService.findPage(currentPage, pageSize, 1))
@@ -72,10 +70,10 @@ public class ExamSelectController {
 
     @GetMapping("findMultipleSelectionByPage")
     @ApiOperation(notes = "xiong",value = "分页查询所有多选题目接口")
-    public WebResult<List<SelectQuestion>> findMultipleSelectionByPage(
+    public WebResult<List<SelectQuestionVo>> findMultipleSelectionByPage(
             @RequestParam @ApiParam(name="currentPage") Integer currentPage,
             @RequestParam @ApiParam(name="pageSize") Integer pageSize) {
-        return WebResult.<List<SelectQuestion>>builder()
+        return WebResult.<List<SelectQuestionVo>>builder()
                 .message(REQUEST_STATUS_SUCCESS)
                 .data(examSelectService.findPage(currentPage, pageSize, 2))
                 .build();
@@ -83,8 +81,8 @@ public class ExamSelectController {
 
     @GetMapping("findById")
     @ApiOperation(notes = "xiong",value = "根据题目ID查询选择题目接口")
-    public WebResult<SelectQuestion> findById(@RequestParam @ApiParam(name="id",required=true) Integer id) {
-        return WebResult.<SelectQuestion>builder()
+    public WebResult<SelectQuestionVo> findById(@RequestParam @ApiParam(name="id",required=true) Integer id) {
+        return WebResult.<SelectQuestionVo>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
                 .data(examSelectService.findById(id))
@@ -93,27 +91,27 @@ public class ExamSelectController {
 
     @PostMapping("searchSingleSelection")
     @ApiOperation(notes = "xiong",value = "根据条件查询单选题目接口")
-    public WebResult<List<SelectQuestion>> searchSingleSelection(
-            @RequestParam @ApiParam(name="current") Integer current,
-            @RequestParam @ApiParam(name="pageSize") Integer pageSize,
-            @RequestBody @ApiParam(name="queryQuestion") QueryQuestion queryQuestion) {
-        return WebResult.<List<SelectQuestion>>builder()
+    public WebResult<List<SelectQuestionVo>> searchSingleSelection(@RequestBody
+                                                                 @ApiParam(name = "selectParam", value = "接受前端的请求体,media-type:application/json")
+                                                                 SelectParam selectParam) {
+        return WebResult.<List<SelectQuestionVo>>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
-                .data(examSelectService.search(current, pageSize, queryQuestion, 1))
+                .data(examSelectService.search(selectParam.getId(), selectParam.getName(), selectParam.getSubject(),
+                        selectParam.getCurrentPage(), selectParam.getPageSize(), 2))
                 .build();
     }
 
     @PostMapping("searchMultipleSelection")
     @ApiOperation(notes = "xiong",value = "根据条件查询多选题目接口")
-    public WebResult<List<SelectQuestion>> searchMultipleSelection(
-            @RequestParam @ApiParam(name="current") Integer current,
-            @RequestParam @ApiParam(name="pageSize") Integer pageSize,
-            @RequestBody @ApiParam(name="queryQuestion") QueryQuestion queryQuestion) {
-        return WebResult.<List<SelectQuestion>>builder()
+    public WebResult<List<SelectQuestionVo>> searchMultipleSelection(@RequestBody
+                                                                   @ApiParam(name = "selectParam", value = "接受前端的请求体,media-type:application/json")
+                                                                   SelectParam selectParam)  {
+        return WebResult.<List<SelectQuestionVo>>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
-                .data(examSelectService.search(current, pageSize, queryQuestion, 2))
+                .data(examSelectService.search(selectParam.getId(), selectParam.getName(), selectParam.getSubject(),
+                        selectParam.getCurrentPage(), selectParam.getPageSize(), 2))
                 .build();
     }
 

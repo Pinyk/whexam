@@ -45,8 +45,8 @@ public class User {
     @ApiModelProperty(value = "用户所属部门")
     private int departmentId;
 
-    @ApiModelProperty(value = "职位")
-    private String position;
+    @ApiModelProperty(value = "用户地址")
+    private int positionId;
 
     @ApiModelProperty(value = "用户密码")
     private String password;
@@ -60,7 +60,7 @@ public class User {
     @ApiModelProperty(value = "身份证号")
     private String identity;
 
-    public User(String gender, String openid, int roleId, String image, String wxname,double time, String password) {
+    public User(String gender, String openid, int roleId, String image, String wxname, double time, String password) {
         this.gender = gender;
         this.openid = openid;
         this.roleId = roleId;

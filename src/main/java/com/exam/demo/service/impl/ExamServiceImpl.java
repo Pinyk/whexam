@@ -1,23 +1,15 @@
 package com.exam.demo.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.exam.demo.entity.*;
 import com.exam.demo.mapper.*;
-import com.exam.demo.otherEntity.SelectQuestion;
+import com.exam.demo.otherEntity.SelectQuestionVo;
 import com.exam.demo.service.ExamJudgeService;
 import com.exam.demo.service.ExamSelectService;
 import com.exam.demo.service.ExamService;
 import com.exam.demo.service.ExamSubjectService;
-import com.exam.demo.utils.TestpaperVo;
-import io.swagger.models.auth.In;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
@@ -65,11 +57,11 @@ public class ExamServiceImpl implements ExamService {
         List<Object> examSelectList = examMapper.findExamSelectByTestPaperId(testPaperId);
         for(Object object : examSelectList) {
             ExamSelect examSelect = (ExamSelect) object;
-            SelectQuestion selectQuestion = new SelectQuestion();
-            selectQuestion.setContext(examSelect.getContext());
-            selectQuestion.setSelections(Arrays.asList(examSelect.getSelection().split("；")));
-            selectQuestion.setScore(examSelect.getScore());
-            selectQuestionList.add(selectQuestion);
+            SelectQuestionVo selectQuestionVo = new SelectQuestionVo();
+            selectQuestionVo.setContext(examSelect.getContext());
+            selectQuestionVo.setSelections(Arrays.asList(examSelect.getSelection().split("；")));
+            selectQuestionVo.setScore(examSelect.getScore());
+            selectQuestionList.add(selectQuestionVo);
         }
         map.put("examJudge", examMapper.findExamJudgeByTestPaperId(testPaperId));
         map.put("examSelect", selectQuestionList);
