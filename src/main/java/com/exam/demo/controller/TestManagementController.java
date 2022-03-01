@@ -1,9 +1,9 @@
 package com.exam.demo.controller;
 
 import com.exam.demo.service.TestPaperService;
-import com.exam.demo.params.postparams.TestManageParam;
-import com.exam.demo.utils.TestpaperVo;
-import com.exam.demo.utils.WebResult;
+import com.exam.demo.params.TestManageParam;
+import com.exam.demo.results.vo.TestpaperVo;
+import com.exam.demo.results.WebResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static com.exam.demo.utils.WebResult.REQUEST_STATUS_SUCCESS;
+import static com.exam.demo.results.WebResult.REQUEST_STATUS_SUCCESS;
 
 @RestController
 @RequestMapping("testmangement")
@@ -34,7 +34,7 @@ public class TestManagementController {
     }
 
     @PostMapping("findCurrentExam")
-    @ApiOperation(notes = "LBX", value = "正在考试——组合查询", httpMethod = "Post")
+    @ApiOperation(notes = "LBX", value = "正在考试——组合查询", httpMethod = "POST")
     public WebResult<List<TestpaperVo>> findCurrentExam(@RequestBody
                                                         @ApiParam(name = "params", value = "前端注意：\n(1)前端需要发送的media-type为application/json" +
                                                                 "\n(2)对应的部门传对应的id,后台预留的是根据id查询，也可以联系后台改成按照名称查询\n" +

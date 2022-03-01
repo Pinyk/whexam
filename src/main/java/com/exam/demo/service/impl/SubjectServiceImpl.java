@@ -14,6 +14,8 @@ import com.exam.demo.service.SubjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 
 @Service
 public class SubjectServiceImpl implements SubjectService {
@@ -27,4 +29,13 @@ public class SubjectServiceImpl implements SubjectService {
         return subjectMapper.selectById(id);
     }
 
+    /**
+     * 返回所有学科
+     *
+     * @return
+     */
+    @Override
+    public List<Subject> findAll() {
+        return subjectMapper.selectList(new LambdaQueryWrapper<>());
+    }
 }

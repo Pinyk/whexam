@@ -1,8 +1,9 @@
 package com.exam.demo.controller;
 
+import com.exam.demo.entity.Power;
 import com.exam.demo.entity.Role;
 import com.exam.demo.service.RoleService;
-import com.exam.demo.utils.WebResult;
+import com.exam.demo.results.WebResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -11,8 +12,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static com.exam.demo.utils.WebResult.REQUEST_STATUS_ERROR;
-import static com.exam.demo.utils.WebResult.REQUEST_STATUS_SUCCESS;
+import static com.exam.demo.results.WebResult.REQUEST_STATUS_ERROR;
+import static com.exam.demo.results.WebResult.REQUEST_STATUS_SUCCESS;
 
 /**
  * @Author: gaoyk
@@ -80,6 +81,15 @@ public class RoleController {
                     .message(REQUEST_STATUS_SUCCESS)
                     .build();
         }
+    }
+    @GetMapping("findRole")
+    @ApiOperation(notes="liu",value="根据条件查找角色")
+    public  WebResult<List<Power>> findRole(@ApiParam("String nums")@RequestParam  String nums, @ApiParam(" String name")@RequestParam String name,@ApiParam("String department") @RequestParam String department,@ApiParam("String rolename") @RequestParam String rolename){
+        return WebResult.<List<Power>>builder()
+                .code(200)
+                .message(REQUEST_STATUS_SUCCESS)
+                .data(roleService.findRole(nums, name, department, rolename))
+                .build();
     }
 
 

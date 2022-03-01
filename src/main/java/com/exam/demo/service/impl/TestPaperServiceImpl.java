@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.exam.demo.entity.Department;
 import com.exam.demo.entity.Subject;
 import com.exam.demo.entity.Testpaper;
 import com.exam.demo.mapper.DepartmentMapper;
@@ -13,7 +12,7 @@ import com.exam.demo.mapper.TestPaperMapper;
 import com.exam.demo.mapper.UserMapper;
 import com.exam.demo.otherEntity.RtTestpaper;
 import com.exam.demo.service.TestPaperService;
-import com.exam.demo.utils.TestpaperVo;
+import com.exam.demo.results.vo.TestpaperVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -306,9 +305,11 @@ public class TestPaperServiceImpl implements TestPaperService {
             if (!StringUtils.isBlank(subject)) {
                 //根据学科名称查询id
                 LambdaQueryWrapper<Subject> subjectWrapper = new LambdaQueryWrapper<>();
-                subjectWrapper.eq(Subject::getName, subject);
+                subjectWrapper.like(Subject::getName, subject);
                 Subject sub = subjectMapper.selectOne(subjectWrapper);
-                queryWrapper.eq(Testpaper::getSubjectId, sub.getId());
+                if (sub != null) {
+                    queryWrapper.eq(Testpaper::getSubjectId, sub.getId());
+                }
             }
             queryWrapper.last("and " + sql);
         }
@@ -322,6 +323,13 @@ public class TestPaperServiceImpl implements TestPaperService {
         return testpaperVos;
     }
 
+    /**
+     * 考试管理模块的通用分页查询
+     * @param currentPage
+     * @param pageSize
+     * @param lastSql
+     * @return
+     */
     private List<TestpaperVo> testManageByPage(Integer currentPage, Integer pageSize, String lastSql) {
         Page<Testpaper> page = new Page<>(currentPage, pageSize);
         LambdaQueryWrapper<Testpaper> queryWrapper = new LambdaQueryWrapper<>();
@@ -334,6 +342,11 @@ public class TestPaperServiceImpl implements TestPaperService {
         return testpaperVos;
     }
 
+    /**
+     * 考试管理模块的通用查询全部方法
+     * @param lastSql
+     * @return
+     */
     private List<TestpaperVo> testManageFindAll(String lastSql) {
         LambdaQueryWrapper<Testpaper> wrapper = new LambdaQueryWrapper<>();
         wrapper.last("where " + lastSql);

@@ -1,4 +1,4 @@
-package com.exam.demo.utils;
+package com.exam.demo.results;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

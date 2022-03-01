@@ -1,7 +1,7 @@
 package com.exam.demo.service;
 
 import com.exam.demo.entity.ExamSubject;
-import com.exam.demo.entity.QueryQuestion;
+import com.exam.demo.params.SelectParam;
 
 import java.util.List;
 
@@ -37,10 +37,10 @@ public interface ExamSubjectService {
      * 根据条件查询主观题目
      * @param current
      * @param pageSize
-     * @param queryQuestion
+     * @param selectParam
      * @return
      */
-    List<ExamSubject> search(Integer current, Integer pageSize, QueryQuestion queryQuestion);
+    List<ExamSubject> search(Integer current, Integer pageSize, SelectParam selectParam);
 
     /**
      * 向题库添加主观题目

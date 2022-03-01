@@ -1,9 +1,9 @@
 package com.exam.demo.controller;
 
 import com.exam.demo.entity.ExamJudge;
-import com.exam.demo.entity.QueryQuestion;
+import com.exam.demo.params.SelectParam;
 import com.exam.demo.service.ExamJudgeService;
-import com.exam.demo.utils.WebResult;
+import com.exam.demo.results.WebResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -14,8 +14,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.util.List;
 
-import static com.exam.demo.utils.WebResult.REQUEST_STATUS_ERROR;
-import static com.exam.demo.utils.WebResult.REQUEST_STATUS_SUCCESS;
+import static com.exam.demo.results.WebResult.REQUEST_STATUS_ERROR;
+import static com.exam.demo.results.WebResult.REQUEST_STATUS_SUCCESS;
 
 @RestController
 @RequestMapping("examJudge")
@@ -60,11 +60,11 @@ public class ExamJudgeController {
     @ApiOperation(notes = "xiong",value = "根据条件查询判断题目接口")
     public WebResult<List<ExamJudge>> search(@RequestParam @ApiParam(name="current") Integer current,
                                              @RequestParam @ApiParam(name="pageSize") Integer pageSize,
-                                             @RequestBody @ApiParam(name="queryQuestion")QueryQuestion queryQuestion) {
+                                             @RequestBody @ApiParam(name="queryQuestion") SelectParam selectParam) {
         return WebResult.<List<ExamJudge>>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
-                .data(examJudgeService.search(current, pageSize, queryQuestion))
+                .data(examJudgeService.search(current, pageSize, selectParam))
                 .build();
     }
 

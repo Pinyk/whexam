@@ -1,17 +1,17 @@
-package com.exam.demo.utils;
+package com.exam.demo.results.vo;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import java.util.Date;
+import java.io.Serializable;
 
 /**
  * @Author: LBX
  */
 @Data
 @ApiModel(value = "组合查询试卷详情", description = "组合查询试卷返回对象" )
-public class TestpaperVo {
+public class TestpaperVo implements Serializable {
 
     @ApiModelProperty(value = "试卷id",
             dataType = "Integer",

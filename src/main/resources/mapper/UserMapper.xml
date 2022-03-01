@@ -1,0 +1,30 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.exam.demo.mapper.UserMapper">
+   <select id="findUser"  resultType="com.exam.demo.entity.RoleMessage">
+       select  u.name,u.gender,u.wxname,u.tele,u.email,d.name as department,u.position ,u.address  from  user  u
+       left join department d on (u.department_id=d.id)
+       where 1=1
+       <if test="name!=null">
+           and u.name=#{name}
+       </if>
+       <if test="nums!=null">
+         and  u.nums=#{nums}
+       </if>
+       <if test="address!=null">
+        and  u.address=#{address}
+       </if>
+       <if test="departmentid!=-1">
+           and  u.department_id=#{departmentid}
+       </if>
+
+   </select>
+    <select id="findbydepartment" parameterType="String" resultType="Integer">
+        select id from department where name=#{department}
+    </select>
+    <select id="findByDepartmentId"  parameterType="Integer" resultType="String">
+        select name from department where id=#{departmentid}
+    </select>
+</mapper>

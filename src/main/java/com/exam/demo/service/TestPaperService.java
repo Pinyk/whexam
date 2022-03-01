@@ -2,7 +2,7 @@ package com.exam.demo.service;
 
 import com.exam.demo.entity.Testpaper;
 import com.exam.demo.otherEntity.RtTestpaper;
-import com.exam.demo.utils.TestpaperVo;
+import com.exam.demo.results.vo.TestpaperVo;
 
 import java.util.List;
 

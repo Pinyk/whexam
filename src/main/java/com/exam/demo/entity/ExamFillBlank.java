@@ -1,36 +1,32 @@
 package com.exam.demo.entity;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 @Data
-@ApiModel(value = "examSelect")
-public class ExamSelect {
+@TableName("exam_fb")
+@ApiModel(value = "examFb")
+public class ExamFillBlank {
 
-    @ApiModelProperty(value = "选择题主键")
+    @ApiModelProperty(value = "填空题主键")
     private int id;
 
     @ApiModelProperty(value = "题目内容")
     private String context;
 
-    @ApiModelProperty(value = "选项内容")
-    private String selection;
-
     @ApiModelProperty(value = "答案")
     private String answer;
 
     @ApiModelProperty(value = "所属科目ID")
-    private Integer subjectId;
+    private int subjectId;
 
     @ApiModelProperty(value = "难度")
-    private Integer difficulty;
+    private int difficulty;
 
     @ApiModelProperty(value = "分数")
-    private Double score;
-
-    @ApiModelProperty(value = "选择题目类型")
-    private Integer type;
+    private double score;
 
     @ApiModelProperty(value = "图片URL")
     private String imgUrl;

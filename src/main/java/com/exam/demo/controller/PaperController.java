@@ -2,10 +2,9 @@ package com.exam.demo.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.exam.demo.entity.Paper;
-import com.exam.demo.entity.Study;
 import com.exam.demo.service.PaperService;
-import com.exam.demo.utils.Consts;
-import com.exam.demo.utils.WebResult;
+import com.exam.demo.results.Consts;
+import com.exam.demo.results.WebResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -13,14 +12,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.xml.crypto.Data;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import static com.exam.demo.utils.WebResult.REQUEST_STATUS_SUCCESS;
+import static com.exam.demo.results.WebResult.REQUEST_STATUS_SUCCESS;
 
 /**
  * @Author: csx

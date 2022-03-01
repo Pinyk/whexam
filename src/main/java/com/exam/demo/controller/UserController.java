@@ -1,9 +1,10 @@
 package com.exam.demo.controller;
 
+import com.exam.demo.entity.RoleMessage;
 import com.exam.demo.entity.User;
 import com.exam.demo.otherEntity.UserPojo;
 import com.exam.demo.service.UserService;
-import com.exam.demo.utils.WebResult;
+import com.exam.demo.results.WebResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -12,8 +13,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static com.exam.demo.utils.WebResult.REQUEST_STATUS_ERROR;
-import static com.exam.demo.utils.WebResult.REQUEST_STATUS_SUCCESS;
+import static com.exam.demo.results.WebResult.REQUEST_STATUS_ERROR;
+import static com.exam.demo.results.WebResult.REQUEST_STATUS_SUCCESS;
 
 /**
  * @Author: gaoyk
@@ -122,5 +123,13 @@ public class UserController {
                 .data(msg)
                 .build();
     }
-
+    @PostMapping("findUser")
+    @ApiOperation(notes ="liu",value="根据条件查询用户")
+    public  WebResult<List<RoleMessage>> findUser(@ApiParam("String name")@RequestParam String name, @ApiParam("String name")@RequestParam String nums,@ApiParam("String name") @RequestParam String department,@ApiParam("String name")@RequestParam String address){
+        return WebResult.<List<RoleMessage>>builder()
+                .code(200)
+                .message(REQUEST_STATUS_SUCCESS)
+                .data(userService.findUser(name, nums, department, address))
+                .build();
+    }
 }
