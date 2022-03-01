@@ -122,5 +122,7 @@ public class UserController {
                 .data(msg)
                 .build();
     }
-
+    @PostMapping("find")
+    @ApiOperation(notes ="find",value="根据条件查询")
+    public  WebResult<User> find(@RequestParam String name,String nums,String department,)
 }

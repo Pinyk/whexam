@@ -59,4 +59,8 @@ public interface UserService {
      * @return
      */
     public List<UserPojo> findPart();
+    /**
+     * 根据条件查询
+     */
+    public List<User>  find();
 }

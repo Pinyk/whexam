@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.exam.demo.entity.User;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * @Author: gaoyk
  * @Date: 2022/1/20 20:20
@@ -11,4 +13,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface UserMapper extends BaseMapper<User> {
+    List<User> find();
 }

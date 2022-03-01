@@ -39,7 +39,7 @@ public class User {
     private double time;
 
     @ApiModelProperty(value = "用户所属部门")
-    private int departmentId;
+    private String departmentId;
 
     @ApiModelProperty(value = "用户地址")
     private int positionId;
