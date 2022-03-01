@@ -2,6 +2,9 @@ package com.exam.demo.controller;
 
 import com.exam.demo.entity.ExamSubject;
 import com.exam.demo.params.SelectParam;
+import com.exam.demo.params.SubjectParam;
+import com.exam.demo.results.vo.ExamSubjectVo;
+import com.exam.demo.results.vo.PageVo;
 import com.exam.demo.service.ExamSubjectService;
 import com.exam.demo.results.WebResult;
 import io.swagger.annotations.Api;
@@ -58,13 +61,13 @@ public class ExamSubjectController {
 
     @PostMapping("search")
     @ApiOperation(notes = "xiong",value = "根据条件查询主观题目接口")
-    public WebResult<List<ExamSubject>> search(@RequestParam @ApiParam(name="current") Integer current,
-                                               @RequestParam @ApiParam(name="pageSize") Integer pageSize,
-                                               @RequestBody @ApiParam(name="queryQuestion") SelectParam selectParam) {
-        return WebResult.<List<ExamSubject>>builder()
+    public WebResult<PageVo<ExamSubjectVo>> search(@ApiParam(value = "组合查询——分页——根据条件查询主观题目接口")
+                                               @RequestBody SubjectParam subjectParam) {
+        return WebResult.<PageVo<ExamSubjectVo>>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
-                .data(examSubjectService.search(current, pageSize, selectParam))
+                .data(examSubjectService.search(subjectParam.getCurrentPage(), subjectParam.getPageSize(),
+                        subjectParam.getId(), subjectParam.getContext()))
                 .build();
     }
 

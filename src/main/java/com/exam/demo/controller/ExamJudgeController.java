@@ -1,7 +1,10 @@
 package com.exam.demo.controller;
 
 import com.exam.demo.entity.ExamJudge;
+import com.exam.demo.params.JudgeParam;
 import com.exam.demo.params.SelectParam;
+import com.exam.demo.results.vo.ExamJudgeVo;
+import com.exam.demo.results.vo.PageVo;
 import com.exam.demo.service.ExamJudgeService;
 import com.exam.demo.results.WebResult;
 import io.swagger.annotations.Api;
@@ -57,14 +60,14 @@ public class ExamJudgeController {
     }
 
     @PostMapping("search")
-    @ApiOperation(notes = "xiong",value = "根据条件查询判断题目接口")
-    public WebResult<List<ExamJudge>> search(@RequestParam @ApiParam(name="current") Integer current,
-                                             @RequestParam @ApiParam(name="pageSize") Integer pageSize,
-                                             @RequestBody @ApiParam(name="queryQuestion") SelectParam selectParam) {
-        return WebResult.<List<ExamJudge>>builder()
+    @ApiOperation(notes = "xiong",value = "组合查询——分页——根据条件查询判断题目")
+    public WebResult<PageVo<ExamJudgeVo>> search(@ApiParam(name = "judgeParam", value = "接受前端请求参数的实体类，前端注意该接口没有把部门作为查询条件")
+                                               @RequestBody JudgeParam judgeParam) {
+        return WebResult.<PageVo<ExamJudgeVo>>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
-                .data(examJudgeService.search(current, pageSize, selectParam))
+                .data(examJudgeService.search(judgeParam.getCurrentPage(), judgeParam.getPageSize(),
+                        judgeParam.getId(), judgeParam.getContext()))
                 .build();
     }
 

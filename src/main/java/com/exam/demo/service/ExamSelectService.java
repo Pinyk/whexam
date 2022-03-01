@@ -1,7 +1,10 @@
 package com.exam.demo.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.exam.demo.entity.ExamSelect;
 import com.exam.demo.otherEntity.SelectQuestionVo;
+import com.exam.demo.results.vo.ExamSelectVo;
+import com.exam.demo.results.vo.PageVo;
 
 import java.util.List;
 
@@ -45,7 +48,7 @@ public interface ExamSelectService {
      * 根据条件查询选择题目
      * @return
      */
-    List<SelectQuestionVo> search(Integer id, String name, String subject, Integer currentPage, Integer pageSize, Integer type);
+    PageVo<ExamSelectVo> search(Integer id, String name, String subject, Integer currentPage, Integer pageSize, Integer type);
 
     /**
      * 向题库添加选择题目

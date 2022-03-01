@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.List;
 
 
@@ -16,7 +17,7 @@ import java.util.List;
 @Data
 @Builder
 @ApiModel(value = "分页数据", description = "分页数据统一返回对象")
-public class PageVo<T> {
+public class PageVo<T> implements Serializable {
 
     @ApiModelProperty(value = "列表数据",
             dataType = "String",
@@ -47,9 +48,6 @@ public class PageVo<T> {
             name = "total",
             notes = "不需要传输 仅返回时展示使用")
     private long total;
-
-
-
 
 }
 
