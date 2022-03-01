@@ -9,6 +9,8 @@ import com.exam.demo.entity.Subject;
 import com.exam.demo.mapper.ExamSelectMapper;
 import com.exam.demo.mapper.SubjectMapper;
 import com.exam.demo.otherEntity.SelectQuestionVo;
+import com.exam.demo.results.vo.ExamSelectVo;
+import com.exam.demo.results.vo.PageVo;
 import com.exam.demo.service.ExamSelectService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,13 +32,24 @@ public class ExamSelectServiceImpl implements ExamSelectService {
      * @param examSelect
      * @return
      */
-    public SelectQuestionVo change(ExamSelect examSelect) {
+    private SelectQuestionVo change(ExamSelect examSelect) {
         SelectQuestionVo selectQuestionVo = new SelectQuestionVo();
-        BeanUtils.copyProperties(selectQuestionVo, examSelect);
+        BeanUtils.copyProperties(examSelect,selectQuestionVo);
         selectQuestionVo.setSubject(subjectMapper.selectById(examSelect.getSubjectId()).getName());
         return selectQuestionVo;
     }
 
+    /**
+     * 2.0版的change方法，目前只适用于组合查询search
+     * @return
+     */
+    private ExamSelectVo copy(ExamSelect examSelect) {
+        ExamSelectVo examSelectVo = new ExamSelectVo();
+        BeanUtils.copyProperties(examSelect,examSelectVo);
+        examSelectVo.setSubject(subjectMapper.selectById(examSelect.getSubjectId()).getName());
+        return examSelectVo;
+    }
+//========================================================================================================================
     @Override
     public List<SelectQuestionVo> findAll() {
         List<SelectQuestionVo> selectQuestionVoList = new ArrayList<>();
@@ -94,13 +107,13 @@ public class ExamSelectServiceImpl implements ExamSelectService {
         queryWrapper.eq("type",type);
         return examSelectMapper.selectList(queryWrapper);
     }
-
+//=====================================================组合查询===========================================================
     @Override
-    public List<SelectQuestionVo> search(Integer id, String name, String subject, Integer currentPage, Integer pageSize, Integer type) {
-        List<SelectQuestionVo> selectQuestionVos = new LinkedList<>();
+    public PageVo<ExamSelectVo> search(Integer id, String name, String subject, Integer currentPage, Integer pageSize, Integer type) {
         Page<ExamSelect> page = new Page<>(currentPage, pageSize);
         LambdaQueryWrapper<ExamSelect> wrapperSelect = new LambdaQueryWrapper();
 
+        wrapperSelect.eq(ExamSelect::getType, type);
         if (id != null) {
             wrapperSelect.eq(ExamSelect::getId, id);
         }
@@ -115,16 +128,21 @@ public class ExamSelectServiceImpl implements ExamSelectService {
                 wrapperSelect.like(ExamSelect::getSubjectId, sub.getId());
             }
         }
-
+        LinkedList<ExamSelectVo> examSelectVos = new LinkedList<>();
         Page<ExamSelect> examSelectPage = examSelectMapper.selectPage(page, wrapperSelect);
         List<ExamSelect> examSelectList = examSelectPage.getRecords();
         for(ExamSelect examSelect : examSelectList) {
-            SelectQuestionVo selectQuestionVo = change(examSelect);
-            selectQuestionVos.add(selectQuestionVo);
+            ExamSelectVo examSelectVo = copy(examSelect);
+            examSelectVos.add(examSelectVo);
         }
-        return selectQuestionVos;
+        return PageVo.<ExamSelectVo>builder()
+                .values(examSelectVos)
+                .page(currentPage)
+                .size(pageSize)
+                .total(examSelectPage.getTotal())
+                .build();
     }
-
+//======================================================================================================================
     @Override
     public Integer saveExamSelect(ExamSelect examSelect) {
         return examSelectMapper.insert(examSelect);
