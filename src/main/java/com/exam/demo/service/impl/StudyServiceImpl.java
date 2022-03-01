@@ -7,6 +7,7 @@ import com.exam.demo.mapper.StudyMapper;
 import com.exam.demo.service.StudyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 /**
@@ -60,5 +61,7 @@ public class StudyServiceImpl implements StudyService {
         //根据ID进行修改课程
         return studyMapperr.updateById(study);
     }
+
+
 
 }
