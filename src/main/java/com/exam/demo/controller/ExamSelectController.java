@@ -165,16 +165,16 @@ public WebResult<Integer> saveExamSelect(@RequestParam @ApiParam(name="context",
     for (int i = 0; i < chars.length - 1; i++) {
         switch (chars[i]){
             case 'A': dealAnswer += selectionA + "；";break;
-            case 'B': dealAnswer = selectionB + "；";break;
-            case 'C': dealAnswer = selectionC + "；";break;
-            case 'D': dealAnswer = selectionD + "；";break;
+            case 'B': dealAnswer += selectionB + "；";break;
+            case 'C': dealAnswer += selectionC + "；";break;
+            case 'D': dealAnswer += selectionD + "；";break;
         }
     }
     switch (chars[chars.length - 1]){
         case 'A': dealAnswer += selectionA;break;
-        case 'B': dealAnswer = selectionB;break;
-        case 'C': dealAnswer = selectionC;break;
-        case 'D': dealAnswer = selectionD;break;
+        case 'B': dealAnswer += selectionB;break;
+        case 'C': dealAnswer += selectionC;break;
+        case 'D': dealAnswer += selectionD;break;
     }
     answer = dealAnswer;
     try {
