@@ -322,6 +322,13 @@ public class TestPaperServiceImpl implements TestPaperService {
         return testpaperVos;
     }
 
+    /**
+     * 考试管理模块的通用分页查询
+     * @param currentPage
+     * @param pageSize
+     * @param lastSql
+     * @return
+     */
     private List<TestpaperVo> testManageByPage(Integer currentPage, Integer pageSize, String lastSql) {
         Page<Testpaper> page = new Page<>(currentPage, pageSize);
         LambdaQueryWrapper<Testpaper> queryWrapper = new LambdaQueryWrapper<>();
@@ -334,6 +341,11 @@ public class TestPaperServiceImpl implements TestPaperService {
         return testpaperVos;
     }
 
+    /**
+     * 考试管理模块的通用查询全部方法
+     * @param lastSql
+     * @return
+     */
     private List<TestpaperVo> testManageFindAll(String lastSql) {
         LambdaQueryWrapper<Testpaper> wrapper = new LambdaQueryWrapper<>();
         wrapper.last("where " + lastSql);

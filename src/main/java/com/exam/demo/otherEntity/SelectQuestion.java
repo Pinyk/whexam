@@ -21,8 +21,8 @@ public class SelectQuestion {
     @ApiModelProperty(value = "答案")
     private String answer;
 
-    @ApiModelProperty(value = "所属科目ID")
-    private int subjectId;
+    @ApiModelProperty(value = "所属科目")
+    private String subject;
 
     @ApiModelProperty(value = "难度")
     private int difficulty;

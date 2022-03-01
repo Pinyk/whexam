@@ -7,6 +7,7 @@ import com.exam.demo.entity.ExamJudge;
 import com.exam.demo.entity.ExamSelect;
 import com.exam.demo.entity.QueryQuestion;
 import com.exam.demo.mapper.ExamSelectMapper;
+import com.exam.demo.mapper.SubjectMapper;
 import com.exam.demo.otherEntity.SelectQuestion;
 import com.exam.demo.service.ExamSelectService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,9 @@ public class ExamSelectServiceImpl implements ExamSelectService {
     @Autowired
     private ExamSelectMapper examSelectMapper;
 
+    @Autowired
+    SubjectMapper subjectMapper;
+
     /**
      * 对查询的 ExamSelect 进行处理后，将内容复制到 SelectQuestion 中
      * @param examSelect
@@ -32,7 +36,7 @@ public class ExamSelectServiceImpl implements ExamSelectService {
         selectQuestion.setContext(examSelect.getContext());
         selectQuestion.setSelections(Arrays.asList(examSelect.getSelection().split("；")));
         selectQuestion.setAnswer(examSelect.getAnswer());
-        selectQuestion.setSubjectId(examSelect.getSubjectId());
+        selectQuestion.setSubject(subjectMapper.selectById(examSelect.getSubjectId()).getName());
         selectQuestion.setDifficulty(examSelect.getDifficulty());
         selectQuestion.setScore(examSelect.getScore());
         selectQuestion.setType(examSelect.getType());
