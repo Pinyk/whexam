@@ -54,6 +54,17 @@ public class DataTypeController {
                 .build();
 
     }
+    //根据id进行删除
+    @DeleteMapping("/delete")
+    @ApiOperation(notes = "csx",value = "删除文件类型接口")
+    public WebResult<Integer> delete(@RequestParam @ApiParam(name="datatype_id") Integer datatype_id){
+        return WebResult.<Integer>builder()
+                .code(200)
+                .message(REQUEST_STATUS_SUCCESS)
+                .data(dataTypeService.deleteById(datatype_id))
+                .build();
+
+    }
 
 
 

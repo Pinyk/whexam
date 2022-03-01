@@ -26,4 +26,5 @@ public class SubjectServiceImpl implements SubjectService {
         queryWrapper.eq(Datatype::getId,id);
         return subjectMapper.selectById(id);
     }
+
 }
