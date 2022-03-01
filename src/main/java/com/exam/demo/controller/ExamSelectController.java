@@ -129,7 +129,10 @@ public class ExamSelectController {
 @PostMapping("save")
 @ApiOperation(notes = "xiong",value = "向题库添加选择题目接口")
 public WebResult<Integer> saveExamSelect(@RequestParam @ApiParam(name="context",required=true) String context,
-                                         @RequestParam @ApiParam(name="selection",required=true) String selection,
+                                         @RequestParam @ApiParam(name="selectionA",required=true) String selectionA,
+                                         @RequestParam @ApiParam(name="selectionB",required=true) String selectionB,
+                                         @RequestParam @ApiParam(name="selectionC",required=true) String selectionC,
+                                         @RequestParam @ApiParam(name="selectionD",required=true) String selectionD,
                                          @RequestParam @ApiParam(name="answer",required=true) String answer,
                                          @RequestParam @ApiParam(name="subjectId",required=true) Integer subjectId,
                                          @RequestParam @ApiParam(name="score",required=true) Double score,
@@ -158,15 +161,24 @@ public WebResult<Integer> saveExamSelect(@RequestParam @ApiParam(name="context",
     //    难度固定
     Integer difficulty = 1;
     //匹配答案
-    String[] selections = selection.split("；");
-    if(selections.length == 4){
-        switch (answer){
-            case "A": answer = selections[0];break;
-            case "B": answer = selections[1];break;
-            case "C": answer = selections[2];break;
-            case "D": answer = selections[3];break;
+    String selection = selectionA + "；" +selectionB + "；" +selectionC + "；" +selectionD;
+    String dealAnswer = "";
+    char[] chars = answer.toCharArray();
+    for (int i = 0; i < chars.length - 1; i++) {
+        switch (chars[i]){
+            case 'A': dealAnswer += selectionA + "；";break;
+            case 'B': dealAnswer = selectionB + "；";break;
+            case 'C': dealAnswer = selectionC + "；";break;
+            case 'D': dealAnswer = selectionD + "；";break;
         }
     }
+    switch (chars[chars.length - 1]){
+        case 'A': dealAnswer += selectionA;break;
+        case 'B': dealAnswer = selectionB;break;
+        case 'C': dealAnswer = selectionC;break;
+        case 'D': dealAnswer = selectionD;break;
+    }
+    answer = dealAnswer;
     try {
         multipartFile.transferTo(dest);
         // 添加到数据库
