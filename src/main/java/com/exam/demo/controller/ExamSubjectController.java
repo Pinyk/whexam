@@ -81,7 +81,6 @@ public class ExamSubjectController {
 @ApiOperation(notes = "xiong",value = "向题库添加主观题目接口")
 public WebResult<Integer> saveExamSubject(@RequestParam @ApiParam(name="context",required=true) String context,
                                           @RequestParam @ApiParam(name="answer",required=true) String answer,
-                                          @RequestParam @ApiParam(name="difficulty",required=true) Integer difficulty,
                                           @RequestParam @ApiParam(name="subjectId",required=true) Integer subjectId,
                                           @RequestParam @ApiParam(name="score",required=true) Double score,
                                           @RequestParam("file") MultipartFile multipartFile) {
@@ -111,7 +110,7 @@ public WebResult<Integer> saveExamSubject(@RequestParam @ApiParam(name="context"
         ExamSubject examSubject = new ExamSubject();
         examSubject.setContext(context);
         examSubject.setAnswer(answer);
-        examSubject.setDifficulty(difficulty);
+        examSubject.setDifficulty(1);
         examSubject.setSubjectId(subjectId);
         examSubject.setScore(score);
         examSubject.setImgUrl(storeUrlPath);

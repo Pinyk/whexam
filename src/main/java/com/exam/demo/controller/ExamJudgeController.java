@@ -82,7 +82,6 @@ public class ExamJudgeController {
     @ApiOperation(notes = "xiong",value = "向题库添加判断题目接口")
     public WebResult<Integer> saveExamJudge(@RequestParam @ApiParam(name="context",required=true) String context,
                                             @RequestParam @ApiParam(name="answer",required=true) Integer answer,
-                                            @RequestParam @ApiParam(name="difficulty",required=true) Integer difficulty,
                                             @RequestParam @ApiParam(name="subjectId",required=true) Integer subjectId,
                                             @RequestParam @ApiParam(name="score",required=true) Double score,
                                             @RequestParam("file") MultipartFile multipartFile) {
@@ -112,7 +111,7 @@ public class ExamJudgeController {
             ExamJudge examJudge = new ExamJudge();
             examJudge.setContext(context);
             examJudge.setAnswer(answer);
-            examJudge.setDefficulty(difficulty);
+            examJudge.setDefficulty(1);
             examJudge.setSubjectId(subjectId);
             examJudge.setScore(score);
             examJudge.setImgUrl(storeUrlPath);

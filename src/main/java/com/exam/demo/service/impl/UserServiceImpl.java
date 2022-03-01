@@ -1,6 +1,7 @@
 package com.exam.demo.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.exam.demo.entity.Department;
 import com.exam.demo.entity.RoleMessage;
 import com.exam.demo.mapper.DepartmentMapper;
 import com.exam.demo.mapper.PositionMapper;
@@ -164,8 +165,11 @@ public class UserServiceImpl implements UserService {
             userPojo.setName(x.getName());
             userPojo.setGender(x.getGender());
             userPojo.setRole(roleMapper.selectById(x.getRoleId()).getName());
-            userPojo.setDepartment(departmentMapper.selectById(x.getDepartmentId()).getName());
-            userPojo.setPosition(positionMapper.selectById(x.getPositionId()).getName());
+            Department department = departmentMapper.selectById(x.getDepartmentId());
+            if (department != null) {
+                userPojo.setDepartment(department.getName());
+            }
+            userPojo.setPosition(x.getPosition());
             userPojo.setAddress(x.getAddress());
             userPojo.setEmail(x.getEmail());
             userPojo.setTele(x.getTele());
