@@ -10,7 +10,7 @@ import lombok.Data;
 public class Exam {
 
     @ApiModelProperty(value = "考试试卷主键")
-    private Integer id;
+    private int id;
 
     @ApiModelProperty(value = "试卷ID")
     private int testpaperId;
