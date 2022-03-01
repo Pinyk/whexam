@@ -131,7 +131,6 @@ public class ExamSelectController {
 public WebResult<Integer> saveExamSelect(@RequestParam @ApiParam(name="context",required=true) String context,
                                          @RequestParam @ApiParam(name="selection",required=true) String selection,
                                          @RequestParam @ApiParam(name="answer",required=true) String answer,
-                                         @RequestParam @ApiParam(name="difficulty",required=true) Integer difficulty,
                                          @RequestParam @ApiParam(name="subjectId",required=true) Integer subjectId,
                                          @RequestParam @ApiParam(name="score",required=true) Double score,
                                          @RequestParam @ApiParam(name="type",required=true) Integer type,
@@ -156,6 +155,18 @@ public WebResult<Integer> saveExamSelect(@RequestParam @ApiParam(name="context",
     File dest = new File(filePath + System.getProperty("file.separator") + fileName);
     //存储到数据库里的相对文件地址
     String storeUrlPath = "/img/" + fileName;
+    //    难度固定
+    Integer difficulty = 1;
+    //匹配答案
+    String[] selections = selection.split("；");
+    if(selections.length == 4){
+        switch (answer){
+            case "A": answer = selections[0];break;
+            case "B": answer = selections[1];break;
+            case "C": answer = selections[2];break;
+            case "D": answer = selections[3];break;
+        }
+    }
     try {
         multipartFile.transferTo(dest);
         // 添加到数据库
