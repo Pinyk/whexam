@@ -45,19 +45,20 @@ public class ExamSubjectServiceImpl implements ExamSubjectService {
 
     @Override
     public List<ExamSubject> search(Integer current, Integer pageSize, SelectParam selectParam) {
-        Page<ExamSubject> page = new Page<>(current, pageSize);
-
-        QueryWrapper<ExamSubject> wrapperSubject = new QueryWrapper<>();
-        String context = selectParam.getContext();
-        if(!StringUtils.isEmpty(context)) {
-            wrapperSubject.like("context", context);
-        }
-        if(selectParam.getDifficulty() != null) {
-            wrapperSubject.eq("difficulty", selectParam.getDifficulty());
-        }
-
-        Page<ExamSubject> examSubjectPage = examSubjectMapper.selectPage(page, wrapperSubject);
-        return examSubjectPage.getRecords();
+//        Page<ExamSubject> page = new Page<>(current, pageSize);
+//
+//        QueryWrapper<ExamSubject> wrapperSubject = new QueryWrapper<>();
+//        String context = selectParam.getContext();
+//        if(!StringUtils.isEmpty(context)) {
+//            wrapperSubject.like("context", context);
+//        }
+//        if(selectParam.getDifficulty() != null) {
+//            wrapperSubject.eq("difficulty", selectParam.getDifficulty());
+//        }
+//
+//        Page<ExamSubject> examSubjectPage = examSubjectMapper.selectPage(page, wrapperSubject);
+//        return examSubjectPage.getRecords();
+        return null;
     }
 
     @Override
