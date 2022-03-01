@@ -3,9 +3,11 @@ package com.exam.demo.params.postparams;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
 @ApiModel(value = "TestManageParam", description = "考试管理模块的前端请求参数接收实体类")
-public class TestManageParam {
+public class TestManageParam implements Serializable {
 
     private Integer testPaperId;
 
