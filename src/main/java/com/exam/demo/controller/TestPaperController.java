@@ -3,7 +3,7 @@ package com.exam.demo.controller;
 import com.exam.demo.entity.Testpaper;
 import com.exam.demo.otherEntity.RtTestpaper;
 import com.exam.demo.service.TestPaperService;
-import com.exam.demo.utils.WebResult;
+import com.exam.demo.results.WebResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
-import static com.exam.demo.utils.WebResult.REQUEST_STATUS_SUCCESS;
+import static com.exam.demo.results.WebResult.REQUEST_STATUS_SUCCESS;
 
 @RestController
 @RequestMapping("testPaper")

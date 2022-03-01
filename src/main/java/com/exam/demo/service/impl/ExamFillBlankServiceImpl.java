@@ -4,8 +4,8 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.exam.demo.entity.ExamFillBlank;
-import com.exam.demo.entity.QueryQuestion;
 import com.exam.demo.mapper.ExamFillBlankMapper;
+import com.exam.demo.otherEntity.SelectQuestionVo;
 import com.exam.demo.service.ExamFillBlankService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -53,7 +53,7 @@ public class ExamFillBlankServiceImpl implements ExamFillBlankService {
      * 根据条件查询填空题
      */
     @Override
-    public List<ExamFillBlank> search(Integer current, Integer pageSize, QueryQuestion queryQuestion) {
+    public List<ExamFillBlank> search(Integer current, Integer pageSize, SelectQuestionVo queryQuestion) {
         Page<ExamFillBlank> page = new Page<>(current, pageSize);
         QueryWrapper<ExamFillBlank> wrapperSubject = new QueryWrapper<>();
         String context = queryQuestion.getContext();

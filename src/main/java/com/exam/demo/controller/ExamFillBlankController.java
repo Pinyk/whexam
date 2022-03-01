@@ -1,9 +1,9 @@
 package com.exam.demo.controller;
 
 import com.exam.demo.entity.ExamFillBlank;
-import com.exam.demo.entity.QueryQuestion;
+import com.exam.demo.otherEntity.SelectQuestionVo;
+import com.exam.demo.results.WebResult;
 import com.exam.demo.service.ExamFillBlankService;
-import com.exam.demo.utils.WebResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -12,7 +12,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static com.exam.demo.utils.WebResult.REQUEST_STATUS_SUCCESS;
+import static com.exam.demo.results.WebResult.REQUEST_STATUS_SUCCESS;
+
 
 @RestController
 @RequestMapping("examFb")
@@ -57,7 +58,7 @@ public class ExamFillBlankController {
     @ApiOperation(notes = "wxn",value = "根据条件查询填空题接口",httpMethod = "GET")
     public WebResult<List<ExamFillBlank>> search(@RequestParam @ApiParam(name="current") Integer current,
                                                  @RequestParam @ApiParam(name="pageSize") Integer pageSize,
-                                                 @RequestBody @ApiParam(name="queryQuestion") QueryQuestion queryQuestion) {
+                                                 @RequestBody @ApiParam(name="queryQuestion") SelectQuestionVo queryQuestion) {
         return WebResult.<List<ExamFillBlank>>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)

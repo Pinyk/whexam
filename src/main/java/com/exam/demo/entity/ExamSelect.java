@@ -9,7 +9,7 @@ import lombok.Data;
 public class ExamSelect {
 
     @ApiModelProperty(value = "选择题主键")
-    private int id;
+    private Integer id;
 
     @ApiModelProperty(value = "题目内容")
     private String context;
@@ -21,16 +21,16 @@ public class ExamSelect {
     private String answer;
 
     @ApiModelProperty(value = "所属科目ID")
-    private int subjectId;
+    private Integer subjectId;
 
     @ApiModelProperty(value = "难度")
-    private int difficulty;
+    private Integer difficulty;
 
     @ApiModelProperty(value = "分数")
-    private double score;
+    private Double score;
 
     @ApiModelProperty(value = "选择题目类型")
-    private int type;
+    private Integer type;
 
     @ApiModelProperty(value = "图片URL")
     private String imgUrl;

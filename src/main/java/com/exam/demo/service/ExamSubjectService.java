@@ -1,7 +1,7 @@
 package com.exam.demo.service;
 
 import com.exam.demo.entity.ExamSubject;
-import com.exam.demo.params.postparams.SelectParam;
+import com.exam.demo.params.SelectParam;
 
 import java.util.List;
 

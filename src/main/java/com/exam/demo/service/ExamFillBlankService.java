@@ -1,7 +1,7 @@
 package com.exam.demo.service;
 
 import com.exam.demo.entity.ExamFillBlank;
-import com.exam.demo.entity.QueryQuestion;
+import com.exam.demo.otherEntity.SelectQuestionVo;
 
 import java.util.List;
 
@@ -29,7 +29,7 @@ public interface ExamFillBlankService {
     /**
      * 根据条件查询填空题
      */
-    List<ExamFillBlank> search(Integer current, Integer pageSize, QueryQuestion queryQuestion);
+    List<ExamFillBlank> search(Integer current, Integer pageSize, SelectQuestionVo queryQuestion);
 
     /**
      * 向题库添加填空题

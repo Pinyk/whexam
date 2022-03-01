@@ -12,7 +12,7 @@ import com.exam.demo.mapper.TestPaperMapper;
 import com.exam.demo.mapper.UserMapper;
 import com.exam.demo.otherEntity.RtTestpaper;
 import com.exam.demo.service.TestPaperService;
-import com.exam.demo.utils.TestpaperVo;
+import com.exam.demo.results.vo.TestpaperVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

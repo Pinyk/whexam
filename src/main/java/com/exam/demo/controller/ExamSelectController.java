@@ -1,10 +1,10 @@
 package com.exam.demo.controller;
 
 import com.exam.demo.entity.ExamSelect;
-import com.exam.demo.params.postparams.SelectParam;
+import com.exam.demo.params.SelectParam;
 import com.exam.demo.otherEntity.SelectQuestionVo;
 import com.exam.demo.service.ExamSelectService;
-import com.exam.demo.utils.WebResult;
+import com.exam.demo.results.WebResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -15,8 +15,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.util.List;
 
-import static com.exam.demo.utils.WebResult.REQUEST_STATUS_ERROR;
-import static com.exam.demo.utils.WebResult.REQUEST_STATUS_SUCCESS;
+import static com.exam.demo.results.WebResult.REQUEST_STATUS_ERROR;
+import static com.exam.demo.results.WebResult.REQUEST_STATUS_SUCCESS;
 
 @RestController
 @RequestMapping("examSelect")

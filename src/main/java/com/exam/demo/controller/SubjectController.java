@@ -1,7 +1,7 @@
 package com.exam.demo.controller;
 import com.exam.demo.entity.Subject;
 import com.exam.demo.service.SubjectService;
-import com.exam.demo.utils.WebResult;
+import com.exam.demo.results.WebResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-import static com.exam.demo.utils.WebResult.REQUEST_STATUS_SUCCESS;
+import static com.exam.demo.results.WebResult.REQUEST_STATUS_SUCCESS;
 
 /**
  * @Author: gaoyk

@@ -32,15 +32,8 @@ public class ExamSelectServiceImpl implements ExamSelectService {
      */
     public SelectQuestionVo change(ExamSelect examSelect) {
         SelectQuestionVo selectQuestionVo = new SelectQuestionVo();
-        selectQuestionVo.setId(examSelect.getId());
-        selectQuestionVo.setContext(examSelect.getContext());
-        selectQuestionVo.setSelections(Arrays.asList(examSelect.getSelection().split("；")));
-        selectQuestionVo.setAnswer(examSelect.getAnswer());
+        BeanUtils.copyProperties(selectQuestionVo, examSelect);
         selectQuestionVo.setSubject(subjectMapper.selectById(examSelect.getSubjectId()).getName());
-        selectQuestionVo.setDifficulty(examSelect.getDifficulty());
-        selectQuestionVo.setScore(examSelect.getScore());
-        selectQuestionVo.setType(examSelect.getType());
-        selectQuestionVo.setImgUrl(examSelect.getImgUrl());
         return selectQuestionVo;
     }
 
