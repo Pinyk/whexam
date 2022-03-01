@@ -11,6 +11,7 @@ import com.exam.demo.mapper.SubjectMapper;
 import com.exam.demo.mapper.TestPaperMapper;
 import com.exam.demo.mapper.UserMapper;
 import com.exam.demo.otherEntity.RtTestpaper;
+import com.exam.demo.results.vo.PageVo;
 import com.exam.demo.service.TestPaperService;
 import com.exam.demo.results.vo.TestpaperVo;
 import org.springframework.beans.BeanUtils;
@@ -20,10 +21,7 @@ import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class TestPaperServiceImpl implements TestPaperService {
@@ -160,10 +158,16 @@ public class TestPaperServiceImpl implements TestPaperService {
      * @return
      */
     @Override
-    public List<TestpaperVo> findCurrentExam(Integer testPaperId, String testPaperName, Integer departmentId,
-                                             String subject, Integer currentPage, Integer pageSize) {
-        return testManageCombinedQuery(testPaperId,testPaperName,departmentId,subject,currentPage
-                ,pageSize,"(SELECT current_timestamp()) BETWEEN testpaper.start_time AND testpaper.dead_time");
+    public PageVo<TestpaperVo> findCurrentExam(Integer testPaperId, String testPaperName, Integer departmentId,
+                                               String subject, Integer currentPage, Integer pageSize) {
+        HashMap<String, Object> map = testManageCombinedQuery(testPaperId, testPaperName, departmentId, subject, currentPage, pageSize,
+                "(SELECT current_timestamp()) BETWEEN testpaper.start_time AND testpaper.dead_time");
+        return PageVo.<TestpaperVo>builder()
+                .values((LinkedList<TestpaperVo>)map.get("testpaperVos"))
+                .page(currentPage)
+                .size(pageSize)
+                .total((Long) map.get("total"))
+                .build();
     }
 
     /**
@@ -198,10 +202,16 @@ public class TestPaperServiceImpl implements TestPaperService {
      * @return
      */
     @Override
-    public List<TestpaperVo> findHistoricalExam(Integer testPaperId, String testPaperName, Integer departmentId,
+    public PageVo<TestpaperVo> findHistoricalExam(Integer testPaperId, String testPaperName, Integer departmentId,
                                                 String subject, Integer currentPage, Integer pageSize) {
-        return testManageCombinedQuery(testPaperId,testPaperName,departmentId,subject,currentPage
-                ,pageSize,"(SELECT current_timestamp()) > testpaper.dead_time");
+        HashMap<String, Object> map = testManageCombinedQuery(testPaperId, testPaperName, departmentId, subject, currentPage
+                , pageSize, "(SELECT current_timestamp()) > testpaper.dead_time");
+        return PageVo.<TestpaperVo>builder()
+                .values((LinkedList<TestpaperVo>)map.get("testpaperVos"))
+                .page(currentPage)
+                .size(pageSize)
+                .total((Long) map.get("total"))
+                .build();
     }
 
     /**
@@ -236,10 +246,16 @@ public class TestPaperServiceImpl implements TestPaperService {
      * @return
      */
     @Override
-    public List<TestpaperVo> findFutureExam(Integer testPaperId, String testPaperName, Integer departmentId,
+    public PageVo<TestpaperVo> findFutureExam(Integer testPaperId, String testPaperName, Integer departmentId,
                                             String subject, Integer currentPage, Integer pageSize) {
-        return testManageCombinedQuery(testPaperId,testPaperName,departmentId,subject,currentPage,
-                pageSize,"testpaper.start_time > (SELECT current_timestamp())");
+        HashMap<String, Object> map = testManageCombinedQuery(testPaperId, testPaperName, departmentId, subject, currentPage,
+                pageSize, "testpaper.start_time > (SELECT current_timestamp())");
+        return PageVo.<TestpaperVo>builder()
+                .values((LinkedList<TestpaperVo>)map.get("testpaperVos"))
+                .page(currentPage)
+                .size(pageSize)
+                .total((Long) map.get("total"))
+                .build();
     }
 
     /**
@@ -285,7 +301,7 @@ public class TestPaperServiceImpl implements TestPaperService {
      * @param sql
      * @return
      */
-    private List<TestpaperVo> testManageCombinedQuery(Integer testPaperId, String testPaperName, Integer departmentId,
+    private HashMap<String, Object> testManageCombinedQuery(Integer testPaperId, String testPaperName, Integer departmentId,
                                                      String subject, Integer currentPage, Integer pageSize, String sql) {
         Page<Testpaper> page = new Page<>(currentPage, pageSize);
         LambdaQueryWrapper<Testpaper> queryWrapper = new LambdaQueryWrapper<>();
@@ -320,7 +336,10 @@ public class TestPaperServiceImpl implements TestPaperService {
         for (Testpaper testpaper : testpaperPage.getRecords()) {
             testpaperVos.add(copyTestpaperBean(new TestpaperVo(), testpaper));
         }
-        return testpaperVos;
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("total", testpaperPage.getTotal());
+        map.put("testpaperVos", testpaperVos);
+        return map;
     }
 
     /**
