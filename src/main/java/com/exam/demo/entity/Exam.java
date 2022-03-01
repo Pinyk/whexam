@@ -1,5 +1,6 @@
 package com.exam.demo.entity;
 
+import com.baomidou.mybatisplus.annotation.TableId;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -9,7 +10,7 @@ import lombok.Data;
 public class Exam {
 
     @ApiModelProperty(value = "考试试卷主键")
-    private int id;
+    private Integer id;
 
     @ApiModelProperty(value = "试卷ID")
     private int testpaperId;
