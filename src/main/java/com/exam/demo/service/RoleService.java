@@ -1,5 +1,6 @@
 package com.exam.demo.service;
 
+import com.exam.demo.entity.Power;
 import com.exam.demo.entity.Role;
 
 import java.util.List;
@@ -37,4 +38,15 @@ public interface RoleService {
      * @return
      */
     public Integer deleteById(Integer id);
+
+    /**
+     * 通过部分条件查找角色
+     * @param nums
+     * @param name
+     * @param department
+     * @param rolename
+     * @return
+     */
+    public List<Power> findRole(String nums,String name,String department,String rolename);
+    public Integer findByRoleName(String name);
 }

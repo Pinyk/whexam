@@ -1,5 +1,6 @@
 package com.exam.demo.controller;
 
+import com.exam.demo.entity.RoleMessage;
 import com.exam.demo.entity.User;
 import com.exam.demo.otherEntity.UserPojo;
 import com.exam.demo.service.UserService;
@@ -122,9 +123,13 @@ public class UserController {
                 .data(msg)
                 .build();
     }
-    @PostMapping("find")
-    @ApiOperation(notes ="find",value="根据条件查询")
-    public  WebResult<User> find(@RequestParam String name,String nums,String department,String adddress){
-
+    @PostMapping("findUser")
+    @ApiOperation(notes ="liu",value="根据条件查询用户")
+    public  WebResult<List<RoleMessage>> findUser(@ApiParam("String name")@RequestParam String name, @ApiParam("String name")@RequestParam String nums,@ApiParam("String name") @RequestParam String department,@ApiParam("String name")@RequestParam String address){
+        return WebResult.<List<RoleMessage>>builder()
+                .code(200)
+                .message(REQUEST_STATUS_SUCCESS)
+                .data(userService.findUser(name, nums, department, address))
+                .build();
     }
 }

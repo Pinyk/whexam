@@ -1,6 +1,7 @@
 package com.exam.demo.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.exam.demo.entity.RoleMessage;
 import com.exam.demo.mapper.DepartmentMapper;
 import com.exam.demo.mapper.PositionMapper;
 import com.exam.demo.mapper.RoleMapper;
@@ -131,7 +132,7 @@ public class UserServiceImpl implements UserService {
     /**
      * 给用户授权
      *
-     * @param role_id
+     * @param
      * @param user_id
      * @return
      */
@@ -229,9 +230,30 @@ public class UserServiceImpl implements UserService {
         return result;
     }
 
+    /**
+     * 通过部分条件查找用户
+     * @param name
+     * @param nums
+     * @param department
+     * @param address
+     * @return
+     */
     @Override
-    public List<User> find() {
-        return userMapper.find();
+    public List<RoleMessage> findUser(String name, String nums, String department, String address) {
+        Integer temp=userMapper.findbydepartment(department);
+        if(temp==null&&department.length()!=0)
+            temp=-2;
+        if(name.length()==0)
+            name=null;
+        if(nums.length()==0)
+           nums=null;
+        if(department.length()==0||department==null||temp==null){
+           temp=-1;
+        }
+        if(address.length()==0)
+            address=null;
+        return userMapper.findUser(name, nums, temp, address);
+
 
     }
 }
