@@ -8,7 +8,7 @@ import java.util.List;
 
 @Data
 @ApiModel(value = "selectQuestion")
-public class SelectQuestion {
+public class SelectQuestionVo {
     @ApiModelProperty(value = "选择题主键")
     private int id;
 

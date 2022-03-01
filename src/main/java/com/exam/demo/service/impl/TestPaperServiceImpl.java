@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.exam.demo.entity.Department;
 import com.exam.demo.entity.Subject;
 import com.exam.demo.entity.Testpaper;
 import com.exam.demo.mapper.DepartmentMapper;
@@ -306,9 +305,11 @@ public class TestPaperServiceImpl implements TestPaperService {
             if (!StringUtils.isBlank(subject)) {
                 //根据学科名称查询id
                 LambdaQueryWrapper<Subject> subjectWrapper = new LambdaQueryWrapper<>();
-                subjectWrapper.eq(Subject::getName, subject);
+                subjectWrapper.like(Subject::getName, subject);
                 Subject sub = subjectMapper.selectOne(subjectWrapper);
-                queryWrapper.eq(Testpaper::getSubjectId, sub.getId());
+                if (sub != null) {
+                    queryWrapper.eq(Testpaper::getSubjectId, sub.getId());
+                }
             }
             queryWrapper.last("and " + sql);
         }
