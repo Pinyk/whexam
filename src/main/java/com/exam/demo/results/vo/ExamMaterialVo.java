@@ -16,8 +16,8 @@ public class ExamMaterialVo implements Serializable {
     @ApiModelProperty(value = "题目内容")
     String context;
 
-    @ApiModelProperty(value = "材料题包含的问题")
-    List problems;
+    @ApiModelProperty(value = "材料题包含的问题", notes = "这个属性后面需要更改类型，根据实际需求")
+    List<String> problems;
 
     @ApiModelProperty(value = "难度")
     Integer difficulty;
