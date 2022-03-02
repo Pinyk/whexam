@@ -2,11 +2,11 @@ package com.exam.demo.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.aliyun.oss.OSSClient;
+import com.exam.demo.Utils.FileCommit;
 import com.exam.demo.entity.Paper;
 import com.exam.demo.service.PaperService;
 import com.exam.demo.results.Consts;
 import com.exam.demo.results.WebResult;
-import com.exam.demo.service.impl.PaperServiceImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -14,8 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -48,9 +46,10 @@ public class PaperController {
         }
 
         try {
-            PaperServiceImpl paperS = new PaperServiceImpl();
-            String url = paperS.uploadFileAvatar(mpFile);
-
+//            PaperServiceImpl paperS = new PaperServiceImpl();
+//            String url = paperS.uploadFileAvatar(mpFile);
+            FileCommit fileCommit = new FileCommit();
+            String url = fileCommit.uploadFileAvatar(mpFile);
             Paper paper=new Paper();
             paper.setTitle(title);
             paper.setContext(context);

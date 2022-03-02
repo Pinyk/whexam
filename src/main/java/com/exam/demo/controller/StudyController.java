@@ -3,6 +3,7 @@ package com.exam.demo.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.aliyun.oss.OSSClient;
+import com.exam.demo.Utils.FileCommit;
 import com.exam.demo.entity.Datatype;
 import com.exam.demo.entity.ShowStudy;
 import com.exam.demo.entity.Study;
@@ -12,7 +13,6 @@ import com.exam.demo.service.StudyService;
 import com.exam.demo.service.SubjectService;
 import com.exam.demo.results.Consts;
 import com.exam.demo.results.WebResult;
-import com.exam.demo.service.impl.StudyServiceImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -204,8 +204,8 @@ public class StudyController {
 //            String fileName = System.currentTimeMillis()+mpFile.getOriginalFilename();
             //文件路径
 //            String filePath = System.getProperty("user.dir")+System.getProperty("file.separator")+"study";
-            StudyServiceImpl studys = new StudyServiceImpl();
-            String url = studys.uploadFileAvatar(mpFile);
+            FileCommit fileCommit = new FileCommit();
+            String url = fileCommit.uploadFileAvatar(mpFile);
 //            System.out.println("===================="+url);
 
 //            OSSClient ossClient = new OSSClient("https://oss-cn-beijing.aliyuncs.com", "LTAI5tGtGgwJkpyb9UDrAPj7", "gTTvD1103beS004i2Cv9fCumY0JftH");
