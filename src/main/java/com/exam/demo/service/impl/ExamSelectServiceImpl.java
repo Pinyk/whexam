@@ -2,6 +2,7 @@ package com.exam.demo.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.exam.demo.entity.ExamSelect;
@@ -12,6 +13,7 @@ import com.exam.demo.otherEntity.SelectQuestionVo;
 import com.exam.demo.results.vo.ExamSelectVo;
 import com.exam.demo.results.vo.PageVo;
 import com.exam.demo.service.ExamSelectService;
+import io.swagger.models.auth.In;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -111,21 +113,24 @@ public class ExamSelectServiceImpl implements ExamSelectService {
     @Override
     public PageVo<ExamSelectVo> search(Integer id, String name, String subject, Integer currentPage, Integer pageSize, Integer type) {
         Page<ExamSelect> page = new Page<>(currentPage, pageSize);
-        LambdaQueryWrapper<ExamSelect> wrapperSelect = new LambdaQueryWrapper();
-
-        wrapperSelect.eq(ExamSelect::getType, type);
+        LambdaQueryWrapper<ExamSelect> wrapperSelect = Wrappers.lambdaQuery(ExamSelect.class);
         if (id != null) {
             wrapperSelect.eq(ExamSelect::getId, id);
         }
-        if (!StringUtils.isBlank(name)) {
-            wrapperSelect.like(ExamSelect::getContext, name);
-        }
+        wrapperSelect.like(StringUtils.isNotBlank(name),ExamSelect::getContext, name);
+        wrapperSelect.eq(ExamSelect::getType, type);
         if (!StringUtils.isBlank(subject)) {
-            LambdaQueryWrapper<Subject> subjectwrapper = new LambdaQueryWrapper<>();
-            subjectwrapper.eq(Subject::getName,subject);
-            Subject sub = subjectMapper.selectOne(subjectwrapper);
-            if (sub != null) {
-                wrapperSelect.like(ExamSelect::getSubjectId, sub.getId());
+            LambdaQueryWrapper<Subject> subjectwrapper = Wrappers.lambdaQuery(Subject.class);
+            subjectwrapper
+                    .select(Subject::getId)
+                    .like(Subject::getName,subject);
+            List<Subject> subjects = subjectMapper.selectList(subjectwrapper);
+            if (subjects != null) {
+                LinkedList<Integer> subjectIds = new LinkedList<>();
+                for (Subject sub : subjects) {
+                    subjectIds.add(sub.getId());
+                }
+                wrapperSelect.in(ExamSelect::getSubjectId, subjectIds);
             }
         }
         LinkedList<ExamSelectVo> examSelectVos = new LinkedList<>();

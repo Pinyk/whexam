@@ -1,6 +1,5 @@
 package com.exam.demo.controller;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.exam.demo.results.vo.PageVo;
 import com.exam.demo.service.TestPaperService;
 import com.exam.demo.params.TestManageParam;

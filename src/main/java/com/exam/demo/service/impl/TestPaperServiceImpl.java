@@ -3,6 +3,7 @@ package com.exam.demo.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.exam.demo.entity.Subject;
 import com.exam.demo.entity.Testpaper;
@@ -304,7 +305,7 @@ public class TestPaperServiceImpl implements TestPaperService {
     private HashMap<String, Object> testManageCombinedQuery(Integer testPaperId, String testPaperName, Integer departmentId,
                                                      String subject, Integer currentPage, Integer pageSize, String sql) {
         Page<Testpaper> page = new Page<>(currentPage, pageSize);
-        LambdaQueryWrapper<Testpaper> queryWrapper = new LambdaQueryWrapper<>();
+        LambdaQueryWrapper<Testpaper> queryWrapper = Wrappers.lambdaQuery(Testpaper.class);
         if (testPaperId == null && StringUtils.isBlank(testPaperName) && departmentId == null
                 && StringUtils.isBlank(subject)){
             queryWrapper.last("where " + sql);
@@ -312,9 +313,7 @@ public class TestPaperServiceImpl implements TestPaperService {
             if (testPaperId != null) {
                 queryWrapper.eq(Testpaper::getId, testPaperId);
             }
-            if (!StringUtils.isBlank(testPaperName)) {
-                queryWrapper.like(Testpaper::getName, testPaperName);
-            }
+            queryWrapper.like(StringUtils.isNotBlank(testPaperName),Testpaper::getName, testPaperName);
             if (departmentId != null) {
                 queryWrapper.eq(Testpaper::getDepartmentId, departmentId);
             }

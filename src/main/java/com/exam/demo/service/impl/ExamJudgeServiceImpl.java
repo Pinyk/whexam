@@ -1,8 +1,10 @@
 package com.exam.demo.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.exam.demo.entity.ExamJudge;
 import com.exam.demo.entity.ExamSelect;
@@ -54,7 +56,7 @@ public class ExamJudgeServiceImpl implements ExamJudgeService {
     @Override
     public PageVo<ExamJudgeVo> search(Integer current, Integer pageSize, Integer id, String context) {
         Page<ExamJudge> page = new Page(current, pageSize);
-        LambdaQueryWrapper<ExamJudge> queryWrapper = new LambdaQueryWrapper<>();
+        LambdaQueryWrapper<ExamJudge> queryWrapper = Wrappers.lambdaQuery(ExamJudge.class);
 
         if (id != null) {
             queryWrapper.eq(ExamJudge::getId, id);

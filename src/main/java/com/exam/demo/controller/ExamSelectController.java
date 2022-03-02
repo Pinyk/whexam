@@ -102,7 +102,7 @@ public class ExamSelectController {
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
                 .data(examSelectService.search(selectParam.getId(), selectParam.getName(), selectParam.getSubject(),
-                        selectParam.getCurrentPage(), selectParam.getPageSize(), 2))
+                        selectParam.getCurrentPage(), selectParam.getPageSize(), 1))
                 .build();
     }
 
