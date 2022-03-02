@@ -10,6 +10,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
 
@@ -26,6 +27,7 @@ public class TestManagementController {
 
     @GetMapping("findAllCurrentExam")
     @ApiOperation(notes = "LBX", value = "不支持分页——查询所有正在进行的考试")
+    @ApiIgnore
     public WebResult<List<TestpaperVo>> findAllCurrentExam() {
         return WebResult.<List<TestpaperVo>>builder()
                 .code(200)
@@ -51,7 +53,8 @@ public class TestManagementController {
 
 
     @GetMapping("findCurrentExamByPage")
-    @ApiOperation(notes = "LBX", value = "支持分页——查询所有正在进行的考试")
+    @ApiIgnore
+    @ApiOperation(notes = "LBX", value = "支持分页——查询所有正在进行的考试——此接口可忽略，组合查询接口完全可替代类似接口")
     public WebResult<List<TestpaperVo>> findCurrentExamByPage(@RequestParam @ApiParam(name="currentPage", value = "当前页码", required = true) Integer currentPage,
                                                               @RequestParam @ApiParam(name="pageSize", value = "每页容量", required = true) Integer pageSize) {
         return WebResult.<List<TestpaperVo>>builder()
@@ -63,6 +66,7 @@ public class TestManagementController {
 //=====================================================历史考试==========================================================
 
     @GetMapping("findAllHistoricalExam")
+    @ApiIgnore
     @ApiOperation(notes = "LBX", value = "不支持分页——查询所有历史考试")
     public WebResult<List<TestpaperVo>> findAllHistoricalExam() {
         return WebResult.<List<TestpaperVo>>builder()
@@ -88,6 +92,7 @@ public class TestManagementController {
     }
 
     @GetMapping("findHistoricalExamByPage")
+    @ApiIgnore
     @ApiOperation(notes = "LBX", value = "支持分页——查询所有历史考试")
     public WebResult<List<TestpaperVo>> findHistoricalExamByPage(@RequestParam @ApiParam(name="currentPage", value = "当前页码", required = true) Integer currentPage,
                                                               @RequestParam @ApiParam(name="pageSize", value = "每页容量", required = true) Integer pageSize) {
@@ -100,6 +105,7 @@ public class TestManagementController {
 //===================================================未来考试============================================================
 
     @GetMapping("findAllFutureExam")
+    @ApiIgnore
     @ApiOperation(notes = "LBX", value = "不支持分页——查询所有未来的考试")
     public WebResult<List<TestpaperVo>> findAllFutureExam() {
         return WebResult.<List<TestpaperVo>>builder()
@@ -125,6 +131,7 @@ public class TestManagementController {
     }
 
     @GetMapping("findFutureExamByPage")
+    @ApiIgnore
     @ApiOperation(notes = "LBX", value = "支持分页——查询所有未来的考试")
     public WebResult<List<TestpaperVo>> findFutureExamByPage(@RequestParam @ApiParam(name="currentPage", value = "当前页码", required = true) Integer currentPage,
                                                                  @RequestParam @ApiParam(name="pageSize", value = "每页容量", required = true) Integer pageSize) {

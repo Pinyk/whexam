@@ -13,7 +13,6 @@ import com.exam.demo.otherEntity.SelectQuestionVo;
 import com.exam.demo.results.vo.ExamSelectVo;
 import com.exam.demo.results.vo.PageVo;
 import com.exam.demo.service.ExamSelectService;
-import io.swagger.models.auth.In;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
