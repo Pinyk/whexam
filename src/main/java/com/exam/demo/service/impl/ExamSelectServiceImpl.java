@@ -122,7 +122,7 @@ public class ExamSelectServiceImpl implements ExamSelectService {
         }
         if (!StringUtils.isBlank(subject)) {
             LambdaQueryWrapper<Subject> subjectwrapper = new LambdaQueryWrapper<>();
-            subjectwrapper.like(Subject::getName,name);
+            subjectwrapper.eq(Subject::getName,subject);
             Subject sub = subjectMapper.selectOne(subjectwrapper);
             if (sub != null) {
                 wrapperSelect.like(ExamSelect::getSubjectId, sub.getId());
