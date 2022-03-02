@@ -9,7 +9,7 @@ import lombok.Data;
 public class ExamSelect {
 
     @ApiModelProperty(value = "选择题主键")
-    private Integer id;
+    private int id;
 
     @ApiModelProperty(value = "题目内容")
     private String context;

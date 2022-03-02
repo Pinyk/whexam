@@ -28,4 +28,5 @@ public class ExamSubject {
 
     @ApiModelProperty(value = "图片URL")
     private String imgUrl;
+
 }
