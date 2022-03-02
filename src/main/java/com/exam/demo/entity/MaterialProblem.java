@@ -3,7 +3,6 @@ package com.exam.demo.entity;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import io.swagger.models.auth.In;
 import lombok.Data;
 
 @Data
@@ -12,12 +11,12 @@ import lombok.Data;
 public class MaterialProblem {
 
     @ApiModelProperty(value = "材料表主键Id")
-    Integer materialId;
+    private Integer materialId;
 
     @ApiModelProperty(value = "其它四种类型题目的主键Id")
-    Integer problemId;
+    private Integer problemId;
 
     @ApiModelProperty(value = "其它四种类型题目的类型")
-    Integer problemType;
+    private Integer problemType;
 
 }

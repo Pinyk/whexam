@@ -11,15 +11,15 @@ import lombok.Data;
 public class ExamMaterial {
 
     @ApiModelProperty(value = "主键id")
-    Integer id;
+    private Integer id;
 
     @ApiModelProperty(value = "题目内容")
-    String context;
+    private String context;
 
     @ApiModelProperty(value = "难度")
-    Integer difficulty;
+    private Integer difficulty;
 
     @ApiModelProperty(value = "科目Id")
-    Integer subjectId;
+    private Integer subjectId;
 
 }

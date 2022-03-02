@@ -17,12 +17,12 @@ public class ExamMaterialVo implements Serializable {
     String context;
 
     @ApiModelProperty(value = "材料题包含的问题", notes = "这个属性后面需要更改类型，根据实际需求")
-    List<String> problems;
+    ProblemsVo problems;
 
     @ApiModelProperty(value = "难度")
     Integer difficulty;
 
-    @ApiModelProperty(value = "科目Id")
-    Integer subjectId;
+    @ApiModelProperty(value = "科目")
+    String subject;
 
 }
