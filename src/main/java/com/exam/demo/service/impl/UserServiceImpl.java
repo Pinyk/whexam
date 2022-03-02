@@ -1,5 +1,4 @@
 package com.exam.demo.service.impl;
-
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.exam.demo.entity.RoleMessage;
 import com.exam.demo.entity.Userwx;
@@ -24,6 +23,7 @@ import java.util.Map;
  * @Author: gaoyk
  * @Date: 2022/2/3 20:23
  */
+
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -81,9 +81,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public User loginWeb(User user) {
         QueryWrapper<User> wrapper = new QueryWrapper<>();
-        wrapper.eq("name",user.getName());
+        wrapper.eq("nums",user.getNums());
         User p = userMapper.selectOne(wrapper);
-
         if (p != null){
             if (p.getPassword().equals(user.getPassword())){
                 return p;

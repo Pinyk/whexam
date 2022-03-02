@@ -45,7 +45,7 @@ public class UserController {
     @PostMapping("loginWeb")
     @ApiOperation(notes = "gaoyk",value = "管理端登录接口")
     public WebResult<User> loginWeb(@RequestBody @ApiParam(name="用户对象",required=true,
-            value = "传入[name][password]参数") User user){
+            value = "传入[nums][password]参数") User user){
         User msg = userService.loginWeb(user);
         if (msg == null){
             return WebResult.<User>builder()
