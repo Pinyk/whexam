@@ -153,6 +153,7 @@ public class StudyController {
 
                 if(datatype.getId()==study.getDatatypeid()){
                     arrayLists.get(datatype.getId()-1).add(study);
+                    break;
                 }
 
             }
