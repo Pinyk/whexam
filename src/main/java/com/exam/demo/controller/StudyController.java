@@ -130,26 +130,34 @@ public class StudyController {
     //按科目类型查询
     @GetMapping("/findByTypeid")
     @ApiOperation(notes = "csx",value = "学科小类查询接口")
-    public WebResult<ArrayList<ArrayList<Study>>> findByTypeId(@RequestParam @ApiParam(name="typeid") Integer typeid){
-
-
-        ArrayList<ArrayList<Study>> arrayLists=new ArrayList<>();
-
+    public WebResult<List<List<Study>>> findByTypeId(@RequestParam @ApiParam(name="typeid") Integer typeid){
+//
+//
+//        ArrayList<ArrayList<Study>> arrayLists=new ArrayList<>();
+        List<List<Study>> arrayLists=new ArrayList<>();
         List<Datatype> datatypes=dataTypeService.findAll();
-        List<Study> studies=studyService.findByType(typeid);
+        List<Study> studies=studyService.findBySubjectType(typeid);
         Iterator<Study> studyIterator = studies.iterator();
         Iterator<Datatype> datatypeIterator = datatypes.iterator();
+        while (datatypeIterator.hasNext()){
+            Datatype datatype=datatypeIterator.next();
+            List<Study> studies1=new LinkedList<>();
+            arrayLists.add(studies1);
+        }
+
         while(studyIterator.hasNext()){//判断是否有迭代元素
             Study study=studyIterator.next();
-            while (datatypeIterator.hasNext()){
-                Datatype datatype=datatypeIterator.next();
+            Iterator<Datatype> datatypeIterator1 = datatypes.iterator();
+            while (datatypeIterator1.hasNext()){
+                Datatype datatype=datatypeIterator1.next();
+
                 if(datatype.getId()==study.getDatatypeid()){
-                    arrayLists.get(datatype.getId()).add(study);
+                    arrayLists.get(datatype.getId()-1).add(study);
                 }
 
             }
         }
-        return WebResult.<ArrayList<ArrayList<Study>>>builder()
+        return WebResult.<List<List<Study>>>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
                 .data(arrayLists)

@@ -64,7 +64,7 @@ public class StudyServiceImpl implements StudyService {
     @Override
     public List<Study> findBySubjectType(int typeid) {
         LambdaQueryWrapper<Study> queryWrapper=new LambdaQueryWrapper<>();
-        queryWrapper.eq(Study::getSubjectid,typeid);
+        queryWrapper.eq(Study::getTypeid,typeid);
         return studyMapperr.selectList(queryWrapper);
     }
 
