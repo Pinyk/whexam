@@ -105,7 +105,7 @@ public class StudyController {
                 .data(studyService.findBySubject(subject))
                 .build();
     }
-    //按科目类型查询
+    //按科目查询
     @GetMapping("/findByType")
     @ApiOperation(notes = "csx",value = "课程类型查询接口")
     public WebResult<List<Study>> findByType(@RequestParam @ApiParam(name="datatype") Integer datatype){
@@ -115,6 +115,18 @@ public class StudyController {
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
                 .data(studyService.findByType(datatype))
+                .build();
+    }
+    //按科目类型查询
+    @GetMapping("/findByTypeid")
+    @ApiOperation(notes = "csx",value = "学科小类查询接口")
+    public WebResult<List<Study>> findByTypeId(@RequestParam @ApiParam(name="typeid") Integer typeid){
+
+
+        return WebResult.<List<Study>>builder()
+                .code(200)
+                .message(REQUEST_STATUS_SUCCESS)
+                .data(studyService.findByType(typeid))
                 .build();
     }
 
@@ -190,7 +202,8 @@ public class StudyController {
                           @RequestParam @ApiParam(name="subject_id",defaultValue = "0") Integer subject_id,
                           @RequestParam @ApiParam(name="department_id") Integer department_id,
                           @RequestParam("file") MultipartFile mpFile,
-                          @RequestParam @ApiParam(name="time") String time){
+                          @RequestParam @ApiParam(name="time") String time,
+                      @RequestParam @ApiParam(name="typeid") Integer typeid){
         JSONObject jsonObject = new JSONObject();
 
         if(mpFile.isEmpty()){
@@ -228,6 +241,7 @@ public class StudyController {
             study.setSubjectid(subject_id);
             study.setDatatypeid(datatype_id);
             study.setTime(time);
+            study.setTypeid(typeid);
             this.studyService.insert(study);
 //            mpFile.transferTo(dest);
             return WebResult.<Integer>builder()

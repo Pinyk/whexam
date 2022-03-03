@@ -20,5 +20,7 @@ public interface StudyService {
     public int insert(Study study);
     public int update(Study study);
 
+    public List<Study> findBySubjectType(int typeid);
+
 
 }

@@ -61,5 +61,12 @@ public class StudyServiceImpl implements StudyService {
         return studyMapperr.updateById(study);
     }
 
+    @Override
+    public List<Study> findBySubjectType(int typeid) {
+        LambdaQueryWrapper<Study> queryWrapper=new LambdaQueryWrapper<>();
+        queryWrapper.eq(Study::getSubjectid,typeid);
+        return studyMapperr.selectList(queryWrapper);
+    }
+
 
 }

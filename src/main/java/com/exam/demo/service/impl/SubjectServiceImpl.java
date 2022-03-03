@@ -8,8 +8,10 @@ package com.exam.demo.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.exam.demo.entity.Datatype;
 import com.exam.demo.entity.Subject;
+import com.exam.demo.entity.SubjectType;
 import com.exam.demo.mapper.DepartmentMapper;
 import com.exam.demo.mapper.SubjectMapper;
+import com.exam.demo.mapper.SubjectTypeMapper;
 import com.exam.demo.service.SubjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,8 +26,8 @@ public class SubjectServiceImpl implements SubjectService {
 
     @Override
     public Subject findById(int id) {
-        LambdaQueryWrapper<Datatype> queryWrapper=new LambdaQueryWrapper<>();
-        queryWrapper.eq(Datatype::getId,id);
+        LambdaQueryWrapper<Subject> queryWrapper=new LambdaQueryWrapper<>();
+        queryWrapper.eq(Subject::getId,id);
         return subjectMapper.selectById(id);
     }
 

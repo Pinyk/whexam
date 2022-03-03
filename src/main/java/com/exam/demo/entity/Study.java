@@ -46,4 +46,8 @@ public class Study {
 
     @ApiModelProperty(value = "备注")
     private String beizhu;
+
+    @ApiModelProperty(value = "科目类型id")
+    private int typeid;
+
 }
