@@ -32,10 +32,10 @@ public class UserController {
 
     @PostMapping("loginWx")
     @ApiOperation(notes = "gaoyk",value = "微信小程序登录接口")
-    public WebResult<Userwx> loginWx(@RequestBody @ApiParam(name="用户微信对象",required=true,
+    public WebResult<UserPojo> loginWx(@RequestBody @ApiParam(name="用户微信对象",required=true,
             value = "传入[openid][wxname][image][gender]参数") Userwx userwx){
-        Userwx msg = userService.loginWx(userwx);
-        return WebResult.<Userwx>builder()
+        UserPojo msg = userService.loginWx(userwx);
+        return WebResult.<UserPojo>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
                 .data(msg)
@@ -136,9 +136,9 @@ public class UserController {
 
     @PostMapping("check")
     @ApiOperation(notes ="gaoyk",value="工号验证用户")
-    public  WebResult<User> findUser(@RequestBody @ApiParam(name="用户微信对象",required=true,
+    public  WebResult<UserPojo> findUser(@RequestBody @ApiParam(name="用户微信对象",required=true,
             value = "传入[openid][nums]参数") Userwx userwx){
-        return WebResult.<User>builder()
+        return WebResult.<UserPojo>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
                 .data(userService.check(userwx))
