@@ -22,6 +22,15 @@ public class ShowStudy {
     private String department_name;
     private String time;
     private String beizhu;
+    private String typename;
+
+    public String getTypename() {
+        return typename;
+    }
+
+    public void setTypename(String typename) {
+        this.typename = typename;
+    }
 
     Study study=new Study();
     public Integer getId() {

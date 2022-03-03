@@ -31,4 +31,11 @@ public class SubjectTypeServiceImpl implements SubjectTypeService {
     public int add(SubjectType subjectType) {
         return subjectTypeMapper.insert(subjectType);
     }
+
+    @Override
+    public int deletById(int id) {
+
+        return subjectTypeMapper.deleteById(id);
+    }
+
 }

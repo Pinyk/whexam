@@ -7,7 +7,7 @@ import java.util.List;
 
 /**
  * @Author: csx
- * @Date: 2022/3/1
+ * @Date: 2022/3/3
  */
 public interface SubjectTypeService {
 
@@ -17,5 +17,7 @@ public interface SubjectTypeService {
     List<SubjectType> findAll();
     //增加
     int add(SubjectType subjectType);
+
+    int deletById(int id);
 
 }

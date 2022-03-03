@@ -7,10 +7,8 @@ import com.exam.demo.Utils.FileCommit;
 import com.exam.demo.entity.Datatype;
 import com.exam.demo.entity.ShowStudy;
 import com.exam.demo.entity.Study;
-import com.exam.demo.service.DataTypeService;
-import com.exam.demo.service.DepartmentService;
-import com.exam.demo.service.StudyService;
-import com.exam.demo.service.SubjectService;
+import com.exam.demo.entity.SubjectType;
+import com.exam.demo.service.*;
 import com.exam.demo.results.Consts;
 import com.exam.demo.results.WebResult;
 import io.swagger.annotations.Api;
@@ -40,6 +38,8 @@ public class StudyController {
     private DepartmentService departmentService;
     @Autowired
     private SubjectService subjectService;
+    @Autowired
+    private SubjectTypeService subjectTypeService;
 
     @GetMapping("findAll")
     @ApiOperation(notes = "csx",value = "全部学习资料查询接口")
@@ -69,6 +69,7 @@ public class StudyController {
             showStudy.setDepartment_name(departmentService.findById(study1.getDepartmentid()).getName());
             showStudy.setSubject_id(study1.getSubjectid());
             showStudy.setSubject_name(subjectService.findById(study1.getSubjectid()).getName());
+            showStudy.setTypename(subjectTypeService.findById(study1.getTypeid()).getName());
             showStudies.add(showStudy);
         }
 

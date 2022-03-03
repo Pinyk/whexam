@@ -60,6 +60,16 @@ public class SubjectTypeController {
                 .data(subjectTypeService.findById(id))
                 .build();
     }
+    @DeleteMapping("/delete")
+    @ApiOperation(notes = "csx",value = "根据id删除类型接口")
+    public WebResult<Integer> delete(@RequestParam @ApiParam(name="typeid") Integer typeid){
+        return WebResult.<Integer>builder()
+                .code(200)
+                .message(REQUEST_STATUS_SUCCESS)
+                .data(subjectTypeService.deletById(typeid))
+                .build();
+
+    }
 
 
 }
