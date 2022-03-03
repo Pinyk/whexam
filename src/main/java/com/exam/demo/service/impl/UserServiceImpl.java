@@ -1,15 +1,12 @@
 package com.exam.demo.service.impl;
-
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.exam.demo.entity.RoleMessage;
-import com.exam.demo.mapper.DepartmentMapper;
-import com.exam.demo.mapper.PositionMapper;
-import com.exam.demo.mapper.RoleMapper;
+import com.exam.demo.entity.Userwx;
+import com.exam.demo.mapper.*;
 import com.exam.demo.otherEntity.UserPojo;
 import org.json.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.exam.demo.entity.User;
-import com.exam.demo.mapper.UserMapper;
 import com.exam.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,6 +23,7 @@ import java.util.Map;
  * @Author: gaoyk
  * @Date: 2022/2/3 20:23
  */
+
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -41,32 +39,35 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private PositionMapper positionMapper;
 
+    @Autowired
+    private UserwxMapper userwxMapper;
+
     /**
      * 微信小程序登录服务层
      *
-     * @param user
+     * @param userwx
      * @return
      */
     @Override
-    public User loginWx(User user) {
-        String s = UserServiceImpl.sendGet("https://api.weixin.qq.com/sns/jscode2session?appid=wxfe52cfbbf230d5ee&secret=3b61d56a43ce72243813b1f71b017c90&js_code=" + user.getOpenid() + "&grant_type=authorization_code", "");
+    public Userwx loginWx(Userwx userwx) {
+        String s = UserServiceImpl.sendGet("https://api.weixin.qq.com/sns/jscode2session?appid=wxfe52cfbbf230d5ee&secret=3b61d56a43ce72243813b1f71b017c90&js_code=" + userwx.getOpenid() + "&grant_type=authorization_code", "");
         JSONObject json = new JSONObject(s);
         System.err.println(s);
-        QueryWrapper<User> wrapper = new QueryWrapper<>();
+        QueryWrapper<Userwx> wrapper = new QueryWrapper<>();
         wrapper.eq("openid",json.getString("openid"));
 //        wrapper.eq("openid","123456");
-        User p = userMapper.selectOne(wrapper);
+        Userwx p = userwxMapper.selectOne(wrapper);
         if(p != null){
-            User q = p;
-            q.setImage(user.getImage());
-            q.setWxname(user.getWxname());
-            q.setGender(user.getGender());
-            userMapper.updateById(q);
+            Userwx q = p;
+            q.setImage(userwx.getImage());
+            q.setWxname(userwx.getWxname());
+            q.setGender(userwx.getGender());
+            userwxMapper.updateById(q);
             return q;
         }else{
-            User now = new User(user.getGender(), json.getString("openid"), 2, user.getImage(), user.getWxname(), 0, "123456");
+            Userwx now = new Userwx(json.getString("openid"), userwx.getGender(), userwx.getImage(), userwx.getWxname());
 //            User now = new User(user.getGender(), "123456", 2, user.getImage(), user.getWxname(), 0, "123456");
-            userMapper.insert(now);
+            userwxMapper.insert(now);
             return now;
         }
     }
@@ -80,9 +81,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public User loginWeb(User user) {
         QueryWrapper<User> wrapper = new QueryWrapper<>();
-        wrapper.eq("name",user.getName());
+        wrapper.eq("nums",user.getNums());
         User p = userMapper.selectOne(wrapper);
-
         if (p != null){
             if (p.getPassword().equals(user.getPassword())){
                 return p;
@@ -163,9 +163,11 @@ public class UserServiceImpl implements UserService {
             userPojo.setId(x.getId());
             userPojo.setName(x.getName());
             userPojo.setGender(x.getGender());
+            userPojo.setPosition(x.getPosition());
             userPojo.setRole(roleMapper.selectById(x.getRoleId()).getName());
-            userPojo.setDepartment(departmentMapper.selectById(x.getDepartmentId()).getName());
-            userPojo.setPosition(positionMapper.selectById(x.getPositionId()).getName());
+//            System.err.println(x.getName());
+            String dname = departmentMapper.selectById(x.getDepartmentId()).getName();
+            userPojo.setDepartment(dname);
             userPojo.setAddress(x.getAddress());
             userPojo.setEmail(x.getEmail());
             userPojo.setTele(x.getTele());
@@ -254,5 +256,25 @@ public class UserServiceImpl implements UserService {
         return userMapper.findUser(name, nums, temp, address);
 
 
+    }
+
+    /**
+     * 根据工号校验
+     *
+     * @param userwx
+     * @return
+     */
+    @Override
+    public User check(Userwx userwx) {
+        String openid = userwx.getOpenid();
+        QueryWrapper<Userwx> wrapper = new QueryWrapper<>();
+        wrapper.eq("openid",openid);
+        Userwx now = userwxMapper.selectOne(wrapper);
+        now.setNums(userwx.getNums());
+        userwxMapper.updateById(now);
+        QueryWrapper<User> query = new QueryWrapper<>();
+        wrapper.eq("nums",userwx.getNums());
+        User user = userMapper.selectOne(query);
+        return user;
     }
 }

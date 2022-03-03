@@ -2,6 +2,7 @@ package com.exam.demo.service;
 
 import com.exam.demo.entity.Testpaper;
 import com.exam.demo.otherEntity.RtTestpaper;
+import com.exam.demo.results.vo.PageVo;
 import com.exam.demo.results.vo.TestpaperVo;
 
 import java.util.List;
@@ -53,8 +54,8 @@ public interface TestPaperService {
      * @param subject
      * @return
      */
-    List<TestpaperVo> findCurrentExam(Integer testPaperId, String testPaperName, Integer departmentId,
-                                      String subject, Integer currentPage, Integer pageSize);
+    PageVo<TestpaperVo> findCurrentExam(Integer testPaperId, String testPaperName, Integer departmentId,
+                                        String subject, Integer currentPage, Integer pageSize);
 
     /**
      * 分页查询——所有正在进行的考试
@@ -80,7 +81,7 @@ public interface TestPaperService {
      * @param pageSize
      * @return
      */
-    List<TestpaperVo> findHistoricalExam(Integer testPaperId, String testPaperName, Integer departmentId,
+    PageVo<TestpaperVo> findHistoricalExam(Integer testPaperId, String testPaperName, Integer departmentId,
                                          String subject, Integer currentPage, Integer pageSize);
 
     /**
@@ -107,7 +108,7 @@ public interface TestPaperService {
      * @param pageSize
      * @return
      */
-    List<TestpaperVo> findFutureExam(Integer testPaperId, String testPaperName, Integer departmentId,
+    PageVo<TestpaperVo> findFutureExam(Integer testPaperId, String testPaperName, Integer departmentId,
                                      String subject, Integer currentPage, Integer pageSize);
 
     /**

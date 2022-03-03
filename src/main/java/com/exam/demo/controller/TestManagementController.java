@@ -1,5 +1,6 @@
 package com.exam.demo.controller;
 
+import com.exam.demo.results.vo.PageVo;
 import com.exam.demo.service.TestPaperService;
 import com.exam.demo.params.TestManageParam;
 import com.exam.demo.results.vo.TestpaperVo;
@@ -9,6 +10,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
 
@@ -25,6 +27,7 @@ public class TestManagementController {
 
     @GetMapping("findAllCurrentExam")
     @ApiOperation(notes = "LBX", value = "不支持分页——查询所有正在进行的考试")
+    @ApiIgnore
     public WebResult<List<TestpaperVo>> findAllCurrentExam() {
         return WebResult.<List<TestpaperVo>>builder()
                 .code(200)
@@ -35,12 +38,12 @@ public class TestManagementController {
 
     @PostMapping("findCurrentExam")
     @ApiOperation(notes = "LBX", value = "正在考试——组合查询", httpMethod = "POST")
-    public WebResult<List<TestpaperVo>> findCurrentExam(@RequestBody
+    public WebResult<PageVo<TestpaperVo>> findCurrentExam(@RequestBody
                                                         @ApiParam(name = "params", value = "前端注意：\n(1)前端需要发送的media-type为application/json" +
                                                                 "\n(2)对应的部门传对应的id,后台预留的是根据id查询，也可以联系后台改成按照名称查询\n" +
                                                                 "(3)这个接口查询需求还需确定是否要模糊查询\n")
                                                                     TestManageParam params) {
-        return WebResult.<List<TestpaperVo>>builder()
+        return WebResult.<PageVo<TestpaperVo>>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
                 .data(testPaperService.findCurrentExam(params.getTestPaperId(), params.getTestPaperName(),
@@ -50,7 +53,8 @@ public class TestManagementController {
 
 
     @GetMapping("findCurrentExamByPage")
-    @ApiOperation(notes = "LBX", value = "支持分页——查询所有正在进行的考试")
+    @ApiIgnore
+    @ApiOperation(notes = "LBX", value = "支持分页——查询所有正在进行的考试——此接口可忽略，组合查询接口完全可替代类似接口")
     public WebResult<List<TestpaperVo>> findCurrentExamByPage(@RequestParam @ApiParam(name="currentPage", value = "当前页码", required = true) Integer currentPage,
                                                               @RequestParam @ApiParam(name="pageSize", value = "每页容量", required = true) Integer pageSize) {
         return WebResult.<List<TestpaperVo>>builder()
@@ -62,6 +66,7 @@ public class TestManagementController {
 //=====================================================历史考试==========================================================
 
     @GetMapping("findAllHistoricalExam")
+    @ApiIgnore
     @ApiOperation(notes = "LBX", value = "不支持分页——查询所有历史考试")
     public WebResult<List<TestpaperVo>> findAllHistoricalExam() {
         return WebResult.<List<TestpaperVo>>builder()
@@ -73,12 +78,12 @@ public class TestManagementController {
 
     @PostMapping("findHistoricalExam")
     @ApiOperation(notes = "LBX", value = "历史考试——组合查询")
-    public WebResult<List<TestpaperVo>> findHistoricalExam(@RequestBody
+    public WebResult<PageVo<TestpaperVo>> findHistoricalExam(@RequestBody
                                                            @ApiParam(name = "params", value = "前端注意：\n(1)前端需要发送的media-type为application/json" +
                                                                      "\n(2)对应的部门传对应的id,后台预留的是根据id查询，也可以联系后台改成按照名称查询\n" +
                                                                      "(3)这个接口查询需求还需确定是否要模糊查询\n")
                                                                      TestManageParam params) {
-        return WebResult.<List<TestpaperVo>>builder()
+        return WebResult.<PageVo<TestpaperVo>>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
                 .data(testPaperService.findHistoricalExam(params.getTestPaperId(), params.getTestPaperName(),
@@ -87,6 +92,7 @@ public class TestManagementController {
     }
 
     @GetMapping("findHistoricalExamByPage")
+    @ApiIgnore
     @ApiOperation(notes = "LBX", value = "支持分页——查询所有历史考试")
     public WebResult<List<TestpaperVo>> findHistoricalExamByPage(@RequestParam @ApiParam(name="currentPage", value = "当前页码", required = true) Integer currentPage,
                                                               @RequestParam @ApiParam(name="pageSize", value = "每页容量", required = true) Integer pageSize) {
@@ -99,6 +105,7 @@ public class TestManagementController {
 //===================================================未来考试============================================================
 
     @GetMapping("findAllFutureExam")
+    @ApiIgnore
     @ApiOperation(notes = "LBX", value = "不支持分页——查询所有未来的考试")
     public WebResult<List<TestpaperVo>> findAllFutureExam() {
         return WebResult.<List<TestpaperVo>>builder()
@@ -110,12 +117,12 @@ public class TestManagementController {
 
     @PostMapping("findFutureExam")
     @ApiOperation(notes = "LBX", value = "未来考试——组合查询")
-    public WebResult<List<TestpaperVo>> findFutureExam(@RequestBody
+    public WebResult<PageVo<TestpaperVo>> findFutureExam(@RequestBody
                                                        @ApiParam(name = "params", value = "前端注意：\n(1)前端需要发送的media-type为application/json" +
                                                                  "\n(2)对应的部门传对应的id,后台预留的是根据id查询，也可以联系后台改成按照名称查询\n" +
                                                                  "(3)这个接口查询需求还需确定是否要模糊查询\n")
                                                                  TestManageParam params)  {
-        return WebResult.<List<TestpaperVo>>builder()
+        return WebResult.<PageVo<TestpaperVo>>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
                 .data(testPaperService.findFutureExam(params.getTestPaperId(), params.getTestPaperName(),
@@ -124,6 +131,7 @@ public class TestManagementController {
     }
 
     @GetMapping("findFutureExamByPage")
+    @ApiIgnore
     @ApiOperation(notes = "LBX", value = "支持分页——查询所有未来的考试")
     public WebResult<List<TestpaperVo>> findFutureExamByPage(@RequestParam @ApiParam(name="currentPage", value = "当前页码", required = true) Integer currentPage,
                                                                  @RequestParam @ApiParam(name="pageSize", value = "每页容量", required = true) Integer pageSize) {

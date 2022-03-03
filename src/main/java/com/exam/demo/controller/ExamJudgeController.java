@@ -1,7 +1,10 @@
 package com.exam.demo.controller;
 
 import com.exam.demo.entity.ExamJudge;
+import com.exam.demo.params.JudgeParam;
 import com.exam.demo.params.SelectParam;
+import com.exam.demo.results.vo.ExamJudgeVo;
+import com.exam.demo.results.vo.PageVo;
 import com.exam.demo.service.ExamJudgeService;
 import com.exam.demo.results.WebResult;
 import io.swagger.annotations.Api;
@@ -57,14 +60,14 @@ public class ExamJudgeController {
     }
 
     @PostMapping("search")
-    @ApiOperation(notes = "xiong",value = "根据条件查询判断题目接口")
-    public WebResult<List<ExamJudge>> search(@RequestParam @ApiParam(name="current") Integer current,
-                                             @RequestParam @ApiParam(name="pageSize") Integer pageSize,
-                                             @RequestBody @ApiParam(name="queryQuestion") SelectParam selectParam) {
-        return WebResult.<List<ExamJudge>>builder()
+    @ApiOperation(notes = "xiong",value = "组合查询——分页——根据条件查询判断题目, 注意这个接口查询的不是材料题下的判断题")
+    public WebResult<PageVo<ExamJudgeVo>> search(@ApiParam(name = "judgeParam", value = "接受前端请求参数的实体类，前端注意该接口没有把部门作为查询条件")
+                                               @RequestBody JudgeParam judgeParam) {
+        return WebResult.<PageVo<ExamJudgeVo>>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
-                .data(examJudgeService.search(current, pageSize, selectParam))
+                .data(examJudgeService.search(judgeParam.getCurrentPage(), judgeParam.getPageSize(),
+                        judgeParam.getId(), judgeParam.getContext(), 0))
                 .build();
     }
 
@@ -82,7 +85,6 @@ public class ExamJudgeController {
     @ApiOperation(notes = "xiong",value = "向题库添加判断题目接口")
     public WebResult<Integer> saveExamJudge(@RequestParam @ApiParam(name="context",required=true) String context,
                                             @RequestParam @ApiParam(name="answer",required=true) Integer answer,
-                                            @RequestParam @ApiParam(name="difficulty",required=true) Integer difficulty,
                                             @RequestParam @ApiParam(name="subjectId",required=true) Integer subjectId,
                                             @RequestParam @ApiParam(name="score",required=true) Double score,
                                             @RequestParam("file") MultipartFile multipartFile) {
@@ -112,7 +114,7 @@ public class ExamJudgeController {
             ExamJudge examJudge = new ExamJudge();
             examJudge.setContext(context);
             examJudge.setAnswer(answer);
-            examJudge.setDefficulty(difficulty);
+            examJudge.setDefficulty(1);
             examJudge.setSubjectId(subjectId);
             examJudge.setScore(score);
             examJudge.setImgUrl(storeUrlPath);

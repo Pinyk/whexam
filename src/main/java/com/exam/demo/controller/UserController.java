@@ -2,6 +2,7 @@ package com.exam.demo.controller;
 
 import com.exam.demo.entity.RoleMessage;
 import com.exam.demo.entity.User;
+import com.exam.demo.entity.Userwx;
 import com.exam.demo.otherEntity.UserPojo;
 import com.exam.demo.service.UserService;
 import com.exam.demo.results.WebResult;
@@ -31,10 +32,10 @@ public class UserController {
 
     @PostMapping("loginWx")
     @ApiOperation(notes = "gaoyk",value = "微信小程序登录接口")
-    public WebResult<User> loginWx(@RequestBody @ApiParam(name="用户对象",required=true,
-            value = "传入[openid][wxname][image][gender]参数") User user){
-        User msg = userService.loginWx(user);
-        return WebResult.<User>builder()
+    public WebResult<Userwx> loginWx(@RequestBody @ApiParam(name="用户微信对象",required=true,
+            value = "传入[openid][wxname][image][gender]参数") Userwx userwx){
+        Userwx msg = userService.loginWx(userwx);
+        return WebResult.<Userwx>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
                 .data(msg)
@@ -44,7 +45,7 @@ public class UserController {
     @PostMapping("loginWeb")
     @ApiOperation(notes = "gaoyk",value = "管理端登录接口")
     public WebResult<User> loginWeb(@RequestBody @ApiParam(name="用户对象",required=true,
-            value = "传入[name][password]参数") User user){
+            value = "传入[nums][password]参数") User user){
         User msg = userService.loginWeb(user);
         if (msg == null){
             return WebResult.<User>builder()
@@ -130,6 +131,17 @@ public class UserController {
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
                 .data(userService.findUser(name, nums, department, address))
+                .build();
+    }
+
+    @PostMapping("check")
+    @ApiOperation(notes ="gaoyk",value="工号验证用户")
+    public  WebResult<User> findUser(@RequestBody @ApiParam(name="用户微信对象",required=true,
+            value = "传入[openid][nums]参数") Userwx userwx){
+        return WebResult.<User>builder()
+                .code(200)
+                .message(REQUEST_STATUS_SUCCESS)
+                .data(userService.check(userwx))
                 .build();
     }
 }

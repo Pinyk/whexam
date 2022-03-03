@@ -2,6 +2,8 @@ package com.exam.demo.service;
 
 import com.exam.demo.entity.ExamJudge;
 import com.exam.demo.params.SelectParam;
+import com.exam.demo.results.vo.ExamJudgeVo;
+import com.exam.demo.results.vo.PageVo;
 
 import java.util.List;
 
@@ -36,13 +38,12 @@ public interface ExamJudgeService {
     List<ExamJudge> findBySubjectId(Integer subjectId);
 
     /**
-     * 根据条件查询判断题目
+     * 组合查询——分页——根据条件查询判断题目
      * @param current
      * @param pageSize
-     * @param selectParam
      * @return
      */
-    List<ExamJudge> search(Integer current, Integer pageSize, SelectParam selectParam);
+    PageVo<ExamJudgeVo> search(Integer current, Integer pageSize, Integer id, String context, Integer materialQuestion);
 
     /**
      * 向题库添加判断题目

@@ -1,6 +1,8 @@
 package com.exam.demo.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.aliyun.oss.OSSClient;
+import com.exam.demo.Utils.FileCommit;
 import com.exam.demo.entity.Paper;
 import com.exam.demo.service.PaperService;
 import com.exam.demo.results.Consts;
@@ -12,8 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -46,20 +46,10 @@ public class PaperController {
         }
 
         try {
-            //文件名=当前时间到毫秒+原来的文件名
-            String fileName = System.currentTimeMillis()+mpFile.getOriginalFilename();
-            //文件路径
-            String filePath = System.getProperty("user.dir")+System.getProperty("file.separator")+"study";
-            //如果文件路径不存在，新增该路径
-            File file1 = new File(filePath);
-            if(!file1.exists()){
-                file1.mkdir();
-            }
-            //实际的文件地址
-            File dest = new File(filePath+System.getProperty("file.separator")+fileName);
-            //存储到数据库里的相对文件地址
-            String url = "/paper/"+fileName;
-
+//            PaperServiceImpl paperS = new PaperServiceImpl();
+//            String url = paperS.uploadFileAvatar(mpFile);
+            FileCommit fileCommit = new FileCommit();
+            String url = fileCommit.uploadFileAvatar(mpFile);
             Paper paper=new Paper();
             paper.setTitle(title);
             paper.setContext(context);
@@ -70,18 +60,13 @@ public class PaperController {
 
 //　　System.out.println();
             paper.setDate(day);
-            paperService.add(paper);
-            mpFile.transferTo(dest);
+            this.paperService.add(paper);
             return WebResult.<Integer>builder()
                     .code(200)
                     .message(REQUEST_STATUS_SUCCESS)
                     .data(1)
                     .build();
-        } catch (IOException e) {
-            jsonObject.put(Consts.CODE,0);
-            jsonObject.put(Consts.MSG,"保存失败"+e.getMessage());
-            return jsonObject;
-        }catch (Exception e){
+        } catch (Exception e){
             jsonObject.put(Consts.CODE,0);
             jsonObject.put(Consts.MSG,"新增失败"+e.getMessage());
             return jsonObject;
@@ -112,4 +97,16 @@ public class PaperController {
 
     }
 
+    @RequestMapping(value = "/findFile",method = RequestMethod.GET)
+    @ApiOperation(notes = "wxn",value = "查询文件接口")
+    public String findFile(@RequestParam("file") MultipartFile mpFile){
+        OSSClient ossClient = new OSSClient("https://oss-cn-beijing.aliyuncs.com",
+                "LTAI5tGtGgwJkpyb9UDrAPj7", "gTTvD1103beS004i2Cv9fCumY0JftH");
+        // 关闭client
+        ossClient.shutdown();
+        Date expiration = new Date(new Date().getTime() + 3600l * 1000 * 24 * 365 * 10);
+        String url = ossClient.generatePresignedUrl("xiaoningya", mpFile.getOriginalFilename(), expiration).toString();
+//        System.out.println("===================="+url);
+        return url;
+    }
 }

@@ -2,6 +2,8 @@ package com.exam.demo.controller;
 
 
 import com.alibaba.fastjson.JSONObject;
+import com.aliyun.oss.OSSClient;
+import com.exam.demo.Utils.FileCommit;
 import com.exam.demo.entity.Datatype;
 import com.exam.demo.entity.ShowStudy;
 import com.exam.demo.entity.Study;
@@ -17,15 +19,12 @@ import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.File;
-import java.io.IOException;
 import java.util.*;
 
 import static com.exam.demo.results.WebResult.REQUEST_STATUS_SUCCESS;
 
 /**
- * @Author: csx
+ * @Author: csx,wxn
  * @Date: 2022/1/23
  * 学习控制器
  */
@@ -193,76 +192,67 @@ public class StudyController {
                           @RequestParam("file") MultipartFile mpFile,
                           @RequestParam @ApiParam(name="time") String time){
         JSONObject jsonObject = new JSONObject();
-        //获取前端传来的参数
-//        int id = Integer.parseInt(request.getParameter("StudyId").trim());  //学习资料ID
-//        String name = request.getParameter("name").trim();    //学习资料名称
-//        int datatype_id = Integer.parseInt(request.getParameter("datatype_id").trim());          //所属学习类型
-//        String url = "/img/songPic/tubiao.jpg";                     //url
-//        int subject_id = Integer.parseInt(request.getParameter("subject_id").trim());     //所属学科id
-//        int department_id = Integer.parseInt(request.getParameter("department_id").trim());     //所属资料部门id
-        //上传歌曲文件
 
         if(mpFile.isEmpty()){
             jsonObject.put(Consts.CODE,0);
             jsonObject.put(Consts.MSG,"资料上传失败");
             return jsonObject;
         }
-
+//        System.out.println("+++++++++++++++++++++++++++");
         try {
             //文件名=当前时间到毫秒+原来的文件名
-            String fileName = System.currentTimeMillis()+mpFile.getOriginalFilename();
+//            String fileName = System.currentTimeMillis()+mpFile.getOriginalFilename();
             //文件路径
-            String filePath = System.getProperty("user.dir")+System.getProperty("file.separator")+"study";
-            //如果文件路径不存在，新增该路径
-            File file1 = new File(filePath);
-            if(!file1.exists()){
-                file1.mkdir();
-            }
+//            String filePath = System.getProperty("user.dir")+System.getProperty("file.separator")+"study";
+            FileCommit fileCommit = new FileCommit();
+            String url = fileCommit.uploadFileAvatar(mpFile);
+//            System.out.println("===================="+url);
+
+//            OSSClient ossClient = new OSSClient("https://oss-cn-beijing.aliyuncs.com", "LTAI5tGtGgwJkpyb9UDrAPj7", "gTTvD1103beS004i2Cv9fCumY0JftH");
+//            // 关闭client
+//            ossClient.shutdown();
+//            Date expiration = new Date(new Date().getTime() + 3600l * 1000 * 24 * 365 * 10);
+//            String url1 = ossClient.generatePresignedUrl("xiaoningya", mpFile.getOriginalFilename(), expiration).toString();
+//            System.out.println("===================="+url1);
             //实际的文件地址
-            File dest = new File(filePath+System.getProperty("file.separator")+fileName);
+//            File dest = new File(filePath+System.getProperty("file.separator")+fileName);
+//            File dest = new File(filePath);
+//            System.out.println("==================="+filePath);
             //存储到数据库里的相对文件地址
-            String url = "/study/"+fileName;
-//
-//            if (!dest.getParentFile().exists()) {
-//                dest.getParentFile().mkdirs();
-//            }
+//            String url = "/study/"+fileName;
 
             Study study=new Study();
-//            study.setId(study.getId());
-
             study.setName(name);
             study.setDepartmentid(department_id);
             study.setUrl(url);
             study.setSubjectid(subject_id);
             study.setDatatypeid(datatype_id);
             study.setTime(time);
-//            int flag = studyService.insert(study);
+            this.studyService.insert(study);
 //            mpFile.transferTo(dest);
-
-//                jsonObject.put(Consts.CODE,1);
-//                jsonObject.put(Consts.MSG,"保存成功");
-//                jsonObject.put("avator",storeUrlPath);
-//                return jsonObject;
-//            System.out.println("1");
-            studyService.insert(study);
-            mpFile.transferTo(dest);
             return WebResult.<Integer>builder()
                     .code(200)
                     .message(REQUEST_STATUS_SUCCESS)
                     .data(1)
                     .build();
-                   } catch (IOException e) {
-            jsonObject.put(Consts.CODE,0);
-            jsonObject.put(Consts.MSG,"保存失败"+e.getMessage());
-            return jsonObject;
-        }catch (Exception e){
+                   } catch (Exception e){
             jsonObject.put(Consts.CODE,0);
             jsonObject.put(Consts.MSG,"新增失败"+e.getMessage());
             return jsonObject;
         }
-
     }
 
-
+    @RequestMapping(value = "/findFile",method = RequestMethod.GET)
+    @ApiOperation(notes = "wxn",value = "查询文件接口")
+    public String findFile(@RequestParam("file") MultipartFile mpFile){
+        OSSClient ossClient = new OSSClient("https://oss-cn-beijing.aliyuncs.com",
+                "LTAI5tGtGgwJkpyb9UDrAPj7", "gTTvD1103beS004i2Cv9fCumY0JftH");
+        // 关闭client
+        ossClient.shutdown();
+        Date expiration = new Date(new Date().getTime() + 3600l * 1000 * 24 * 365 * 10);
+        String url = ossClient.generatePresignedUrl("xiaoningya", mpFile.getOriginalFilename(), expiration).toString();
+//        System.out.println("===================="+url);
+        return url;
+    }
 
 }

@@ -46,7 +46,7 @@ public class User {
     private int departmentId;
 
     @ApiModelProperty(value = "用户地址")
-    private int positionId;
+    private String position;
 
     @ApiModelProperty(value = "用户密码")
     private String password;

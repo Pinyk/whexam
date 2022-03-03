@@ -1,8 +1,11 @@
 package com.exam.demo.controller;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.exam.demo.entity.ExamSelect;
 import com.exam.demo.params.SelectParam;
 import com.exam.demo.otherEntity.SelectQuestionVo;
+import com.exam.demo.results.vo.ExamSelectVo;
+import com.exam.demo.results.vo.PageVo;
 import com.exam.demo.service.ExamSelectService;
 import com.exam.demo.results.WebResult;
 import io.swagger.annotations.Api;
@@ -90,24 +93,26 @@ public class ExamSelectController {
     }
 
     @PostMapping("searchSingleSelection")
-    @ApiOperation(notes = "xiong",value = "根据条件查询单选题目接口")
-    public WebResult<List<SelectQuestionVo>> searchSingleSelection(@RequestBody
-                                                                 @ApiParam(name = "selectParam", value = "接受前端的请求体,media-type:application/json")
+    @ApiOperation(notes = "xiong",value = "组合查询——分页——根据条件查询单选题目接口")
+    public WebResult<PageVo<ExamSelectVo>> searchSingleSelection(@RequestBody
+                                                                 @ApiParam(name = "selectParam", value = "接受前端的请求体,media-type:application/json," +
+                                                                         "注意：所属部门 后台没有作为查询条件")
                                                                  SelectParam selectParam) {
-        return WebResult.<List<SelectQuestionVo>>builder()
+        return WebResult.<PageVo<ExamSelectVo>>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
                 .data(examSelectService.search(selectParam.getId(), selectParam.getName(), selectParam.getSubject(),
-                        selectParam.getCurrentPage(), selectParam.getPageSize(), 2))
+                        selectParam.getCurrentPage(), selectParam.getPageSize(), 1))
                 .build();
     }
 
     @PostMapping("searchMultipleSelection")
-    @ApiOperation(notes = "xiong",value = "根据条件查询多选题目接口")
-    public WebResult<List<SelectQuestionVo>> searchMultipleSelection(@RequestBody
-                                                                   @ApiParam(name = "selectParam", value = "接受前端的请求体,media-type:application/json")
-                                                                   SelectParam selectParam)  {
-        return WebResult.<List<SelectQuestionVo>>builder()
+    @ApiOperation(notes = "xiong",value = "组合查询——分页——根据条件查询多选题目接口")
+    public WebResult<PageVo<ExamSelectVo>> searchMultipleSelection(@RequestBody
+                                                                     @ApiParam(name = "selectParam", value = "接受前端的请求体,media-type:application/json" +
+                                                                             "，注意：所属部门 后台没有作为查询条件")
+                                                                     SelectParam selectParam)  {
+        return WebResult.<PageVo<ExamSelectVo>>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
                 .data(examSelectService.search(selectParam.getId(), selectParam.getName(), selectParam.getSubject(),
@@ -124,84 +129,84 @@ public class ExamSelectController {
 //                .data(examSelectService.saveExamSelect(examSelect))
 //                .build();
 //    }
-@PostMapping("save")
-@ApiOperation(notes = "xiong",value = "向题库添加选择题目接口")
-public WebResult<Integer> saveExamSelect(@RequestParam @ApiParam(name="context",required=true) String context,
-                                         @RequestParam @ApiParam(name="selectionA",required=true) String selectionA,
-                                         @RequestParam @ApiParam(name="selectionB",required=true) String selectionB,
-                                         @RequestParam @ApiParam(name="selectionC",required=true) String selectionC,
-                                         @RequestParam @ApiParam(name="selectionD",required=true) String selectionD,
-                                         @RequestParam @ApiParam(name="answer",required=true) String answer,
-                                         @RequestParam @ApiParam(name="subjectId",required=true) Integer subjectId,
-                                         @RequestParam @ApiParam(name="score",required=true) Double score,
-                                         @RequestParam @ApiParam(name="type",required=true) Integer type,
-                                         @RequestParam("file") MultipartFile multipartFile) {
-    if(multipartFile.isEmpty()) {
-        return WebResult.<Integer>builder()
-                .code(404)
-                .message(REQUEST_STATUS_ERROR)
-                .data(-1)
-                .build();
-    }
-    //文件名=当前时间到毫秒+原来的文件名
-    String fileName = System.currentTimeMillis() + multipartFile.getOriginalFilename();
-    //文件路径
-    String filePath = System.getProperty("user.dir") + System.getProperty("file.separator") + "img";
-    //如果文件路径不存在，新增该路径
-    File file1 = new File(filePath);
-    if(!file1.exists()){
-        file1.mkdir();
-    }
-    //实际的文件地址
-    File dest = new File(filePath + System.getProperty("file.separator") + fileName);
-    //存储到数据库里的相对文件地址
-    String storeUrlPath = "/img/" + fileName;
-    //    难度固定
-    Integer difficulty = 1;
-    //匹配答案
-    String selection = selectionA + "；" +selectionB + "；" +selectionC + "；" +selectionD;
-    String dealAnswer = "";
-    char[] chars = answer.toCharArray();
-    for (int i = 0; i < chars.length - 1; i++) {
-        switch (chars[i]){
-            case 'A': dealAnswer += selectionA + "；";break;
-            case 'B': dealAnswer += selectionB + "；";break;
-            case 'C': dealAnswer += selectionC + "；";break;
-            case 'D': dealAnswer += selectionD + "；";break;
+    @PostMapping("save")
+    @ApiOperation(notes = "xiong",value = "向题库添加选择题目接口")
+    public WebResult<Integer> saveExamSelect(@RequestParam @ApiParam(name="context",required=true) String context,
+                                             @RequestParam @ApiParam(name="selectionA",required=true) String selectionA,
+                                             @RequestParam @ApiParam(name="selectionB",required=true) String selectionB,
+                                             @RequestParam @ApiParam(name="selectionC",required=true) String selectionC,
+                                             @RequestParam @ApiParam(name="selectionD",required=true) String selectionD,
+                                             @RequestParam @ApiParam(name="answer",required=true) String answer,
+                                             @RequestParam @ApiParam(name="subjectId",required=true) Integer subjectId,
+                                             @RequestParam @ApiParam(name="score",required=true) Double score,
+                                             @RequestParam @ApiParam(name="type",required=true) Integer type,
+                                             @RequestParam("file") MultipartFile multipartFile) {
+        if(multipartFile.isEmpty()) {
+            return WebResult.<Integer>builder()
+                    .code(404)
+                    .message(REQUEST_STATUS_ERROR)
+                    .data(-1)
+                    .build();
+        }
+        //文件名=当前时间到毫秒+原来的文件名
+        String fileName = System.currentTimeMillis() + multipartFile.getOriginalFilename();
+        //文件路径
+        String filePath = System.getProperty("user.dir") + System.getProperty("file.separator") + "img";
+        //如果文件路径不存在，新增该路径
+        File file1 = new File(filePath);
+        if(!file1.exists()){
+            file1.mkdir();
+        }
+        //实际的文件地址
+        File dest = new File(filePath + System.getProperty("file.separator") + fileName);
+        //存储到数据库里的相对文件地址
+        String storeUrlPath = "/img/" + fileName;
+        //    难度固定
+        Integer difficulty = 1;
+        //匹配答案
+        String selection = selectionA + "；" +selectionB + "；" +selectionC + "；" +selectionD;
+        String dealAnswer = "";
+        char[] chars = answer.toCharArray();
+        for (int i = 0; i < chars.length - 1; i++) {
+            switch (chars[i]){
+                case 'A': dealAnswer += selectionA + "；";break;
+                case 'B': dealAnswer = selectionB + "；";break;
+                case 'C': dealAnswer = selectionC + "；";break;
+                case 'D': dealAnswer = selectionD + "；";break;
+            }
+        }
+        switch (chars[chars.length - 1]){
+            case 'A': dealAnswer += selectionA;break;
+            case 'B': dealAnswer = selectionB;break;
+            case 'C': dealAnswer = selectionC;break;
+            case 'D': dealAnswer = selectionD;break;
+        }
+        answer = dealAnswer;
+        try {
+            multipartFile.transferTo(dest);
+            // 添加到数据库
+            ExamSelect examSelect = new ExamSelect();
+            examSelect.setContext(context);
+            examSelect.setSelection(selection);
+            examSelect.setAnswer(answer);
+            examSelect.setDifficulty(difficulty);
+            examSelect.setSubjectId(subjectId);
+            examSelect.setScore(score);
+            examSelect.setType(type);
+            examSelect.setImgUrl(storeUrlPath);
+            return WebResult.<Integer>builder()
+                    .code(200)
+                    .message(REQUEST_STATUS_SUCCESS)
+                    .data(examSelectService.saveExamSelect(examSelect))//添加到数据库
+                    .build();
+        } catch (Exception e) {
+            return WebResult.<Integer>builder()
+                    .code(404)
+                    .message(REQUEST_STATUS_ERROR)
+                    .data(-1)
+                    .build();
         }
     }
-    switch (chars[chars.length - 1]){
-        case 'A': dealAnswer += selectionA;break;
-        case 'B': dealAnswer += selectionB;break;
-        case 'C': dealAnswer += selectionC;break;
-        case 'D': dealAnswer += selectionD;break;
-    }
-    answer = dealAnswer;
-    try {
-        multipartFile.transferTo(dest);
-        // 添加到数据库
-        ExamSelect examSelect = new ExamSelect();
-        examSelect.setContext(context);
-        examSelect.setSelection(selection);
-        examSelect.setAnswer(answer);
-        examSelect.setDifficulty(difficulty);
-        examSelect.setSubjectId(subjectId);
-        examSelect.setScore(score);
-        examSelect.setType(type);
-        examSelect.setImgUrl(storeUrlPath);
-        return WebResult.<Integer>builder()
-                .code(200)
-                .message(REQUEST_STATUS_SUCCESS)
-                .data(examSelectService.saveExamSelect(examSelect))//添加到数据库
-                .build();
-    } catch (Exception e) {
-        return WebResult.<Integer>builder()
-                .code(404)
-                .message(REQUEST_STATUS_ERROR)
-                .data(-1)
-                .build();
-    }
-}
 
     @PostMapping("update")
     @ApiOperation(notes = "xiong",value = "修改题库的选择题目接口")
