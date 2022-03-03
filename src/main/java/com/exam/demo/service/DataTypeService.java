@@ -2,6 +2,7 @@ package com.exam.demo.service;
 
 import com.exam.demo.entity.Datatype;
 import com.exam.demo.entity.ExamJudge;
+import com.sun.prism.PixelFormat;
 
 
 import java.util.List;
@@ -23,6 +24,9 @@ public interface DataTypeService {
     int add (Datatype datatype);
 
     int deleteById(int id);
+
+    //查询所有
+    List<Datatype> findAll();
 
 
 }

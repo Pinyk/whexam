@@ -5,6 +5,7 @@ import com.exam.demo.entity.Datatype;
 import com.exam.demo.entity.Study;
 import com.exam.demo.mapper.DatatypeMapper;
 import com.exam.demo.service.DataTypeService;
+import com.sun.prism.PixelFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,5 +35,10 @@ public class DataTypeServiceImpl implements DataTypeService {
     @Override
     public int deleteById(int id) {
         return datatypeMapper.deleteById(id);
+    }
+
+    @Override
+    public List<Datatype> findAll() {
+        return datatypeMapper.selectList(new LambdaQueryWrapper<>());
     }
 }

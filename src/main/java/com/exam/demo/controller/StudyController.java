@@ -7,7 +7,6 @@ import com.exam.demo.Utils.FileCommit;
 import com.exam.demo.entity.Datatype;
 import com.exam.demo.entity.ShowStudy;
 import com.exam.demo.entity.Study;
-import com.exam.demo.entity.SubjectType;
 import com.exam.demo.service.*;
 import com.exam.demo.results.Consts;
 import com.exam.demo.results.WebResult;
@@ -100,16 +99,26 @@ public class StudyController {
     public WebResult<List<Study>> findBySubject(@RequestParam @ApiParam(name="subject") Integer subject){
 
 
+
+
+
+
         return WebResult.<List<Study>>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
                 .data(studyService.findBySubject(subject))
                 .build();
     }
+
+
     //按科目查询
     @GetMapping("/findByType")
     @ApiOperation(notes = "csx",value = "课程类型查询接口")
     public WebResult<List<Study>> findByType(@RequestParam @ApiParam(name="datatype") Integer datatype){
+
+
+
+
 
 
         return WebResult.<List<Study>>builder()
@@ -121,13 +130,29 @@ public class StudyController {
     //按科目类型查询
     @GetMapping("/findByTypeid")
     @ApiOperation(notes = "csx",value = "学科小类查询接口")
-    public WebResult<List<Study>> findByTypeId(@RequestParam @ApiParam(name="typeid") Integer typeid){
+    public WebResult<ArrayList<ArrayList<Study>>> findByTypeId(@RequestParam @ApiParam(name="typeid") Integer typeid){
 
 
-        return WebResult.<List<Study>>builder()
+        ArrayList<ArrayList<Study>> arrayLists=new ArrayList<>();
+
+        List<Datatype> datatypes=dataTypeService.findAll();
+        List<Study> studies=studyService.findByType(typeid);
+        Iterator<Study> studyIterator = studies.iterator();
+        Iterator<Datatype> datatypeIterator = datatypes.iterator();
+        while(studyIterator.hasNext()){//判断是否有迭代元素
+            Study study=studyIterator.next();
+            while (datatypeIterator.hasNext()){
+                Datatype datatype=datatypeIterator.next();
+                if(datatype.getId()==study.getDatatypeid()){
+                    arrayLists.get(datatype.getId()).add(study);
+                }
+
+            }
+        }
+        return WebResult.<ArrayList<ArrayList<Study>>>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
-                .data(studyService.findByType(typeid))
+                .data(arrayLists)
                 .build();
     }
 
