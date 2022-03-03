@@ -4,9 +4,11 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
 @ApiModel(value = "ProblemsVo", description = "材料题模块，返回的问题集合")
-public class ProblemsVo {
+public class ProblemsVo implements Serializable {
 
     @ApiModelProperty(value = "材料题中的选择题")
     private String selectProblem;

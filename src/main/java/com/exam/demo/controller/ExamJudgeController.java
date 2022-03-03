@@ -60,14 +60,14 @@ public class ExamJudgeController {
     }
 
     @PostMapping("search")
-    @ApiOperation(notes = "xiong",value = "组合查询——分页——根据条件查询判断题目")
+    @ApiOperation(notes = "xiong",value = "组合查询——分页——根据条件查询判断题目, 注意这个接口查询的不是材料题下的判断题")
     public WebResult<PageVo<ExamJudgeVo>> search(@ApiParam(name = "judgeParam", value = "接受前端请求参数的实体类，前端注意该接口没有把部门作为查询条件")
                                                @RequestBody JudgeParam judgeParam) {
         return WebResult.<PageVo<ExamJudgeVo>>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
                 .data(examJudgeService.search(judgeParam.getCurrentPage(), judgeParam.getPageSize(),
-                        judgeParam.getId(), judgeParam.getContext()))
+                        judgeParam.getId(), judgeParam.getContext(), 0))
                 .build();
     }
 

@@ -54,10 +54,11 @@ public class ExamJudgeServiceImpl implements ExamJudgeService {
     }
 
     @Override
-    public PageVo<ExamJudgeVo> search(Integer current, Integer pageSize, Integer id, String context) {
+    public PageVo<ExamJudgeVo> search(Integer current, Integer pageSize, Integer id, String context, Integer materialQuestion) {
         Page<ExamJudge> page = new Page(current, pageSize);
         LambdaQueryWrapper<ExamJudge> queryWrapper = Wrappers.lambdaQuery(ExamJudge.class);
 
+        queryWrapper.eq(ExamJudge::getMaterialQuestion, materialQuestion);
         if (id != null) {
             queryWrapper.eq(ExamJudge::getId, id);
         }
@@ -66,9 +67,11 @@ public class ExamJudgeServiceImpl implements ExamJudgeService {
         }
         Page<ExamJudge> selectPage = examJudgeMapper.selectPage(page, queryWrapper);
         LinkedList<ExamJudgeVo> examJudgeVos = new LinkedList<>();
-        for (ExamJudge record : selectPage.getRecords()) {
-            ExamJudgeVo examJudgeVo = copy(new ExamJudgeVo(), record);
-            examJudgeVos.add(examJudgeVo);
+        if (selectPage.getRecords() != null) {
+            for (ExamJudge record : selectPage.getRecords()) {
+                ExamJudgeVo examJudgeVo = copy(new ExamJudgeVo(), record);
+                examJudgeVos.add(examJudgeVo);
+            }
         }
         return PageVo.<ExamJudgeVo>builder()
                 .values(examJudgeVos)

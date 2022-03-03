@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.exam.demo.entity.*;
+import com.exam.demo.mapper.ExamJudgeMapper;
 import com.exam.demo.mapper.ExamMaterialMapper;
 import com.exam.demo.mapper.MaterialProblemMapper;
 import com.exam.demo.mapper.SubjectMapper;
@@ -37,6 +38,8 @@ public class ExamMaterialServiceImpl implements ExamMaterialService {
     ExamFillBlankService examFillBlankService;
     @Autowired
     SubjectMapper subjectMapper;
+    @Autowired
+    ExamJudgeMapper examJudgeMapper;
 
     /**
      * 根据材料题id查询并分页
@@ -81,7 +84,7 @@ public class ExamMaterialServiceImpl implements ExamMaterialService {
                             problemsVo.setFillBlankProblem(examFillBlank.getContext());
                         }
                     } else if (problemType == 3) {
-                        ExamJudge examJudge = examJudgeService.findById(materialProblem.getProblemId());
+                        ExamJudge examJudge = examJudgeMapper.findByIdAndMaterialQuestion(materialProblem.getProblemId());
                         if (examJudge != null) {
                             problemsVo.setJudgeProblem(examJudge.getContext());
                         }
