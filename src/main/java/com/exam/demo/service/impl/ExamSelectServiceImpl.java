@@ -94,11 +94,22 @@ public class ExamSelectServiceImpl implements ExamSelectService {
         return selectQuestionVos;
     }
 
+
+
     @Override
     public SelectQuestionVo findById(Integer id) {
         ExamSelect examSelect = examSelectMapper.selectById(id);
         SelectQuestionVo selectQuestionVo = change(examSelect);
         return selectQuestionVo;
+    }
+
+    @Override
+    public ExamSelectVo selectById(Integer id) {
+        ExamSelect examSelect = examSelectMapper.selectById(id);
+        ExamSelectVo examSelectVo = new ExamSelectVo();
+        BeanUtils.copyProperties(examSelect, examSelectVo);
+        examSelectVo.setSubject(subjectMapper.selectById(examSelect.getSubjectId()).getName());
+        return examSelectVo;
     }
 
     @Override
@@ -110,9 +121,10 @@ public class ExamSelectServiceImpl implements ExamSelectService {
     }
 //=====================================================组合查询===========================================================
     @Override
-    public PageVo<ExamSelectVo> search(Integer id, String name, String subject, Integer currentPage, Integer pageSize, Integer type) {
+    public PageVo<ExamSelectVo> search(Integer id, String name, String subject, Integer currentPage, Integer pageSize, Integer type, Integer materialQuestion) {
         Page<ExamSelect> page = new Page<>(currentPage, pageSize);
         LambdaQueryWrapper<ExamSelect> wrapperSelect = Wrappers.lambdaQuery(ExamSelect.class);
+        wrapperSelect.eq(ExamSelect::getMaterialQuestion, materialQuestion);
         if (id != null) {
             wrapperSelect.eq(ExamSelect::getId, id);
         }
@@ -146,7 +158,18 @@ public class ExamSelectServiceImpl implements ExamSelectService {
                 .total(examSelectPage.getTotal())
                 .build();
     }
-//======================================================================================================================
+
+    @Override
+    public ExamSelect findByIdAndMaterialQuestion(Integer id, Integer materialQuestion) {
+        LambdaQueryWrapper<ExamSelect> wrapperSelect = Wrappers.lambdaQuery(ExamSelect.class);
+
+        wrapperSelect.eq(id != null, ExamSelect::getId, id);
+        wrapperSelect.eq(materialQuestion!= null, ExamSelect::getMaterialQuestion, materialQuestion);
+
+        return examSelectMapper.selectOne(wrapperSelect);
+    }
+
+    //======================================================================================================================
     @Override
     public Integer saveExamSelect(ExamSelect examSelect) {
         return examSelectMapper.insert(examSelect);

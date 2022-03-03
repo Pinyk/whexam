@@ -1,7 +1,10 @@
 package com.exam.demo.service;
 
 import com.exam.demo.entity.ExamFillBlank;
+import com.exam.demo.entity.ExamJudge;
 import com.exam.demo.otherEntity.SelectQuestionVo;
+import com.exam.demo.results.vo.ExamFillBlankVo;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -19,7 +22,7 @@ public interface ExamFillBlankService {
     /**
      * 根据题目ID查询填空题
      */
-    ExamFillBlank findById(Integer id);
+    ExamFillBlankVo findById(Integer id);
 
     /**
      * 根据科目ID查询填空题
@@ -29,7 +32,7 @@ public interface ExamFillBlankService {
     /**
      * 根据条件查询填空题
      */
-    List<ExamFillBlank> search(Integer current, Integer pageSize, SelectQuestionVo queryQuestion);
+    List<ExamFillBlank> search(Integer current, Integer pageSize, SelectQuestionVo queryQuestion, Integer materialQuestion);
 
     /**
      * 向题库添加填空题

@@ -7,11 +7,11 @@ import lombok.Data;
 import java.io.Serializable;
 
 @Data
-@ApiModel(value = "ExamJudgeVo", description = "组合查询时，试题库管理判断题统一返回对象")
-public class ExamJudgeVo implements Serializable {
+@ApiModel(value = "ExamFillBlankVo", description = "试题库管理填空题统一返回对象")
+public class ExamFillBlankVo implements Serializable {
 
-    @ApiModelProperty(value = "判断题主键")
-    private Integer id;
+    @ApiModelProperty(value = "填空题主键")
+    private int id;
 
     @ApiModelProperty(value = "题目内容")
     private String context;
@@ -20,6 +20,6 @@ public class ExamJudgeVo implements Serializable {
     private String subject;
 
     @ApiModelProperty(value = "分数")
-    private Double score;
+    private double score;
 
 }

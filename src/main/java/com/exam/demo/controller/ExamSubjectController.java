@@ -67,7 +67,7 @@ public class ExamSubjectController {
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
                 .data(examSubjectService.search(subjectParam.getCurrentPage(), subjectParam.getPageSize(),
-                        subjectParam.getId(), subjectParam.getContext()))
+                        subjectParam.getId(), subjectParam.getContext(), 0))
                 .build();
     }
 

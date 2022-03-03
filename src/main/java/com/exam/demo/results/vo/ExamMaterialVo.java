@@ -3,7 +3,6 @@ package com.exam.demo.results.vo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import java.util.List;
 
 import java.io.Serializable;
 @Data

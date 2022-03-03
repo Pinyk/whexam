@@ -34,4 +34,7 @@ public class ExamSelect {
 
     @ApiModelProperty(value = "图片URL")
     private String imgUrl;
+
+    @ApiModelProperty(value = "是否为材料题中的题, 0:不是 1:是")
+    private Integer materialQuestion;
 }

@@ -3,6 +3,7 @@ package com.exam.demo.controller;
 import com.exam.demo.entity.ExamFillBlank;
 import com.exam.demo.otherEntity.SelectQuestionVo;
 import com.exam.demo.results.WebResult;
+import com.exam.demo.results.vo.ExamFillBlankVo;
 import com.exam.demo.service.ExamFillBlankService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -10,6 +11,7 @@ import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.io.File;
 import java.util.List;
@@ -48,9 +50,10 @@ public class ExamFillBlankController {
     }
 
     @GetMapping("findById")
+    @ApiIgnore
     @ApiOperation(notes = "wxn",value = "根据题目ID查询填空题接口")
-    public WebResult<ExamFillBlank> findById(@RequestParam @ApiParam(name="id",required=true) Integer id) {
-        return WebResult.<ExamFillBlank>builder()
+    public WebResult<ExamFillBlankVo> findById(@RequestParam @ApiParam(name="id",required=true) Integer id) {
+        return WebResult.<ExamFillBlankVo>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
                 .data(examFillBlankService.findById(id))
@@ -65,7 +68,7 @@ public class ExamFillBlankController {
         return WebResult.<List<ExamFillBlank>>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
-                .data(examFillBlankService.search(current, pageSize, queryQuestion))
+                .data(examFillBlankService.search(current, pageSize, queryQuestion, 0))
                 .build();
     }
 

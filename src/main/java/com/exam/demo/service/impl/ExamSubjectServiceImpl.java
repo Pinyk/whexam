@@ -53,10 +53,11 @@ public class ExamSubjectServiceImpl implements ExamSubjectService {
     }
 
     @Override
-    public PageVo<ExamSubjectVo> search(Integer current, Integer pageSize, Integer id, String context) {
+    public PageVo<ExamSubjectVo> search(Integer current, Integer pageSize, Integer id, String context, Integer materialQuestion) {
         Page<ExamSubject> page = new Page<>(current, pageSize);
         LambdaQueryWrapper<ExamSubject> queryWrapper = new LambdaQueryWrapper<>();
 
+        queryWrapper.eq(ExamSubject::getMaterialQuestion, materialQuestion);
         if (id != null) {
             queryWrapper.eq(ExamSubject::getId,id);
         }

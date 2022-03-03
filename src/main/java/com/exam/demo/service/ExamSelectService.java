@@ -37,6 +37,8 @@ public interface ExamSelectService {
      */
     SelectQuestionVo findById(Integer id);
 
+    ExamSelectVo selectById(Integer id);
+
     /**
      * 根据科目ID查询所有选择题目
      * @param subjectId
@@ -48,7 +50,10 @@ public interface ExamSelectService {
      * 根据条件查询选择题目
      * @return
      */
-    PageVo<ExamSelectVo> search(Integer id, String name, String subject, Integer currentPage, Integer pageSize, Integer type);
+    PageVo<ExamSelectVo> search(Integer id, String name, String subject, Integer currentPage, Integer pageSize, Integer type, Integer materialQuestion);
+
+
+    ExamSelect findByIdAndMaterialQuestion(Integer id, Integer materialQuestion);
 
     /**
      * 向题库添加选择题目

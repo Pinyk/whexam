@@ -2,7 +2,6 @@ package com.exam.demo.controller;
 
 import com.exam.demo.entity.ExamJudge;
 import com.exam.demo.params.JudgeParam;
-import com.exam.demo.params.SelectParam;
 import com.exam.demo.results.vo.ExamJudgeVo;
 import com.exam.demo.results.vo.PageVo;
 import com.exam.demo.service.ExamJudgeService;
@@ -114,7 +113,7 @@ public class ExamJudgeController {
             ExamJudge examJudge = new ExamJudge();
             examJudge.setContext(context);
             examJudge.setAnswer(answer);
-            examJudge.setDefficulty(1);
+            examJudge.setDifficulty(1);
             examJudge.setSubjectId(subjectId);
             examJudge.setScore(score);
             examJudge.setImgUrl(storeUrlPath);

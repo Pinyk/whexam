@@ -26,7 +26,7 @@ public class ExamMaterialController {
     ExamMaterialService examMaterialService;
 
     @PostMapping("findMaterialProblemByIdAndContext")
-    @ApiOperation(value = "LBX", notes = "根据材料题id查询所有，并进行分页")
+    @ApiOperation(value = "LBX", notes = "材料题的组合查询")
     public WebResult<ExamMaterialVo> findMaterialProblemByIdAndContext(@ApiParam(value = "试题库管理模块，材料题接收前端请求参数的实体类")
                                                              @RequestBody MaterialParam materialParam) {
         return WebResult.<ExamMaterialVo>builder()

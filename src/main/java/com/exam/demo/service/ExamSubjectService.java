@@ -41,7 +41,7 @@ public interface ExamSubjectService {
      * @param pageSize
      * @return
      */
-    PageVo<ExamSubjectVo> search(Integer current, Integer pageSize, Integer id, String context);
+    PageVo<ExamSubjectVo> search(Integer current, Integer pageSize, Integer id, String context, Integer materialQuestion);
 
     /**
      * 向题库添加主观题目
