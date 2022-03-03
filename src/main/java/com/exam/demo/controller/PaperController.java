@@ -49,7 +49,15 @@ public class PaperController {
 //            PaperServiceImpl paperS = new PaperServiceImpl();
 //            String url = paperS.uploadFileAvatar(mpFile);
             FileCommit fileCommit = new FileCommit();
-            String url = fileCommit.uploadFileAvatar(mpFile);
+            fileCommit.uploadFileAvatar(mpFile);
+
+            OSSClient ossClient = new OSSClient("https://oss-cn-beijing.aliyuncs.com",
+                    "LTAI5tGtGgwJkpyb9UDrAPj7", "gTTvD1103beS004i2Cv9fCumY0JftH");
+            // 关闭client
+            ossClient.shutdown();
+            Date expiration = new Date(new Date().getTime() + 3600l * 1000 * 24 * 365 * 10);
+            String url = ossClient.generatePresignedUrl("xiaoningya", mpFile.getOriginalFilename(), expiration).toString();
+
             Paper paper=new Paper();
             paper.setTitle(title);
             paper.setContext(context);

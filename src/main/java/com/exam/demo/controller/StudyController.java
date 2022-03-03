@@ -7,6 +7,7 @@ import com.exam.demo.Utils.FileCommit;
 import com.exam.demo.entity.Datatype;
 import com.exam.demo.entity.ShowStudy;
 import com.exam.demo.entity.Study;
+import com.exam.demo.results.vo.PageVo;
 import com.exam.demo.service.DataTypeService;
 import com.exam.demo.service.DepartmentService;
 import com.exam.demo.service.StudyService;
@@ -84,9 +85,9 @@ public class StudyController {
 
     @GetMapping("findPage")
     @ApiOperation(notes = "csx",value = "按页数查询接口")
-    public WebResult<List<Study>> findPage(@RequestParam @ApiParam(name="page") Integer page,
+    public WebResult<PageVo<Study>> findPage(@RequestParam @ApiParam(name="page") Integer page,
                                 @RequestParam @ApiParam(name="pageSize") Integer pageSize){
-        return WebResult.<List<Study>>builder()
+        return WebResult.<PageVo<Study>>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
                 .data(studyService.findPage(page,pageSize))
@@ -188,7 +189,7 @@ public class StudyController {
     public Object add(@RequestParam @ApiParam(name="name") String name,
                           @RequestParam @ApiParam(name="datatype_id") Integer datatype_id,
                           @RequestParam @ApiParam(name="subject_id",defaultValue = "0") Integer subject_id,
-                          @RequestParam @ApiParam(name="department_id") Integer department_id,
+                          @RequestParam @ApiParam(name="remark") String remark,
                           @RequestParam("file") MultipartFile mpFile,
                           @RequestParam @ApiParam(name="time") String time){
         JSONObject jsonObject = new JSONObject();
@@ -205,7 +206,14 @@ public class StudyController {
             //文件路径
 //            String filePath = System.getProperty("user.dir")+System.getProperty("file.separator")+"study";
             FileCommit fileCommit = new FileCommit();
-            String url = fileCommit.uploadFileAvatar(mpFile);
+            fileCommit.uploadFileAvatar(mpFile);
+
+            OSSClient ossClient = new OSSClient("https://oss-cn-beijing.aliyuncs.com",
+                    "LTAI5tGtGgwJkpyb9UDrAPj7", "gTTvD1103beS004i2Cv9fCumY0JftH");
+            // 关闭client
+            ossClient.shutdown();
+            Date expiration = new Date(new Date().getTime() + 3600l * 1000 * 24 * 365 * 10);
+            String url = ossClient.generatePresignedUrl("xiaoningya", mpFile.getOriginalFilename(), expiration).toString();
 //            System.out.println("===================="+url);
 
 //            OSSClient ossClient = new OSSClient("https://oss-cn-beijing.aliyuncs.com", "LTAI5tGtGgwJkpyb9UDrAPj7", "gTTvD1103beS004i2Cv9fCumY0JftH");
@@ -223,11 +231,12 @@ public class StudyController {
 
             Study study=new Study();
             study.setName(name);
-            study.setDepartmentid(department_id);
+            study.setDepartmentid(1);
             study.setUrl(url);
             study.setSubjectid(subject_id);
             study.setDatatypeid(datatype_id);
             study.setTime(time);
+            study.setBeizhu(remark);
             this.studyService.insert(study);
 //            mpFile.transferTo(dest);
             return WebResult.<Integer>builder()

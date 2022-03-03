@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.exam.demo.entity.Study;
 import com.exam.demo.mapper.StudyMapper;
+import com.exam.demo.results.vo.PageVo;
 import com.exam.demo.service.StudyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -40,11 +41,16 @@ public class StudyServiceImpl implements StudyService {
         return studyMapperr.selectList(queryWrapper);
     }
 
-    public List<Study> findPage(int current, int pageSize){
+    public PageVo<Study> findPage(int current, int pageSize){
         //分页查询
         Page<Study> page=new Page<>(current,pageSize);
         Page<Study> dataPage=studyMapperr.selectPage(page,new LambdaQueryWrapper<>());
-        return dataPage.getRecords();
+        return PageVo.<Study>builder()
+                .values(dataPage.getRecords())
+                .page(current)
+                .size(pageSize)
+                .total(dataPage.getTotal())
+                .build();
     }
 
     public int delete (int study_id ){
