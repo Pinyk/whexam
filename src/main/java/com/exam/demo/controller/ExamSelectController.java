@@ -14,6 +14,7 @@ import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.io.File;
 import java.util.List;
@@ -82,15 +83,6 @@ public class ExamSelectController {
                 .build();
     }
 
-    @GetMapping("findById")
-    @ApiOperation(notes = "xiong",value = "根据题目ID查询选择题目接口")
-    public WebResult<SelectQuestionVo> findById(@RequestParam @ApiParam(name="id",required=true) Integer id) {
-        return WebResult.<SelectQuestionVo>builder()
-                .code(200)
-                .message(REQUEST_STATUS_SUCCESS)
-                .data(examSelectService.findById(id))
-                .build();
-    }
 
     @PostMapping("searchSingleSelection")
     @ApiOperation(notes = "xiong",value = "组合查询——分页——根据条件查询单选题目接口")
@@ -102,7 +94,7 @@ public class ExamSelectController {
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
                 .data(examSelectService.search(selectParam.getId(), selectParam.getName(), selectParam.getSubject(),
-                        selectParam.getCurrentPage(), selectParam.getPageSize(), 1))
+                        selectParam.getCurrentPage(), selectParam.getPageSize(), 1, 0))
                 .build();
     }
 
@@ -116,7 +108,7 @@ public class ExamSelectController {
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
                 .data(examSelectService.search(selectParam.getId(), selectParam.getName(), selectParam.getSubject(),
-                        selectParam.getCurrentPage(), selectParam.getPageSize(), 2))
+                        selectParam.getCurrentPage(), selectParam.getPageSize(), 2, 0))
                 .build();
     }
 

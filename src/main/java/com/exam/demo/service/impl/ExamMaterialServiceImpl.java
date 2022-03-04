@@ -5,14 +5,9 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.exam.demo.entity.*;
-import com.exam.demo.mapper.ExamJudgeMapper;
-import com.exam.demo.mapper.ExamMaterialMapper;
-import com.exam.demo.mapper.MaterialProblemMapper;
-import com.exam.demo.mapper.SubjectMapper;
+import com.exam.demo.mapper.*;
 import com.exam.demo.otherEntity.SelectQuestionVo;
-import com.exam.demo.results.vo.ExamMaterialVo;
-import com.exam.demo.results.vo.PageVo;
-import com.exam.demo.results.vo.ProblemsVo;
+import com.exam.demo.results.vo.*;
 import com.exam.demo.service.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +35,12 @@ public class ExamMaterialServiceImpl implements ExamMaterialService {
     SubjectMapper subjectMapper;
     @Autowired
     ExamJudgeMapper examJudgeMapper;
+    @Autowired
+    ExamSelectMapper examSelectMapper;
+    @Autowired
+    ExamFillBlankMapper examFillBlankMapper;
+    @Autowired
+    ExamSubjectMapper examSubjectMapper;
 
     /**
      * 根据材料题id查询并分页
@@ -66,6 +67,11 @@ public class ExamMaterialServiceImpl implements ExamMaterialService {
                     .eq(MaterialProblem::getMaterialId, examMaterial.getId()));
             if (!materialProblemList.isEmpty()) {
                 ProblemsVo problemsVo = new ProblemsVo();
+                LinkedList<ExamSelectVo> selectProblems = new LinkedList<>();
+                LinkedList<ExamFillBlankVo> fillBlankProblems = new LinkedList<>();
+                LinkedList<ExamJudgeVo> judgeProblems = new LinkedList<>();
+                LinkedList<ExamSubjectVo> subjectProblems = new LinkedList<>();
+
                 for (MaterialProblem materialProblem : materialProblemList) {
                     //获取问题类型
                     //1：选择题 暂时还没想好需不需要分单选多选，边写边看,个人感觉不用分
@@ -74,24 +80,40 @@ public class ExamMaterialServiceImpl implements ExamMaterialService {
                     //4：问答题
                     Integer problemType = materialProblem.getProblemType();
                     if (problemType == 1) {
-                        SelectQuestionVo selectQuestionVo = examSelectService.findById(materialProblem.getProblemId());
-                        if (selectQuestionVo != null) {
-                            problemsVo.setSelectProblem(selectQuestionVo.getContext());
+                        ExamSelect examSelect = examSelectService.findByIdAndMaterialQuestion(materialProblem.getProblemId(), 1);
+                        if (examSelect != null) {
+                            ExamSelectVo examSelectVo = new ExamSelectVo();
+                            BeanUtils.copyProperties(examSelect, examSelectVo);
+                            examSelectVo.setSubject(subjectMapper.selectById(examSelect.getSubjectId()).getName());
+                            selectProblems.add(examSelectVo);
+                            problemsVo.setSelectProblem(selectProblems);
                         }
                     } else if (problemType == 2) {
-                        ExamFillBlank examFillBlank = examFillBlankService.findById(materialProblem.getProblemId());
+                        ExamFillBlank examFillBlank = examFillBlankMapper.findByIdAndMaterialQuestion(materialProblem.getProblemId());
                         if (examFillBlank != null) {
-                            problemsVo.setFillBlankProblem(examFillBlank.getContext());
+                            ExamFillBlankVo examFillBlankVo = new ExamFillBlankVo();
+                            BeanUtils.copyProperties(examFillBlank,examFillBlankVo);
+                            examFillBlankVo.setSubject(subjectMapper.selectById(examFillBlank.getSubjectId()).getName());
+                            fillBlankProblems.add(examFillBlankVo);
+                            problemsVo.setFillBlankProblem(fillBlankProblems);
                         }
                     } else if (problemType == 3) {
                         ExamJudge examJudge = examJudgeMapper.findByIdAndMaterialQuestion(materialProblem.getProblemId());
+                        ExamJudgeVo examJudgeVo = new ExamJudgeVo();
                         if (examJudge != null) {
-                            problemsVo.setJudgeProblem(examJudge.getContext());
+                            BeanUtils.copyProperties(examJudge, examJudgeVo);
+                            examJudgeVo.setSubject(subjectMapper.selectById(examJudge.getSubjectId()).getName());
+                            judgeProblems.add(examJudgeVo);
+                            problemsVo.setJudgeProblem(judgeProblems);
                         }
                     } else if (problemType == 4) {
-                        ExamSubject examSubject = examSubjectService.findById(materialProblem.getProblemId());
+                        ExamSubject examSubject = examSubjectMapper.findByIdAndMaterialQuestion(materialProblem.getProblemId());
                         if (examSubject != null) {
-                            problemsVo.setSubjectProblem(examSubject.getContext());
+                            ExamSubjectVo examSubjectVo = new ExamSubjectVo();
+                            BeanUtils.copyProperties(examSubject,examSubjectVo);
+                            examSubjectVo.setSubject(subjectMapper.selectById(examSubject.getSubjectId()).getName());
+                            subjectProblems.add(examSubjectVo);
+                            problemsVo.setSubjectProblem(subjectProblems);
                         }
                     }
                 }

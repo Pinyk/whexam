@@ -19,7 +19,7 @@ public interface UserService {
      * @param userwx
      * @return
      */
-    public Userwx loginWx(Userwx userwx);
+    public UserPojo loginWx(Userwx userwx);
 
     /**
      * Web登录服务层
@@ -71,5 +71,5 @@ public interface UserService {
      * @param userwx
      * @return
      */
-    public  User check(Userwx userwx);
+    public UserPojo check(Userwx userwx);
 }

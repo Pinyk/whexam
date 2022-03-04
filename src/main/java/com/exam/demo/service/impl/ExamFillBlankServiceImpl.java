@@ -5,8 +5,11 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.exam.demo.entity.ExamFillBlank;
 import com.exam.demo.mapper.ExamFillBlankMapper;
+import com.exam.demo.mapper.SubjectMapper;
 import com.exam.demo.otherEntity.SelectQuestionVo;
+import com.exam.demo.results.vo.ExamFillBlankVo;
 import com.exam.demo.service.ExamFillBlankService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -17,6 +20,8 @@ public class ExamFillBlankServiceImpl implements ExamFillBlankService {
 
     @Autowired
     ExamFillBlankMapper examFillBlankMapper;
+    @Autowired
+    SubjectMapper subjectMapper;
     /**
      * 查询所有填空题
      */
@@ -37,8 +42,15 @@ public class ExamFillBlankServiceImpl implements ExamFillBlankService {
      * 根据题目ID查询填空题
      */
     @Override
-    public ExamFillBlank findById(Integer id) {
-        return examFillBlankMapper.selectById(id);
+    public ExamFillBlankVo findById(Integer id) {
+        ExamFillBlank examFillBlank = examFillBlankMapper.selectById(id);
+        if (examFillBlank != null) {
+            ExamFillBlankVo examFillBlankVo = new ExamFillBlankVo();
+            BeanUtils.copyProperties(examFillBlank,examFillBlankVo);
+            examFillBlankVo.setSubject(subjectMapper.selectById(examFillBlank.getSubjectId()).getName());
+            return examFillBlankVo;
+        }
+        return null;
     }
     /**
      * 根据科目ID查询填空题
@@ -53,9 +65,11 @@ public class ExamFillBlankServiceImpl implements ExamFillBlankService {
      * 根据条件查询填空题
      */
     @Override
-    public List<ExamFillBlank> search(Integer current, Integer pageSize, SelectQuestionVo queryQuestion) {
+    public List<ExamFillBlank> search(Integer current, Integer pageSize, SelectQuestionVo queryQuestion, Integer materialQuestion) {
         Page<ExamFillBlank> page = new Page<>(current, pageSize);
         QueryWrapper<ExamFillBlank> wrapperSubject = new QueryWrapper<>();
+
+        wrapperSubject.eq("material_question", materialQuestion);
         String context = queryQuestion.getContext();
         if(!StringUtils.isEmpty(context)) {
             wrapperSubject.like("context", context);
