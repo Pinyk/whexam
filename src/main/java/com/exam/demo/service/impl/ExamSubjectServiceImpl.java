@@ -3,8 +3,11 @@ package com.exam.demo.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.exam.demo.entity.ExamFillBlank;
 import com.exam.demo.entity.ExamSubject;
+import com.exam.demo.entity.Subject;
 import com.exam.demo.mapper.SubjectMapper;
 import com.exam.demo.params.SelectParam;
 import com.exam.demo.mapper.ExamSubjectMapper;
@@ -53,7 +56,7 @@ public class ExamSubjectServiceImpl implements ExamSubjectService {
     }
 
     @Override
-    public PageVo<ExamSubjectVo> search(Integer current, Integer pageSize, Integer id, String context, Integer materialQuestion) {
+    public PageVo<ExamSubjectVo> search(Integer current, Integer pageSize, Integer id, String context, String subject, Integer materialQuestion) {
         Page<ExamSubject> page = new Page<>(current, pageSize);
         LambdaQueryWrapper<ExamSubject> queryWrapper = new LambdaQueryWrapper<>();
 
@@ -63,6 +66,20 @@ public class ExamSubjectServiceImpl implements ExamSubjectService {
         }
         if (!StringUtils.isBlank(context)) {
             queryWrapper.like(ExamSubject::getContext, context);
+        }
+        if (!StringUtils.isBlank(subject)) {
+            LambdaQueryWrapper<Subject> subjectwrapper = Wrappers.lambdaQuery(Subject.class);
+            subjectwrapper
+                    .select(Subject::getId)
+                    .like(Subject::getName,subject);
+            List<Subject> subjects = subjectMapper.selectList(subjectwrapper);
+            if (!subjects.isEmpty()) {
+                LinkedList<Integer> subjectIds = new LinkedList<>();
+                for (Subject sub : subjects) {
+                    subjectIds.add(sub.getId());
+                }
+                queryWrapper.in(ExamSubject::getSubjectId, subjectIds);
+            }
         }
         Page<ExamSubject> examSubjectPage = examSubjectMapper.selectPage(page, queryWrapper);
         LinkedList<ExamSubjectVo> examSubjectVos = new LinkedList<>();

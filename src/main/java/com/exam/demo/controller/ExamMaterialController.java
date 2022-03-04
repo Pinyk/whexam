@@ -35,5 +35,4 @@ public class ExamMaterialController {
                 .data(examMaterialService.findMaterialProblemByIdAndContext(materialParam.getId(), materialParam.getContext()))
                 .build();
     }
-
 }

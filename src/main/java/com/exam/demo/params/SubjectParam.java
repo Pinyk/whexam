@@ -9,11 +9,14 @@ import java.io.Serializable;
 @ApiModel(value = "SubjectParam", description = "试题库管理模块，主观题接受前端请求参数的实体类")
 public class SubjectParam implements Serializable {
 
-    @ApiModelProperty(value = "主观题主键")
+    @ApiModelProperty(value = "题目编号编号")
     private Integer id;
 
     @ApiModelProperty(value = "题目名称")
     private String context;
+
+    @ApiModelProperty(value = "科目")
+    private String subject;
 
     @ApiModelProperty(value = "当前页码", name = "当前页码{currentPage}")
     private Integer currentPage;

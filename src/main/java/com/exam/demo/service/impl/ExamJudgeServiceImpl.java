@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.exam.demo.entity.ExamJudge;
 import com.exam.demo.entity.ExamSelect;
+import com.exam.demo.entity.Subject;
 import com.exam.demo.mapper.ExamJudgeMapper;
 import com.exam.demo.mapper.SubjectMapper;
 import com.exam.demo.results.vo.ExamJudgeVo;
@@ -54,7 +55,7 @@ public class ExamJudgeServiceImpl implements ExamJudgeService {
     }
 
     @Override
-    public PageVo<ExamJudgeVo> search(Integer current, Integer pageSize, Integer id, String context, Integer materialQuestion) {
+    public PageVo<ExamJudgeVo> search(Integer current, Integer pageSize, Integer id, String context,String subject, Integer materialQuestion) {
         Page<ExamJudge> page = new Page(current, pageSize);
         LambdaQueryWrapper<ExamJudge> queryWrapper = Wrappers.lambdaQuery(ExamJudge.class);
 
@@ -64,6 +65,20 @@ public class ExamJudgeServiceImpl implements ExamJudgeService {
         }
         if (!StringUtils.isBlank(context)) {
             queryWrapper.like(ExamJudge::getContext, context);
+        }
+        if (!StringUtils.isBlank(subject)) {
+            LambdaQueryWrapper<Subject> subjectwrapper = Wrappers.lambdaQuery(Subject.class);
+            subjectwrapper
+                    .select(Subject::getId)
+                    .like(Subject::getName,subject);
+            List<Subject> subjects = subjectMapper.selectList(subjectwrapper);
+            if (!subjects.isEmpty()) {
+                LinkedList<Integer> subjectIds = new LinkedList<>();
+                for (Subject sub : subjects) {
+                    subjectIds.add(sub.getId());
+                }
+                queryWrapper.in(ExamJudge::getSubjectId, subjectIds);
+            }
         }
         Page<ExamJudge> selectPage = examJudgeMapper.selectPage(page, queryWrapper);
         LinkedList<ExamJudgeVo> examJudgeVos = new LinkedList<>();

@@ -12,6 +12,7 @@ import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.io.File;
 import java.util.List;
@@ -28,6 +29,7 @@ public class ExamJudgeController {
     private ExamJudgeService examJudgeService;
 
     @GetMapping("findAll")
+    @ApiIgnore
     @ApiOperation(notes = "xiong",value = "查询所有判断题目接口")
     public WebResult<List<ExamJudge>> findAll() {
         return WebResult.<List<ExamJudge>>builder()
@@ -38,6 +40,7 @@ public class ExamJudgeController {
     }
 
     @GetMapping("findPage")
+    @ApiIgnore
     @ApiOperation(notes = "xiong",value = "分页查询所有判断题目接口")
     public WebResult<List<ExamJudge>> findPage(@RequestParam @ApiParam(name="currentPage") Integer currentPage,
                                                @RequestParam @ApiParam(name="pageSize") Integer pageSize) {
@@ -49,6 +52,7 @@ public class ExamJudgeController {
     }
 
     @GetMapping("findById")
+    @ApiIgnore
     @ApiOperation(notes = "xiong",value = "根据题目ID查询判断题目接口")
     public WebResult<ExamJudge> findById(@RequestParam @ApiParam(name="id",required=true) Integer id) {
         return WebResult.<ExamJudge>builder()
@@ -66,7 +70,7 @@ public class ExamJudgeController {
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
                 .data(examJudgeService.search(judgeParam.getCurrentPage(), judgeParam.getPageSize(),
-                        judgeParam.getId(), judgeParam.getContext(), 0))
+                        judgeParam.getId(), judgeParam.getContext(), judgeParam.getSubject(), 0))
                 .build();
     }
 

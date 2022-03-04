@@ -43,7 +43,7 @@ public interface ExamJudgeService {
      * @param pageSize
      * @return
      */
-    PageVo<ExamJudgeVo> search(Integer current, Integer pageSize, Integer id, String context, Integer materialQuestion);
+    PageVo<ExamJudgeVo> search(Integer current, Integer pageSize, Integer id, String context, String subject, Integer materialQuestion);
 
     /**
      * 向题库添加判断题目

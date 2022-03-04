@@ -4,6 +4,7 @@ import com.exam.demo.entity.ExamFillBlank;
 import com.exam.demo.entity.ExamJudge;
 import com.exam.demo.otherEntity.SelectQuestionVo;
 import com.exam.demo.results.vo.ExamFillBlankVo;
+import com.exam.demo.results.vo.PageVo;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
@@ -32,7 +33,7 @@ public interface ExamFillBlankService {
     /**
      * 根据条件查询填空题
      */
-    List<ExamFillBlank> search(Integer current, Integer pageSize, SelectQuestionVo queryQuestion, Integer materialQuestion);
+    PageVo<ExamFillBlankVo> search(Integer current, Integer pageSize, Integer id, String context, String subject, Integer materialQuestion);
 
     /**
      * 向题库添加填空题

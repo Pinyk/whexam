@@ -2,8 +2,10 @@ package com.exam.demo.controller;
 
 import com.exam.demo.entity.ExamFillBlank;
 import com.exam.demo.otherEntity.SelectQuestionVo;
+import com.exam.demo.params.FillBlankParam;
 import com.exam.demo.results.WebResult;
 import com.exam.demo.results.vo.ExamFillBlankVo;
+import com.exam.demo.results.vo.PageVo;
 import com.exam.demo.service.ExamFillBlankService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -29,6 +31,7 @@ public class ExamFillBlankController {
     ExamFillBlankService examFillBlankService;
 
     @GetMapping("findAll")
+    @ApiIgnore
     @ApiOperation(notes = "wxn",value = "查询所有填空题接口")
     public WebResult<List<ExamFillBlank>> findAll(){
         return WebResult.<List<ExamFillBlank>>builder()
@@ -39,6 +42,7 @@ public class ExamFillBlankController {
     }
 
     @GetMapping("findPage")
+    @ApiIgnore
     @ApiOperation(notes = "wxn",value = "分页查询所有填空题接口")
     public WebResult<List<ExamFillBlank>> findPage(@RequestParam @ApiParam(name="currentPage") Integer currentPage,
                                                    @RequestParam @ApiParam(name="pageSize") Integer pageSize) {
@@ -60,15 +64,15 @@ public class ExamFillBlankController {
                 .build();
     }
 
-    @GetMapping("search")
-    @ApiOperation(notes = "wxn",value = "根据条件查询填空题接口",httpMethod = "GET")
-    public WebResult<List<ExamFillBlank>> search(@RequestParam @ApiParam(name="current") Integer current,
-                                                 @RequestParam @ApiParam(name="pageSize") Integer pageSize,
-                                                 @RequestBody @ApiParam(name="queryQuestion") SelectQuestionVo queryQuestion) {
-        return WebResult.<List<ExamFillBlank>>builder()
+    @PostMapping("search")
+    @ApiOperation(notes = "LBX",value = "组合查询",httpMethod = "POST")
+    public WebResult<PageVo<ExamFillBlankVo>> search(@ApiParam
+                                                 @RequestBody FillBlankParam fillBlankParam) {
+        return WebResult.<PageVo<ExamFillBlankVo>>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
-                .data(examFillBlankService.search(current, pageSize, queryQuestion, 0))
+                .data(examFillBlankService.search(fillBlankParam.getCurrentPage(), fillBlankParam.getPageSize(),
+                        fillBlankParam.getId(), fillBlankParam.getContext(), fillBlankParam.getSubject(), 0))
                 .build();
     }
 
