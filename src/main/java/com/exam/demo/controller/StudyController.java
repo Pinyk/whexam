@@ -7,6 +7,7 @@ import com.exam.demo.Utils.FileCommit;
 import com.exam.demo.entity.Datatype;
 import com.exam.demo.entity.ShowStudy;
 import com.exam.demo.entity.Study;
+import com.exam.demo.entity.StudyByType;
 import com.exam.demo.service.*;
 import com.exam.demo.results.vo.PageVo;
 import com.exam.demo.service.DataTypeService;
@@ -135,10 +136,21 @@ public class StudyController {
     //按科目类型查询
     @GetMapping("/findByTypeid")
     @ApiOperation(notes = "csx",value = "学科小类查询接口")
-    public WebResult<List<List<Study>>> findByTypeId(@RequestParam @ApiParam(name="typeid") Integer typeid){
+    public WebResult<List<StudyByType>> findByTypeId(@RequestParam @ApiParam(name="typeid") Integer typeid){
 //
 //
 //        ArrayList<ArrayList<Study>> arrayLists=new ArrayList<>();
+
+
+//        List<Map>,Map> l=new ArrayList<>();
+//        Map<Map<String, Integer>,Map<String, List<Study>>> map=new HashMap();
+
+        List<StudyByType> list=new LinkedList<>();
+        Map<Integer, List<Study>> tempMap = new HashMap<>();
+
+//        Map<String, Integer> map1 = new HashMap<>();
+//        Map<String, List<Study>> map2 = new HashMap<>();
+
         List<List<Study>> arrayLists=new ArrayList<>();
         List<Datatype> datatypes=dataTypeService.findAll();
         List<Study> studies=studyService.findBySubjectType(typeid);
@@ -147,7 +159,18 @@ public class StudyController {
         while (datatypeIterator.hasNext()){
             Datatype datatype=datatypeIterator.next();
             List<Study> studies1=new LinkedList<>();
-            arrayLists.add(studies1);
+//            arrayLists.add(studies1);
+//            map1.put("id"+String.valueOf(datatype.getId()) ,datatype.getId());
+//            map2.put("data"+String.valueOf(datatype.getId()),studies1);
+//            map.put(map1,map2);
+            StudyByType studyByType=new StudyByType();
+            studyByType.setId(datatype.getId());
+            studyByType.setData(studies1);
+            list.add(studyByType);
+
+//            tempMap.put(datatype.getId(),studies1);
+
+
         }
 
         while(studyIterator.hasNext()){//判断是否有迭代元素
@@ -157,16 +180,36 @@ public class StudyController {
                 Datatype datatype=datatypeIterator1.next();
 
                 if(datatype.getId()==study.getDatatypeid()){
-                    arrayLists.get(datatype.getId()-1).add(study);
+//                    arrayLists.get(datatype.getId()-1).add(study);
+//                    Map<String, Integer> map3 = new HashMap<>();
+//                    map3.put("id":)
+
+
+//                    .get("id"+String.valueOf(datatype.getId()))
+//                    Map<String, Integer> m=new HashMap<>();
+//                    m.put("id"+String.valueOf(datatype.getId()),datatype.getId());
+//                    Map<String, List<Study>> m2=map.get(m);
+//                    List<Study> s= (List<Study>) map.get(m.get("data"+String.valueOf(datatype.getId())));
+//                    s= ;
+//                    map.get(m.get("data"+String.valueOf(datatype.getId())).add(study);
+//                    map.get(map3);
+//                    tempMap.get(datatype.getId()).add(study);
+
+                    list.get(datatype.getId()-1).getData().add(study);
+//                    map1.
+
                     break;
                 }
 
             }
         }
-        return WebResult.<List<List<Study>>>builder()
+//        Dictionary<Integer, List<Study>> dict1 = new Hashtable<>(tempMap);
+//        Dictionary<Map<String, Integer>,Map<String, List<Study>>> dict = new Hashtable<>(map);
+//        System.out.println(dict1);
+        return WebResult.<List<StudyByType>>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
-                .data(arrayLists)
+                .data(list)
                 .build();
     }
 
