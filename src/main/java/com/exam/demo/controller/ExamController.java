@@ -47,8 +47,7 @@ public class ExamController {
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
                 .data(1)
-                .data(examService.submitTest(userAnswer.getTestPaperId(), userAnswer.getUserId(),
-                        userAnswer.getExamJudges(), userAnswer.getExamSelects(), userAnswer.getExamSubjects()))
+                .data(examService.submitTest(userAnswer.getTestPaperId(), userAnswer.getUserId(), userAnswer))
                 .build();
     }
 

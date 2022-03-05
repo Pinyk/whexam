@@ -1,5 +1,6 @@
 package com.exam.demo.otherEntity;
 
+import com.exam.demo.entity.ExamFillBlank;
 import com.exam.demo.entity.ExamJudge;
 import com.exam.demo.entity.ExamSelect;
 import com.exam.demo.entity.ExamSubject;
@@ -27,4 +28,7 @@ public class UserAnswer {
 
     @ApiModelProperty(value = "主观题目")
     private List<ExamSubject> examSubjects;
+
+    @ApiModelProperty(value = "填空题目")
+    private List<ExamFillBlank> examFillBlanks;
 }
