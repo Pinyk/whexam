@@ -1,7 +1,6 @@
 package com.exam.demo.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import com.aliyun.oss.OSSClient;
 import com.exam.demo.Utils.FileCommit;
 import com.exam.demo.entity.Paper;
 import com.exam.demo.service.PaperService;
@@ -14,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -46,27 +44,15 @@ public class PaperController {
         }
 
         try {
-//            PaperServiceImpl paperS = new PaperServiceImpl();
-//            String url = paperS.uploadFileAvatar(mpFile);
             FileCommit fileCommit = new FileCommit();
-            fileCommit.uploadFileAvatar(mpFile);
-
-            OSSClient ossClient = new OSSClient("https://oss-cn-beijing.aliyuncs.com",
-                    "LTAI5tGtGgwJkpyb9UDrAPj7", "gTTvD1103beS004i2Cv9fCumY0JftH");
-            // 关闭client
-            ossClient.shutdown();
-            Date expiration = new Date(new Date().getTime() + 3600l * 1000 * 24 * 365 * 10);
-            String url = ossClient.generatePresignedUrl("xiaoningya", mpFile.getOriginalFilename(), expiration).toString();
-
+            fileCommit.fileCommit(mpFile);
+            String url = fileCommit.downLoad(mpFile);
             Paper paper=new Paper();
             paper.setTitle(title);
             paper.setContext(context);
             paper.setUser_id(user_id);
             paper.setUrl(url);
             Date day=new Date();
-            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-//　　System.out.println();
             paper.setDate(day);
             this.paperService.add(paper);
             return WebResult.<Integer>builder()
@@ -103,18 +89,5 @@ public class PaperController {
                 .data(paperService.findAll())
                 .build();
 
-    }
-
-    @RequestMapping(value = "/findFile",method = RequestMethod.GET)
-    @ApiOperation(notes = "wxn",value = "查询文件接口")
-    public String findFile(@RequestParam("file") MultipartFile mpFile){
-        OSSClient ossClient = new OSSClient("https://oss-cn-beijing.aliyuncs.com",
-                "LTAI5tGtGgwJkpyb9UDrAPj7", "gTTvD1103beS004i2Cv9fCumY0JftH");
-        // 关闭client
-        ossClient.shutdown();
-        Date expiration = new Date(new Date().getTime() + 3600l * 1000 * 24 * 365 * 10);
-        String url = ossClient.generatePresignedUrl("xiaoningya", mpFile.getOriginalFilename(), expiration).toString();
-//        System.out.println("===================="+url);
-        return url;
     }
 }
