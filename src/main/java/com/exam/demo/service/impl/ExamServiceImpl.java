@@ -320,14 +320,24 @@ public class ExamServiceImpl implements ExamService {
      * @param userId
      * @return
      */
+//    @Override
+//    public Map<String, List<Object>> findScoreDetailByUIdAndTPId(Integer testPaperId, Integer userId) {
+//        Map<String, List<Object>> result = findByTestPaperId(testPaperId);
+//
+//        QueryWrapper<Scoredata> queryWrapper = new QueryWrapper<>();
+//        queryWrapper.eq("testpaper_id",testPaperId);
+//        queryWrapper.eq("user_id",userId);
+//        result.put("userAnswerDetail", Collections.singletonList(scoreDataMapper.selectList(queryWrapper)));
+//        return result;
+//    }
     @Override
     public Map<String, List<Object>> findScoreDetailByUIdAndTPId(Integer testPaperId, Integer userId) {
         Map<String, List<Object>> result = findByTestPaperId(testPaperId);
-
-        QueryWrapper<Scoredata> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("testpaper_id",testPaperId);
-        queryWrapper.eq("user_id",userId);
-        result.put("userAnswerDetail", Collections.singletonList(scoreDataMapper.selectList(queryWrapper)));
+        result.put("examJudgeAnswers", scoreDataMapper.findExamJudgeAnswerByTidAndUid(testPaperId, userId));
+        result.put("singleSelectionAnswers", scoreDataMapper.findSingleSelectionAnswerByTidAndUid(testPaperId, userId));
+        result.put("multipleSelectionAnswers", scoreDataMapper.findMultipleSelectionAnswerByTidAndUid(testPaperId, userId));
+        result.put("examSubjectAnswers", scoreDataMapper.findExamSubjectAnswerByTidAndUid(testPaperId, userId));
+        result.put("examFillBlankAnswers", scoreDataMapper.findExamFillBlankAnswerByTidAndUid(testPaperId, userId));
         return result;
     }
 }

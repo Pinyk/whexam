@@ -1,0 +1,35 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.exam.demo.mapper.ScoreDataMapper">
+
+<!--    List<Object> findExamJudgeAnswerByTidAndUid(Integer testPaperId, Integer userID);-->
+    <select id="findExamJudgeAnswerByTidAndUid" parameterType="Integer" resultType="ScoreData">
+        select * from scoredata where testpaper_id = #{testPaperId} and user_id = #{userID} and type = 1;
+    </select>
+
+
+<!--    List<Object> findSingleSelectionAnswerByTidAndUid(Integer testPaperId, Integer userID);-->
+    <select id="findSingleSelectionAnswerByTidAndUid" parameterType="Integer" resultType="ScoreData">
+        select * from scoredata sd, exam_select es where sd.testpaper_id = #{testPaperId} and sd.user_id = #{userID}
+        and sd.type = 2 and sd.problem_id = es.id and es.type = 1;
+    </select>
+
+<!--    List<Object> findMultipleSelectionAnswerByTidAndUid(Integer testPaperId, Integer userID);-->
+    <select id="findMultipleSelectionAnswerByTidAndUid" parameterType="Integer" resultType="ScoreData">
+        select * from scoredata sd, exam_select es where sd.testpaper_id = #{testPaperId} and sd.user_id = #{userID}
+        and sd.type = 2 and sd.problem_id = es.id and es.type = 2;
+    </select>
+
+<!--    List<Object> findExamSubjectAnswerByTidAndUid(Integer testPaperId, Integer userID);-->
+    <select id="findExamSubjectAnswerByTidAndUid" parameterType="Integer" resultType="ScoreData">
+        select * from scoredata where testpaper_id = #{testPaperId} and user_id = #{userID} and type = 3;
+    </select>
+
+<!--    List<Object> findExamFillBlankAnswerByTidAndUid(Integer testPaperId, Integer userID);-->
+    <select id="findExamFillBlankAnswerByTidAndUid" parameterType="Integer" resultType="ScoreData">
+        select * from scoredata where testpaper_id = #{testPaperId} and user_id = #{userID} and type = 4;
+    </select>
+
+</mapper>
