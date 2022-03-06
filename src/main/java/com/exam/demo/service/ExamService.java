@@ -1,6 +1,8 @@
 package com.exam.demo.service;
 
 import com.exam.demo.entity.*;
+import com.exam.demo.otherEntity.UserAnswer;
+import com.exam.demo.results.vo.TestpaperVo;
 
 import java.util.List;
 import java.util.Map;
@@ -18,7 +20,7 @@ public interface ExamService {
      * 提交试卷，将用户作答保留到数据库，并为客观题目评分
      * @return
      */
-    Integer submitTest(Integer testPaperId, Integer userId, List<ExamJudge> examJudges, List<ExamSelect> examSelects, List<ExamSubject> examSubjects);
+    Integer submitTest(Integer testPaperId, Integer userId, UserAnswer userAnswer);
 
     /**
      * 添加试卷试题
@@ -40,4 +42,29 @@ public interface ExamService {
      */
     Integer deleteProblem(Integer id);
 
+    /**
+     * 组合查询试卷
+     * @param testPaperId
+     * @param testPaperName
+     * @param departmentName
+     * @param subject
+     * @return
+     */
+    List<TestpaperVo> combinedQueryTestPaper(Integer testPaperId, String testPaperName, String departmentName, String subject);
+
+    /**
+     * 根据用户ID和试卷ID修改试卷总分
+     * @param testPaperId
+     * @param userId
+     * @return
+     */
+    Integer updateScoreByUserId(Double score, Integer testPaperId, Integer userId);
+
+    /**
+     * 根据用户ID和试卷ID查询考试明细接口
+     * @param testPaperId
+     * @param userId
+     * @return
+     */
+    Map<String, List<Object>> findScoreDetailByUIdAndTPId(Integer testPaperId, Integer userId);
 }

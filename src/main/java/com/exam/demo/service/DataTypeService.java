@@ -1,9 +1,6 @@
 package com.exam.demo.service;
 
 import com.exam.demo.entity.Datatype;
-import com.exam.demo.entity.ExamJudge;
-import com.sun.prism.PixelFormat;
-
 
 import java.util.List;
 

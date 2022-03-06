@@ -8,7 +8,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-@ApiModel(value = "selectQuestion")
+@ApiModel(value = "selectQuestionVo")
 public class SelectQuestionVo {
     @ApiModelProperty(value = "选择题主键")
     private Integer id;

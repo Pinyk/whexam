@@ -8,12 +8,12 @@ import java.io.Serializable;
 
 @Data
 @ApiModel(value = "ExamFillBlankVo", description = "试题库管理填空题统一返回对象")
-public class ExamFillBlankVo implements Serializable {
+public class ExamFillBlankVo implements Serializable{
 
     @ApiModelProperty(value = "填空题主键")
     private int id;
 
-    @ApiModelProperty(value = "题目内容")
+    @ApiModelProperty(value = "题目")
     private String context;
 
     @ApiModelProperty(value = "所属科目")

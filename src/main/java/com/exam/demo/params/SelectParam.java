@@ -20,7 +20,7 @@ public class SelectParam implements Serializable {
     @ApiModelProperty(value = "题目编号", name = "题目编号{id}", example = "1")
     private Integer id;
 
-    @ApiModelProperty(value = "题目名称", name = "题目名称{name}")
+    @ApiModelProperty(value = "题目", name = "题目名称{name}")
     private String name;
 
     @ApiModelProperty(value = "科目", name = "科目{subject}")

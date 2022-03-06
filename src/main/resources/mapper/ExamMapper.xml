@@ -44,4 +44,12 @@
         and e.testpaper_id = #{testPaperId}
     </select>
 
+    <!--  List<Object> findExamFillBlankByTestPaperId(Integer testPaperId);  -->
+    <select id="findExamFillBlankByTestPaperId" parameterType="Integer" resultType="ExamFillBlank">
+        select efb.context, efb.score, efb.img_url
+        from exam e, exam_fb efb
+        where e.problem_id = efb.id and e.type = 4
+        and e.testpaper_id = #{testPaperId}
+    </select>
+
 </mapper>

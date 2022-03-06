@@ -31,6 +31,7 @@ public class ExamSelectController {
     private ExamSelectService examSelectService;
 
     @GetMapping("findAll")
+    @ApiIgnore
     @ApiOperation(notes = "xiong",value = "查询所有选择题目接口")
     public WebResult<List<SelectQuestionVo>> findAll() {
         return WebResult.<List<SelectQuestionVo>>builder()
@@ -41,6 +42,7 @@ public class ExamSelectController {
     }
 
     @GetMapping("findSingleSelection")
+    @ApiIgnore
     @ApiOperation(notes = "xiong",value = "查询所有单选题目接口")
     public WebResult<List<SelectQuestionVo>> findSingleSelection() {
         return WebResult.<List<SelectQuestionVo>>builder()
@@ -51,6 +53,7 @@ public class ExamSelectController {
     }
 
     @GetMapping("findMultipleSelection")
+    @ApiIgnore
     @ApiOperation(notes = "xiong",value = "查询所有多选题目接口")
     public WebResult<List<SelectQuestionVo>> findMultipleSelection() {
         return WebResult.<List<SelectQuestionVo>>builder()
@@ -61,6 +64,7 @@ public class ExamSelectController {
     }
 
     @GetMapping("findSingleSelectionByPage")
+    @ApiIgnore
     @ApiOperation(notes = "xiong",value = "分页查询所有单选题目接口")
     public WebResult<List<SelectQuestionVo>> findSingleSelectionByPage(
             @RequestParam @ApiParam(name="currentPage") Integer currentPage,
@@ -73,6 +77,7 @@ public class ExamSelectController {
     }
 
     @GetMapping("findMultipleSelectionByPage")
+    @ApiIgnore
     @ApiOperation(notes = "xiong",value = "分页查询所有多选题目接口")
     public WebResult<List<SelectQuestionVo>> findMultipleSelectionByPage(
             @RequestParam @ApiParam(name="currentPage") Integer currentPage,

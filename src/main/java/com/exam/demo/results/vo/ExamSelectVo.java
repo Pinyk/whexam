@@ -9,7 +9,7 @@ import java.util.List;
 
 @Data
 @ApiModel(value = "试题库管理选择题", description = "组合查询时，试题库管理选择题统一返回对象")
-public class ExamSelectVo implements Serializable {
+public class ExamSelectVo implements Serializable{
 
     @ApiModelProperty(value = "选择题主键")
     private Integer id;

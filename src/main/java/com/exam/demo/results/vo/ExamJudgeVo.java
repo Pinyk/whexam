@@ -8,7 +8,7 @@ import java.io.Serializable;
 
 @Data
 @ApiModel(value = "ExamJudgeVo", description = "组合查询时，试题库管理判断题统一返回对象")
-public class ExamJudgeVo implements Serializable {
+public class ExamJudgeVo implements Serializable{
 
     @ApiModelProperty(value = "判断题主键")
     private Integer id;

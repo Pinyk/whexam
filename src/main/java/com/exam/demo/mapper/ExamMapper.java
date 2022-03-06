@@ -44,6 +44,13 @@ public interface ExamMapper extends BaseMapper<Exam> {
      */
     List<Object> findExamSubjectByTestPaperId(Integer testPaperId);
 
+    /**
+     * 根据试卷ID查询组成试卷的填空题目
+     * @param testPaperId
+     * @return
+     */
+    List<Object> findExamFillBlankByTestPaperId(Integer testPaperId);
+
 
 
 }

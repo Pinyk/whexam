@@ -11,7 +11,7 @@ import java.io.Serializable;
  */
 @Data
 @ApiModel(value = "组合查询试卷详情", description = "组合查询试卷返回对象" )
-public class TestpaperVo implements Serializable {
+public class TestpaperVo implements Serializable{
 
     @ApiModelProperty(value = "试卷id",
             dataType = "Integer",

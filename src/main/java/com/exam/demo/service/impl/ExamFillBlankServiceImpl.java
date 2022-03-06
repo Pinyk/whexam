@@ -2,18 +2,24 @@ package com.exam.demo.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.exam.demo.entity.ExamFillBlank;
+import com.exam.demo.entity.ExamJudge;
+import com.exam.demo.entity.Subject;
 import com.exam.demo.mapper.ExamFillBlankMapper;
 import com.exam.demo.mapper.SubjectMapper;
 import com.exam.demo.otherEntity.SelectQuestionVo;
 import com.exam.demo.results.vo.ExamFillBlankVo;
+import com.exam.demo.results.vo.ExamJudgeVo;
+import com.exam.demo.results.vo.PageVo;
 import com.exam.demo.service.ExamFillBlankService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
+import java.util.LinkedList;
 import java.util.List;
 @Service
 public class ExamFillBlankServiceImpl implements ExamFillBlankService {
@@ -65,21 +71,48 @@ public class ExamFillBlankServiceImpl implements ExamFillBlankService {
      * 根据条件查询填空题
      */
     @Override
-    public List<ExamFillBlank> search(Integer current, Integer pageSize, SelectQuestionVo queryQuestion, Integer materialQuestion) {
+    public PageVo<ExamFillBlankVo> search(Integer current, Integer pageSize, Integer id, String context, String subject, Integer materialQuestion) {
         Page<ExamFillBlank> page = new Page<>(current, pageSize);
-        QueryWrapper<ExamFillBlank> wrapperSubject = new QueryWrapper<>();
+        LambdaQueryWrapper<ExamFillBlank> queryWrapper = new LambdaQueryWrapper<>();
 
-        wrapperSubject.eq("material_question", materialQuestion);
-        String context = queryQuestion.getContext();
-        if(!StringUtils.isEmpty(context)) {
-            wrapperSubject.like("context", context);
+        queryWrapper.eq(ExamFillBlank::getMaterialQuestion, materialQuestion);
+        queryWrapper.eq(id != null, ExamFillBlank::getId, id);
+        queryWrapper.like(StringUtils.isNotBlank(context), ExamFillBlank::getContext, context);
+        if (!StringUtils.isBlank(subject)) {
+            LambdaQueryWrapper<Subject> subjectwrapper = Wrappers.lambdaQuery(Subject.class);
+            subjectwrapper
+                    .select(Subject::getId)
+                    .like(Subject::getName,subject);
+            List<Subject> subjects = subjectMapper.selectList(subjectwrapper);
+            if (!subjects.isEmpty()) {
+                LinkedList<Integer> subjectIds = new LinkedList<>();
+                for (Subject sub : subjects) {
+                    subjectIds.add(sub.getId());
+                }
+                queryWrapper.in(ExamFillBlank::getSubjectId, subjectIds);
+            }
         }
-        if(queryQuestion.getDifficulty() != null) {
-            wrapperSubject.eq("difficulty", queryQuestion.getDifficulty());
+        Page<ExamFillBlank> examFillBlankPage = examFillBlankMapper.selectPage(page, queryWrapper);
+        LinkedList<ExamFillBlankVo> examFillBlankVos = new LinkedList<>();
+        for (ExamFillBlank record : examFillBlankPage.getRecords()) {
+            ExamFillBlankVo examFillBlankVo = copy(new ExamFillBlankVo(), record);
+            examFillBlankVos.add(examFillBlankVo);
         }
-        Page<ExamFillBlank> examFillBlankPage = examFillBlankMapper.selectPage(page, wrapperSubject);
-        return examFillBlankPage.getRecords();
+
+        return PageVo.<ExamFillBlankVo>builder()
+                .values(examFillBlankVos)
+                .size(pageSize)
+                .page(current)
+                .total(examFillBlankPage.getTotal())
+                .build();
     }
+
+    private ExamFillBlankVo copy(ExamFillBlankVo examFillBlankVo, ExamFillBlank examFillBlank) {
+        BeanUtils.copyProperties(examFillBlank,examFillBlankVo);
+        examFillBlankVo.setSubject(subjectMapper.selectById(examFillBlank.getSubjectId()).getName());
+        return examFillBlankVo;
+    }
+
     /**
      * 向题库添加填空题
      */

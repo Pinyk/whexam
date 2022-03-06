@@ -136,7 +136,7 @@ public class ExamSelectServiceImpl implements ExamSelectService {
                     .select(Subject::getId)
                     .like(Subject::getName,subject);
             List<Subject> subjects = subjectMapper.selectList(subjectwrapper);
-            if (subjects != null) {
+            if (!subjects.isEmpty()) {
                 LinkedList<Integer> subjectIds = new LinkedList<>();
                 for (Subject sub : subjects) {
                     subjectIds.add(sub.getId());

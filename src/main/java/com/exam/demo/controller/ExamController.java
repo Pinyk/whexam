@@ -3,6 +3,7 @@ package com.exam.demo.controller;
 import com.exam.demo.entity.*;
 import com.exam.demo.otherEntity.RtTestpaper;
 import com.exam.demo.otherEntity.UserAnswer;
+import com.exam.demo.results.vo.TestpaperVo;
 import com.exam.demo.service.ExamService;
 import com.exam.demo.service.ScoreService;
 import com.exam.demo.service.TestPaperService;
@@ -47,8 +48,7 @@ public class ExamController {
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
                 .data(1)
-                .data(examService.submitTest(userAnswer.getTestPaperId(), userAnswer.getUserId(),
-                        userAnswer.getExamJudges(), userAnswer.getExamSelects(), userAnswer.getExamSubjects()))
+                .data(examService.submitTest(userAnswer.getTestPaperId(), userAnswer.getUserId(), userAnswer))
                 .build();
     }
 
@@ -137,4 +137,40 @@ public class ExamController {
                 .build();
     }
 
+
+    @GetMapping("findTestPaperDetail")
+    @ApiOperation(notes = "LBX", value = "组合查询试卷（试卷ID，试卷名字，试卷所属部门，科目）")
+    public WebResult<List<TestpaperVo>> combinedQueryTestPaper(@RequestParam(required = false) @ApiParam(name = "试卷id", required = true) Integer testPaperId,
+                                                               @RequestParam(required = false) @ApiParam(name = "试卷名称", required = true) String testPaperName,
+                                                               @RequestParam(required = false) @ApiParam(name = "试卷所属部门", required = true) String departmentName,
+                                                               @RequestParam(required = false) @ApiParam(name = "科目", required = true) String subject) {
+        return WebResult.<List<TestpaperVo>>builder()
+                .code(200)
+                .message(REQUEST_STATUS_SUCCESS)
+                .data(examService.combinedQueryTestPaper(testPaperId, testPaperName, departmentName, subject))
+                .build();
+    }
+
+    @PostMapping("updateScoreByUserId")
+    @ApiOperation(notes = "xiong",value = "根据用户ID和试卷ID修改试卷总分接口")
+    public WebResult<Integer> updateScoreByUserId(@RequestParam @ApiParam(name="testPaperId",required=true) Integer testPaperId,
+                                                  @RequestParam @ApiParam(name="userId",required=true) Integer userId,
+                                                  @RequestParam @ApiParam(name="scoreNum",required=true) Double scoreNum) {
+        return WebResult.<Integer>builder()
+                .code(200)
+                .message(REQUEST_STATUS_SUCCESS)
+                .data(examService.updateScoreByUserId(scoreNum, testPaperId, userId))
+                .build();
+    }
+
+    @GetMapping("findScoreDetailByUIdAndTPId")
+    @ApiOperation(notes = "xiong",value = "根据用户ID和试卷ID查询考试明细接口")
+    public WebResult<Map<String, List<Object>>> findScoreDetailByUIdAndTPId(@RequestParam @ApiParam(name="testPaperId",required=true) Integer testPaperId,
+                                                                            @RequestParam @ApiParam(name="userId",required=true) Integer userId) {
+        return WebResult.<Map<String, List<Object>>>builder()
+                .code(200)
+                .message(REQUEST_STATUS_SUCCESS)
+                .data(examService.findScoreDetailByUIdAndTPId(testPaperId, userId))
+                .build();
+    }
 }
