@@ -10,10 +10,11 @@ import com.exam.demo.entity.Subject;
 import com.exam.demo.mapper.ExamSelectMapper;
 import com.exam.demo.mapper.SubjectMapper;
 import com.exam.demo.otherEntity.SelectQuestionVo;
-import com.exam.demo.params.submit.SelectSubmitParam;
+import com.exam.demo.params.SelectSubmitParam;
 import com.exam.demo.results.vo.ExamSelectVo;
 import com.exam.demo.results.vo.PageVo;
 import com.exam.demo.service.ExamSelectService;
+import io.swagger.models.auth.In;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -169,71 +170,8 @@ public class ExamSelectServiceImpl implements ExamSelectService {
 
         return examSelectMapper.selectOne(wrapperSelect);
     }
-//======================================================================================================================
-//================================新增保存业务============================================================================
-    @Override
-    public Integer saveSingleSelection(SelectSubmitParam selectSubmitParam) {
-        return save(selectSubmitParam, 1);
-    }
 
-    @Override
-    public Integer saveMultipleSelection(SelectSubmitParam selectSubmitParam) {
-        return save(selectSubmitParam, 2);
-    }
-//======================================================================================================================
-    private Integer save(SelectSubmitParam selectSubmitParam, Integer type) {
-        //实例化选择题对象
-        ExamSelect examSelect = new ExamSelect();
-        //添加题目内容
-        if (selectSubmitParam.getContext() != null) {
-            examSelect.setContext(selectSubmitParam.getContext());
-        }
-        //添加题目选项
-        StringBuffer stringBuffer = new StringBuffer();
-        if (selectSubmitParam.getSelectionA() != null) {
-            stringBuffer.append(selectSubmitParam.getSelectionA());
-        }
-        if (selectSubmitParam.getSelectionB() != null) {
-            stringBuffer.append(";");
-            stringBuffer.append(selectSubmitParam.getSelectionB());
-        }
-        if (selectSubmitParam.getSelectionC() != null) {
-            stringBuffer.append(";");
-            stringBuffer.append(selectSubmitParam.getSelectionC());
-        }
-        if (selectSubmitParam.getSelectionD() != null) {
-            stringBuffer.append(";");
-            stringBuffer.append(selectSubmitParam.getSelectionD());
-        }
-        examSelect.setSelection(stringBuffer.toString());
-
-        //添加题目答案
-        examSelect.setAnswer(selectSubmitParam.getAnswer());
-
-        //添加所属科目Id
-        examSelect.setSubjectId(selectSubmitParam.getSubjectId());
-
-        //添加题目难度
-
-        //添加分数
-        examSelect.setScore(selectSubmitParam.getScore());
-        //添加选择题type
-        examSelect.setType(type);
-        //添加materialQuestion
-        examSelect.setMaterialQuestion(0);
-        //添加图片
-        if (selectSubmitParam.getPicture() != null) {
-            //调用COS存储图片
-
-            //将图片对应的url存入数据库
-
-        }
-
-        return examSelectMapper.insert(examSelect);
-    }
-//============================================================================================
-
-
+    //======================================================================================================================
     @Override
     public Integer saveExamSelect(ExamSelect examSelect) {
         return examSelectMapper.insert(examSelect);
@@ -248,4 +186,61 @@ public class ExamSelectServiceImpl implements ExamSelectService {
     public Integer deleteExamSelect(Integer id) {
         return examSelectMapper.deleteById(id);
     }
+//================================新增保存业务===================================================
+    @Override
+    public Integer saveSingleSelection(SelectSubmitParam selectSubmitParam) {
+        return save(selectSubmitParam, 1);
+    }
+
+    @Override
+    public Integer saveMultipleSelection(SelectSubmitParam selectSubmitParam) {
+        return save(selectSubmitParam, 2);
+    }
+
+    private Integer save(SelectSubmitParam selectSubmitParam, Integer type) {
+        //实例化选择题对象
+        ExamSelect examSelect = new ExamSelect();
+        //添加题目内容
+        if (selectSubmitParam.getContext() != null) {
+            examSelect.setContext(selectSubmitParam.getContext());
+        }
+        //添加题目选项
+        StringBuffer stringBuffer = new StringBuffer();
+        if (selectSubmitParam.getA() != null) {
+            stringBuffer.append(selectSubmitParam.getA());
+        }
+        if (selectSubmitParam.getB() != null) {
+            stringBuffer.append(";");
+            stringBuffer.append(selectSubmitParam.getB());
+        }
+        if (selectSubmitParam.getC() != null) {
+            stringBuffer.append(";");
+            stringBuffer.append(selectSubmitParam.getC());
+        }
+        if (selectSubmitParam.getD() != null) {
+            stringBuffer.append(";");
+            stringBuffer.append(selectSubmitParam.getD());
+        }
+        examSelect.setSelection(stringBuffer.toString());
+
+        //添加题目答案
+        examSelect.setAnswer(selectSubmitParam.getAnswer());
+
+        //添加所属科目Id
+        LambdaQueryWrapper<Subject> queryWrapper = Wrappers.lambdaQuery(Subject.class);
+        queryWrapper.select(Subject::getId).eq(Subject::getName, selectSubmitParam.getSubject());
+        examSelect.setSubjectId(subjectMapper.selectOne(queryWrapper).getId());
+
+        //添加题目难度
+
+        //添加分数
+        examSelect.setScore(selectSubmitParam.getScore());
+        //添加单选题type
+        examSelect.setType(type);
+        //添加materialQuestion
+        examSelect.setMaterialQuestion(0);
+
+        return examSelectMapper.insert(examSelect);
+    }
+//============================================================================================
 }

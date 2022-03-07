@@ -1,9 +1,10 @@
-package com.exam.demo.params.submit;
+package com.exam.demo.params;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
 
 @Data
 @ApiModel(value = "SelectSubmitParam", description = "选择题新增实体类")
@@ -12,24 +13,21 @@ public class SelectSubmitParam {
     @ApiModelProperty(name = "题目内容")
     private String context;
 
-    @ApiModelProperty(name = "科目", notes = "前端需要传入科目Id")
-    private Integer SubjectId;
+    @ApiModelProperty(name = "科目")
+    private String subject;
 
     @ApiModelProperty(name = "A选项")
-    private String selectionA;
+    private String a;
 
     @ApiModelProperty(name = "B选项")
-    private String selectionB;
+    private String b;
 
     @ApiModelProperty(name = "C选项")
-    private String selectionC;
+    private String c;
 
     @ApiModelProperty(name = "D选项")
-    private String selectionD;
+    private String d;
 
-    /**
-     * 答案传ABCD
-     */
     @ApiModelProperty(name = "答案")
     private String answer;
 
@@ -37,6 +35,6 @@ public class SelectSubmitParam {
     private Double score;
 
     @ApiModelProperty(name = "图片")
-    private MultipartFile picture;
+    private File picture;
 
 }
