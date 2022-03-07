@@ -1,5 +1,7 @@
 package com.exam.demo.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -9,6 +11,7 @@ import lombok.Data;
 public class ExamSelect {
 
     @ApiModelProperty(value = "选择题主键")
+    @TableId(type = IdType.AUTO)
     private int id;
 
     @ApiModelProperty(value = "题目内容")
