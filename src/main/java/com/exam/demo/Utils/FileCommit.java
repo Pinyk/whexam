@@ -39,4 +39,5 @@ public class FileCommit {
         //路径规则：https://edu-cgq.oss-cn-chengdu.aliyuncs.com/QQ%E5%9B%BE%E7%89%8720200502111905.jpg
         return endpoint+"/"+filename;
     }
+
 }

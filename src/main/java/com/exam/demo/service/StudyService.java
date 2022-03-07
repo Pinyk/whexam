@@ -23,5 +23,6 @@ public interface StudyService {
 
     public List<Study> findBySubjectType(int typeid);
 
+    Study findById(int id);
 
 }
