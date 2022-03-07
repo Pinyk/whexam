@@ -3,6 +3,7 @@ package com.exam.demo.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.exam.demo.entity.ExamSelect;
 import com.exam.demo.otherEntity.SelectQuestionVo;
+import com.exam.demo.params.SelectSubmitParam;
 import com.exam.demo.results.vo.ExamSelectVo;
 import com.exam.demo.results.vo.PageVo;
 
@@ -75,4 +76,18 @@ public interface ExamSelectService {
      * @return
      */
     Integer deleteExamSelect(Integer id);
+
+    /**
+     * 新增单选题
+     * @param selectSubmitParam
+     * @return
+     */
+    Integer saveSingleSelection(SelectSubmitParam selectSubmitParam);
+
+    /**
+     * 新增多选题
+     * @param selectSubmitParam
+     * @return
+     */
+    Integer saveMultipleSelection(SelectSubmitParam selectSubmitParam);
 }

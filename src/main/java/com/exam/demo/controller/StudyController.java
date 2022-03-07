@@ -1,8 +1,6 @@
 package com.exam.demo.controller;
 
-
 import com.alibaba.fastjson.JSONObject;
-import com.aliyun.oss.OSSClient;
 import com.exam.demo.Utils.FileCommit;
 import com.exam.demo.entity.Datatype;
 import com.exam.demo.entity.ShowStudy;
@@ -24,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import sun.plugin2.message.Message;
+
 
 import java.util.*;
 
@@ -296,80 +295,40 @@ public class StudyController {
                           @RequestParam @ApiParam(name="datatype_id") Integer datatype_id,
                           @RequestParam @ApiParam(name="subject_id",defaultValue = "0") Integer subject_id,
                           @RequestParam @ApiParam(name="remark") String remark,
-                          @RequestParam("file") MultipartFile mpFile,
+                          @RequestParam(value = "file") MultipartFile mpFile,
                           @RequestParam @ApiParam(name="time") String time,
-                      @RequestParam @ApiParam(name="typeid") Integer typeid){
+                          @RequestParam @ApiParam(name="typeid") Integer typeid) {
         JSONObject jsonObject = new JSONObject();
 
-        if(mpFile.isEmpty()){
-            jsonObject.put(Consts.CODE,0);
-            jsonObject.put(Consts.MSG,"资料上传失败");
+        if (mpFile.isEmpty()) {
+            jsonObject.put(Consts.CODE, 0);
+            jsonObject.put(Consts.MSG, "资料上传失败");
             return jsonObject;
         }
-//        System.out.println("+++++++++++++++++++++++++++");
         try {
-            //文件名=当前时间到毫秒+原来的文件名
-//            String fileName = System.currentTimeMillis()+mpFile.getOriginalFilename();
-            //文件路径
-//            String filePath = System.getProperty("user.dir")+System.getProperty("file.separator")+"study";
             FileCommit fileCommit = new FileCommit();
-            fileCommit.uploadFileAvatar(mpFile);
-
-            OSSClient ossClient = new OSSClient("https://oss-cn-beijing.aliyuncs.com",
-                    "LTAI5tGtGgwJkpyb9UDrAPj7", "gTTvD1103beS004i2Cv9fCumY0JftH");
-            // 关闭client
-            ossClient.shutdown();
-            Date expiration = new Date(new Date().getTime() + 3600l * 1000 * 24 * 365 * 10);
-            String url = ossClient.generatePresignedUrl("xiaoningya", mpFile.getOriginalFilename(), expiration).toString();
-//            System.out.println("===================="+url);
-
-//            OSSClient ossClient = new OSSClient("https://oss-cn-beijing.aliyuncs.com", "LTAI5tGtGgwJkpyb9UDrAPj7", "gTTvD1103beS004i2Cv9fCumY0JftH");
-//            // 关闭client
-//            ossClient.shutdown();
-//            Date expiration = new Date(new Date().getTime() + 3600l * 1000 * 24 * 365 * 10);
-//            String url1 = ossClient.generatePresignedUrl("xiaoningya", mpFile.getOriginalFilename(), expiration).toString();
-//            System.out.println("===================="+url1);
-            //实际的文件地址
-//            File dest = new File(filePath+System.getProperty("file.separator")+fileName);
-//            File dest = new File(filePath);
-//            System.out.println("==================="+filePath);
-            //存储到数据库里的相对文件地址
-//            String url = "/study/"+fileName;
-
-            Study study=new Study();
-            study.setName(name);
-            study.setDepartmentid(1);
-            study.setUrl(url);
-            study.setSubjectid(subject_id);
-            study.setDatatypeid(datatype_id);
-            study.setTime(time);
-            study.setTypeid(typeid);
-            study.setBeizhu(remark);
-            this.studyService.insert(study);
-//            mpFile.transferTo(dest);
-            return WebResult.<Integer>builder()
-                    .code(200)
-                    .message(REQUEST_STATUS_SUCCESS)
-                    .data(1)
-                    .build();
-                   } catch (Exception e){
-            jsonObject.put(Consts.CODE,0);
-            jsonObject.put(Consts.MSG,"新增失败"+e.getMessage());
+            fileCommit.fileCommit(mpFile);
+            String url = fileCommit.downLoad(mpFile);
+//            System.out.println("======================"+url);
+            Study study = new Study();
+                study.setName(name);
+                study.setDepartmentid(1);
+                study.setUrl(url);
+                study.setSubjectid(subject_id);
+                study.setDatatypeid(datatype_id);
+                study.setTime(time);
+                study.setTypeid(typeid);
+                study.setBeizhu(remark);
+                this.studyService.insert(study);
+                return WebResult.<Integer>builder()
+                        .code(200)
+                        .message(REQUEST_STATUS_SUCCESS)
+                        .data(1)
+                        .build();
+            } catch(Exception e){
+            jsonObject.put(Consts.CODE, 0);
+            jsonObject.put(Consts.MSG, "新增失败" + e.getMessage());
             return jsonObject;
         }
     }
-
-    @RequestMapping(value = "/findFile",method = RequestMethod.GET)
-    @ApiOperation(notes = "wxn",value = "查询文件接口")
-    public String findFile(@RequestParam("file") MultipartFile mpFile){
-        OSSClient ossClient = new OSSClient("https://oss-cn-beijing.aliyuncs.com",
-                "LTAI5tGtGgwJkpyb9UDrAPj7", "gTTvD1103beS004i2Cv9fCumY0JftH");
-        // 关闭client
-        ossClient.shutdown();
-        Date expiration = new Date(new Date().getTime() + 3600l * 1000 * 24 * 365 * 10);
-        String url = ossClient.generatePresignedUrl("xiaoningya", mpFile.getOriginalFilename(), expiration).toString();
-//        System.out.println("===================="+url);
-        return url;
-    }
-
 }

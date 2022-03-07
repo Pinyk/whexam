@@ -40,6 +40,34 @@ public class TestPaperServiceImpl implements TestPaperService {
     private SubjectMapper subjectMapper;
 
     /**
+     *查询进行中考试试卷的卷头
+     * @param userId
+     * @return
+     */
+    @Override
+    public List<Map<String, Object>> findCurrentTestPaperHead(Integer userId) {
+
+        LambdaQueryWrapper<Testpaper> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+
+        return null;
+    }
+
+    /**
+     * 查询历史考试试卷的卷头
+     * @param userId
+     * @return
+     */
+    @Override
+    public List<Map<String, Object>> findHistorialTestPaperHead(Integer userId) {
+        return null;
+    }
+
+    @Override
+    public List<Map<String, Object>> findTestPaperById(int testPaperId) {
+        return null;
+    }
+
+    /**
      * 将 Testpaper 中的内容修改复制到 RtTestpaper 中
      * @param testpaper
      * @return
@@ -56,7 +84,6 @@ public class TestPaperServiceImpl implements TestPaperService {
         rtTestpaper.setTime(testpaper.getTime());
         rtTestpaper.setUserName(userMapper.selectById(testpaper.getUserId()).getName());
         rtTestpaper.setDepartmentName(departmentMapper.selectById(testpaper.getDepartmentId()).getName());
-        rtTestpaper.setShuffle(testpaper.getShuffle());
         return rtTestpaper;
     }
 
@@ -306,6 +333,10 @@ public class TestPaperServiceImpl implements TestPaperService {
                                                      String subject, Integer currentPage, Integer pageSize, String sql) {
         Page<Testpaper> page = new Page<>(currentPage, pageSize);
         LambdaQueryWrapper<Testpaper> queryWrapper = Wrappers.lambdaQuery(Testpaper.class);
+        queryWrapper.select(Testpaper::getId,Testpaper::getSubjectId
+                ,Testpaper::getName,Testpaper::getTotalscore,Testpaper::getPassscore,Testpaper::getDepartmentId
+                ,Testpaper::getStartTime,Testpaper::getDeadTime,Testpaper::getTime, Testpaper::getUserId);
+
         if (testPaperId == null && StringUtils.isBlank(testPaperName) && departmentId == null
                 && StringUtils.isBlank(subject)){
             queryWrapper.last("where " + sql);

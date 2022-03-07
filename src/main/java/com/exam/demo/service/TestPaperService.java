@@ -4,8 +4,10 @@ import com.exam.demo.entity.Testpaper;
 import com.exam.demo.otherEntity.RtTestpaper;
 import com.exam.demo.results.vo.PageVo;
 import com.exam.demo.results.vo.TestpaperVo;
+import com.exam.demo.results.vo.TestpaperVo2;
 
 import java.util.List;
+import java.util.Map;
 
 public interface TestPaperService {
 
@@ -118,4 +120,26 @@ public interface TestPaperService {
      * @return
      */
     List<TestpaperVo> findFutureExamByPage(Integer currentPage, Integer pageSize);
+
+    /**
+     *查询进行中考试试卷的卷头
+     * @param userId
+     * @return
+     */
+    List<Map<String, Object>> findCurrentTestPaperHead(Integer userId);
+
+
+    /**
+     * 查询历史考试试卷的卷头
+     * @param userId
+     * @return
+     */
+    List<Map<String, Object>> findHistorialTestPaperHead(Integer userId);
+
+    /**
+     * 根据试卷id查询试卷详情
+     * @param testPaperId
+     * @return
+     */
+    List<Map<String, Object>> findTestPaperById(int testPaperId);
 }

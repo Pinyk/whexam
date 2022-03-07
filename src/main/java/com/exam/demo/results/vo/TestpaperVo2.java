@@ -1,21 +1,19 @@
-package com.exam.demo.entity;
+package com.exam.demo.results.vo;
 
-import com.baomidou.mybatisplus.annotation.TableField;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.util.Date;
-
 @Data
-@ApiModel(value = "testPaper")
-public class Testpaper {
+@ApiModel
+public class TestpaperVo2 {
 
     @ApiModelProperty(value = "试卷主键")
     private int id;
 
     @ApiModelProperty(value = "试卷对应科目")
-    private int subjectId;
+    private String subjectName;
 
     @ApiModelProperty(value = "试卷名称")
     private String name;
@@ -35,12 +33,13 @@ public class Testpaper {
     @ApiModelProperty(value = "考试总时长")
     private int time;
 
-    @ApiModelProperty(value = "试卷发布者ID")
-    private int userId;
-
-    @ApiModelProperty(value = "试卷所属部门ID")
-    private int departmentId;
-
     @ApiModelProperty(value = "试题是否打乱")
-    private String repeat;
+    private boolean repeat;
+
+    @ApiModelProperty(value = "试卷完成情况：已完成/未完成")
+    private String state;
+
+    @ApiModelProperty(value = "分数")
+    private double score;
+
 }
