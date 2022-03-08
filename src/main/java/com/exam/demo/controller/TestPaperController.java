@@ -20,7 +20,7 @@ import java.util.Map;
 import static com.exam.demo.results.WebResult.REQUEST_STATUS_SUCCESS;
 
 @RestController
-@RequestMapping("testPaper")
+@RequestMapping("/testPaper")
 @Api(value="/testPaper",tags={"试卷卷头操作接口"})
 public class TestPaperController {
 
@@ -63,7 +63,6 @@ public class TestPaperController {
     public WebResult<List<Map<String, Object>>> findHistorialTestPaperHead(Integer userId) {
         return WebResult.<List<Map<String, Object>>>builder()
                 .code(200)
-
                 .message(REQUEST_STATUS_SUCCESS)
                 .data(testPaperService.findHistorialTestPaperHead(userId))
                 .build();

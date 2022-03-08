@@ -7,10 +7,8 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.exam.demo.entity.Subject;
 import com.exam.demo.entity.Testpaper;
-import com.exam.demo.mapper.DepartmentMapper;
-import com.exam.demo.mapper.SubjectMapper;
-import com.exam.demo.mapper.TestPaperMapper;
-import com.exam.demo.mapper.UserMapper;
+import com.exam.demo.entity.UserTestPaperScore;
+import com.exam.demo.mapper.*;
 import com.exam.demo.otherEntity.RtTestpaper;
 import com.exam.demo.results.vo.PageVo;
 import com.exam.demo.service.TestPaperService;
@@ -23,6 +21,8 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+
+import static com.google.common.base.Predicates.and;
 
 @Service
 public class TestPaperServiceImpl implements TestPaperService {
@@ -39,6 +39,8 @@ public class TestPaperServiceImpl implements TestPaperService {
     @Autowired
     private SubjectMapper subjectMapper;
 
+    @Autowired
+    private ScoreMapper scoreMapper;
     /**
      *查询进行中考试试卷的卷头
      * @param userId
@@ -46,10 +48,41 @@ public class TestPaperServiceImpl implements TestPaperService {
      */
     @Override
     public List<Map<String, Object>> findCurrentTestPaperHead(Integer userId) {
+        List<Map<String,Object>> testpapers = new ArrayList<>();
 
-        LambdaQueryWrapper<Testpaper> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        //当前正在进行的考试
+        QueryWrapper<Testpaper> QueryWrapper = new QueryWrapper<>();
 
-        return null;
+        QueryWrapper.lambda()
+                .ge(Testpaper::getDeadTime,new Timestamp(new Date().getTime()))
+                .le(Testpaper::getStartTime,new Timestamp(new Date().getTime()));
+        List<Testpaper> testpapers1 = testPaperMapper.selectList(QueryWrapper);
+
+        for (Testpaper testpaper: testpapers1){
+            Map<String,Object> map = new LinkedHashMap<>();
+            map.put("id",testpaper.getId());
+            map.put("subjectName",subjectMapper.selectById(testpaper.getSubjectId()).getName());
+            map.put("name",testpaper.getName());
+            map.put("totalscore",testpaper.getTotalscore());
+            map.put("passscore",testpaper.getPassscore());
+            map.put("startTime",testpaper.getStartTime());
+            map.put("deadTime",testpaper.getDeadTime());
+            map.put("time",testpaper.getTime());
+            map.put("repeat",testpaper.getRepeat());
+            List<UserTestPaperScore> list1 = scoreMapper.findByUserId(userId);
+            List<UserTestPaperScore> list2 = scoreMapper.findByTestPaperId(testpaper.getId());
+            list1.retainAll(list2);
+            if (list1.isEmpty()){
+                map.put("state","未完成");
+                map.put("score",null);
+            }else {
+                map.put("state","已完成");
+                map.put("score",list1.get(0).getScorenum());
+            }
+            testpapers.add(map);
+
+        }
+       return testpapers;
     }
 
     /**
@@ -59,12 +92,43 @@ public class TestPaperServiceImpl implements TestPaperService {
      */
     @Override
     public List<Map<String, Object>> findHistorialTestPaperHead(Integer userId) {
-        return null;
+        List<Map<String,Object>> testpapers = new ArrayList<>();
+
+        QueryWrapper<Testpaper> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lt("dead_time", new Timestamp(new Date().getTime()));
+
+        for (Testpaper testpaper: testPaperMapper.selectList(queryWrapper)){
+            Map<String,Object> map = new LinkedHashMap<>();
+            map.put("id",testpaper.getId());
+            map.put("subjectName",subjectMapper.selectById(testpaper.getSubjectId()).getName());
+            map.put("name",testpaper.getName());
+            map.put("totalscore",testpaper.getTotalscore());
+            map.put("passscore",testpaper.getPassscore());
+            map.put("startTime",testpaper.getStartTime());
+            map.put("deadTime",testpaper.getDeadTime());
+            map.put("time",testpaper.getTime());
+            map.put("repeat",testpaper.getRepeat());
+            List<UserTestPaperScore> list1 = scoreMapper.findByUserId(userId);
+            List<UserTestPaperScore> list2 = scoreMapper.findByTestPaperId(testpaper.getId());
+            list1.retainAll(list2);
+            if (list1.isEmpty()){
+                map.put("state","未完成");
+                map.put("score",null);
+            }else {
+                map.put("state","已完成");
+                map.put("score",list1.get(0).getScorenum());
+            }
+            testpapers.add(map);
+
+        }
+        return testpapers;
+
     }
 
     @Override
     public List<Map<String, Object>> findTestPaperById(int testPaperId) {
-        return null;
+        List<Map<String,Object>> testpapers = new ArrayList<>();
+        return testpapers;
     }
 
     /**
@@ -114,8 +178,8 @@ public class TestPaperServiceImpl implements TestPaperService {
 
         QueryWrapper<Testpaper> queryWrapper = new QueryWrapper<>();
         queryWrapper
-                .ge("dead_time", new Timestamp(new Date().getTime()))
-                .le("start_time", new Timestamp(new Date().getTime()));
+                .ge("start_time", new Timestamp(new Date().getTime()))
+                .le("dead_time", new Timestamp(new Date().getTime()));
 
         for(Testpaper testpaper : testPaperMapper.selectList(queryWrapper)) {
             RtTestpaper rtTestpaper = change(testpaper);
@@ -133,7 +197,7 @@ public class TestPaperServiceImpl implements TestPaperService {
         List<RtTestpaper> rtTestpaperList = new ArrayList<>();
 
         QueryWrapper<Testpaper> queryWrapper = new QueryWrapper<>();
-        queryWrapper.lt("dead_time", new Timestamp(new Date().getTime()));
+        queryWrapper.gt("dead_time", new Timestamp(new Date().getTime()));
 
         for(Testpaper testpaper : testPaperMapper.selectList(queryWrapper)) {
             RtTestpaper rtTestpaper = change(testpaper);
