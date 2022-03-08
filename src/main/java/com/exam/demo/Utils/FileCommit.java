@@ -14,7 +14,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Date;
 
 @Component
 public class FileCommit {
@@ -80,22 +79,21 @@ public class FileCommit {
                 new GeneratePresignedUrlRequest(bucketName,mpFile.getOriginalFilename(), HttpMethodName.GET);
         // 设置签名过期时间(可选), 过期时间不做限制，只需比当前时间大, 若未进行设置, 则默认使用ClientConfig中的签名过期时间(5分钟)
         // 这里设置签名在半个小时后过期
-        Date expirationDate = new Date(System.currentTimeMillis() + 30 * 60 * 1000);
-        req.setExpiration(expirationDate);
+//        Date expirationDate = new Date(System.currentTimeMillis() + 12 * 24 * 60 * 60 * 1000);
+//        req.setExpiration(expirationDate);
         String  url = String.valueOf(cosclient.generatePresignedUrl(req));
         //输出可供下载的文件路径
         cosclient.shutdown();
         return url;
     }
+
     public void delete(String key){
-        // 1 初始化用户身份信息(appid, secretId, secretKey)
-        COSCredentials cred = new BasicCOSCredentials(SecretId, SecretKey);
-        // 2 设置bucket的区域, COS地域的简称 https://cloud.tencent.com/document/product/436/6224
-        ClientConfig clientConfig = new ClientConfig(new Region(region));
-        // 3 生成cos客户端
-        COSClient cosclient = new COSClient(cred, clientConfig);
+        //  生成cos客户端
+        COSClient cosclient = getCoSClient4Picture();
 
         cosclient.deleteObject(bucketName,key);
+
+        cosclient.shutdown();
 
     }
 
