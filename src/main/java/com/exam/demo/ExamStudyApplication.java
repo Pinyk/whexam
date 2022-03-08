@@ -8,7 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class ExamStudyApplication {
 
     public static void main(String[] args) {
-
+//revert
         System.out.println(1);
         SpringApplication.run(ExamStudyApplication.class, args);
     }
