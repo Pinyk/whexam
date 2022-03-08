@@ -4,6 +4,9 @@ import com.exam.demo.entity.RoleMessage;
 import com.exam.demo.entity.User;
 import com.exam.demo.entity.Userwx;
 import com.exam.demo.otherEntity.UserPojo;
+import com.exam.demo.params.UserSelectParam;
+import com.exam.demo.results.vo.PageVo;
+import com.exam.demo.results.vo.UserSelectVo;
 import com.exam.demo.service.UserService;
 import com.exam.demo.results.WebResult;
 import io.swagger.annotations.Api;
@@ -126,11 +129,11 @@ public class UserController {
     }
     @PostMapping("findUser")
     @ApiOperation(notes ="liu",value="根据条件查询用户")
-    public  WebResult<List<RoleMessage>> findUser(@ApiParam("String name")@RequestParam String name, @ApiParam("String name")@RequestParam String nums,@ApiParam("String name") @RequestParam String department,@ApiParam("String name")@RequestParam String address){
-        return WebResult.<List<RoleMessage>>builder()
-                .code(200)
+    public  WebResult<PageVo<UserSelectVo>> findUser(@ApiParam(name="前端查询条件 UserSelectParam 查询条件实体类") UserSelectParam userSelectParam){
+            return WebResult.<PageVo<UserSelectVo>>builder()
+                    .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
-                .data(userService.findUser(name, nums, department, address))
+                .data(userService.findUser(userSelectParam.getName(), userSelectParam.getNums(), userSelectParam.getDepartment(),userSelectParam.getAddress(),userSelectParam.getCurrentPage(),userSelectParam.getPageSize(),2))
                 .build();
     }
 

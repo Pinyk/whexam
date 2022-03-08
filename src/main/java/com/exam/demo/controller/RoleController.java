@@ -1,7 +1,9 @@
 package com.exam.demo.controller;
 
-import com.exam.demo.entity.Power;
+import com.exam.demo.results.vo.PowerVo;
 import com.exam.demo.entity.Role;
+import com.exam.demo.results.vo.PageVo;
+import com.exam.demo.results.vo.UserSelectVo;
 import com.exam.demo.service.RoleService;
 import com.exam.demo.results.WebResult;
 import io.swagger.annotations.Api;
@@ -84,11 +86,11 @@ public class RoleController {
     }
     @GetMapping("findRole")
     @ApiOperation(notes="liu",value="根据条件查找角色")
-    public  WebResult<List<Power>> findRole(@ApiParam("String nums")@RequestParam  String nums, @ApiParam(" String name")@RequestParam String name,@ApiParam("String department") @RequestParam String department,@ApiParam("String rolename") @RequestParam String rolename){
-        return WebResult.<List<Power>>builder()
+    public  WebResult<PageVo<PowerVo>> findRole(@ApiParam("String nums")@RequestParam  String nums, @ApiParam(" String name")@RequestParam String name, @ApiParam("String department") @RequestParam String department,Integer currentPage,Integer pageSize){
+        return WebResult.<PageVo<PowerVo>>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
-                .data(roleService.findRole(nums, name, department, rolename))
+                .data(roleService.findRole(nums, name, department,currentPage,pageSize))
                 .build();
     }
 

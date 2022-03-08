@@ -1,5 +1,7 @@
 package com.exam.demo.params;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -11,6 +13,7 @@ import java.io.File;
 public class SelectSubmitParam {
 
     @ApiModelProperty(name = "题目内容")
+    @TableId()
     private String context;
 
     @ApiModelProperty(name = "科目")
