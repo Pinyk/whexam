@@ -37,7 +37,7 @@ public class TestPaperController {
                 .data(testPaperService.findAll())
                 .build();
     }
-//=========================================根据试卷id查询试卷详情============================================================
+//=========================================根据试卷id查询试卷详情===========================================================
     @GetMapping("findTestPaperById")
     @ApiOperation(notes = "", value = "根据试卷id查询试卷详情")
     public WebResult<List<Map<String, Object>>> findTestPaperById(@RequestParam int testPaperId) {
@@ -47,7 +47,7 @@ public class TestPaperController {
                 .data(testPaperService.findTestPaperById(testPaperId))
                 .build();
     }
-//=============================================查询卷头==============================================================
+//=============================================查询卷头==================================================================
     @PostMapping("findCurrentTestPaperHead")
     @ApiOperation(notes = "LBX", value = "查询进行中考试试卷的卷头")
     public WebResult<List<Map<String, Object>>> findCurrentTestPaperHead(Integer userId) {

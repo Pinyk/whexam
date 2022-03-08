@@ -1,10 +1,9 @@
 package com.exam.demo.controller;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.exam.demo.entity.ExamSelect;
 import com.exam.demo.params.SelectParam;
 import com.exam.demo.otherEntity.SelectQuestionVo;
-import com.exam.demo.params.SelectSubmitParam;
+import com.exam.demo.params.submit.SelectSubmitParam;
 import com.exam.demo.results.vo.ExamSelectVo;
 import com.exam.demo.results.vo.PageVo;
 import com.exam.demo.service.ExamSelectService;
@@ -12,7 +11,6 @@ import com.exam.demo.results.WebResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -90,7 +88,7 @@ public class ExamSelectController {
                 .build();
     }
 
-
+//===============================================组合查询=================================================================
     @PostMapping("searchSingleSelection")
     @ApiOperation(notes = "xiong",value = "组合查询——分页——根据条件查询单选题目接口")
     public WebResult<PageVo<ExamSelectVo>> searchSingleSelection(@RequestBody
@@ -118,6 +116,32 @@ public class ExamSelectController {
                         selectParam.getCurrentPage(), selectParam.getPageSize(), 2, 0))
                 .build();
     }
+//===================================================单选题新增保存接口====================================================
+    @PostMapping("saveSingleSelection")
+    @ApiOperation(value = "单选题新增保存接口", notes = "LBX")
+    public WebResult<String> saveSingleSelection(
+            @ApiParam(name = "选择题新增实体类")
+            @RequestBody SelectSubmitParam selectSubmitParam) {
+
+        return WebResult.<String>builder()
+                .code(200)
+                .message(REQUEST_STATUS_SUCCESS)
+                .data("共新增：" + examSelectService.saveSingleSelection(selectSubmitParam) + "条数据")
+                .build();
+    }
+
+    @PostMapping("saveMultipleSelection")
+    @ApiOperation(value = "多选题新增保存接口", notes = "LBX")
+    public WebResult<String> saveMultipleSelection(
+            @ApiParam(name = "选择题新增实体类")
+            @RequestBody SelectSubmitParam selectSubmitParam) {
+        return WebResult.<String>builder()
+                .code(200)
+                .message(REQUEST_STATUS_SUCCESS)
+                .data("共新增：" + examSelectService.saveMultipleSelection(selectSubmitParam) + "条数据")
+                .build();
+    }
+//======================================================================================================================
 
 //    @PostMapping("save")
 //    @ApiOperation(notes = "xiong",value = "向题库添加选择题目接口")
@@ -206,31 +230,6 @@ public class ExamSelectController {
                     .data(-1)
                     .build();
         }
-    }
-
-    @PostMapping("saveSingleSelection")
-    @ApiOperation(value = "单选题新增保存接口", notes = "LBX")
-    public WebResult<String> saveSingleSelection(
-            @ApiParam(name = "选择题新增实体类")
-            @RequestBody SelectSubmitParam selectSubmitParam) {
-
-        return WebResult.<String>builder()
-                .code(200)
-                .message(REQUEST_STATUS_SUCCESS)
-                .data("共插入：" + examSelectService.saveSingleSelection(selectSubmitParam) + "条数据")
-                .build();
-    }
-
-    @PostMapping("saveMultipleSelection")
-    @ApiOperation(value = "多选题新增保存接口", notes = "LBX")
-    public WebResult<String> saveMultipleSelection(
-            @ApiParam(name = "选择题新增实体类")
-            @RequestBody SelectSubmitParam selectSubmitParam) {
-        return WebResult.<String>builder()
-                .code(200)
-                .message(REQUEST_STATUS_SUCCESS)
-                .data("共插入：" + examSelectService.saveMultipleSelection(selectSubmitParam) + "条数据")
-                .build();
     }
 
     @PostMapping("update")

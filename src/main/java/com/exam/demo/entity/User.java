@@ -25,7 +25,7 @@ public class User {
     private String openid;
 
     @ApiModelProperty(value = "角色ID")
-    private int roleId;
+    private Integer roleId;
 
     @ApiModelProperty(value = "用户头像")
     private String image;

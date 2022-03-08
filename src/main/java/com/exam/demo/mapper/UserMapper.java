@@ -14,7 +14,4 @@ import java.util.List;
  */
 @Repository
 public interface UserMapper extends BaseMapper<User> {
-    List<RoleMessage> findUser(String name, String nums, Integer departmentid, String address);
-   Integer findbydepartment(String department);
-   String findByDepartmentId(Integer departmentid);
 }
