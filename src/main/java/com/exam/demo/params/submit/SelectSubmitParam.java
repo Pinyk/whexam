@@ -1,5 +1,7 @@
 package com.exam.demo.params.submit;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -10,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class SelectSubmitParam {
 
     @ApiModelProperty(name = "题目内容")
+    @TableId()
     private String context;
 
     @ApiModelProperty(name = "科目", notes = "前端需要传入科目Id")
