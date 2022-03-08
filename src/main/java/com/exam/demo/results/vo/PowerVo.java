@@ -1,30 +1,29 @@
-package com.exam.demo.entity;
+package com.exam.demo.results.vo;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiParam;
 import lombok.Data;
 
 @Data
-public class Power {
+@ApiModel(value="PowerVo",description = "权限管理查询返回的内容")
+public class PowerVo {
     @ApiModelProperty(value="姓名")
     private  String name;
     @ApiModelProperty(value="员工编号")
     private  String nums;
     @ApiModelProperty(value="部门")
     private  String department;
-    @ApiModelProperty(value="职位")
-    private  String rolename;
-    @ApiModelProperty(value="管理员权限")
-    private  String manager;
+    @ApiModelProperty(value="权限")
+    private  Integer manager=2;
 
-    public Power(String name, String nums, String department, String rolename, String manager) {
+    public PowerVo(String name, String nums, String department, Integer manager) {
         this.name = name;
         this.nums = nums;
         this.department = department;
-        this.rolename = rolename;
         this.manager = manager;
     }
 
-    public Power() {
+    public PowerVo() {
     }
 }

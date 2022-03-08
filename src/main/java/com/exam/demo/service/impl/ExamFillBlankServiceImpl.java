@@ -6,11 +6,13 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.exam.demo.entity.ExamFillBlank;
+import com.exam.demo.entity.ExamJudge;
 import com.exam.demo.entity.Subject;
 import com.exam.demo.mapper.ExamFillBlankMapper;
 import com.exam.demo.mapper.SubjectMapper;
-import com.exam.demo.params.submit.FillBlankSubmitParam;
+import com.exam.demo.otherEntity.SelectQuestionVo;
 import com.exam.demo.results.vo.ExamFillBlankVo;
+import com.exam.demo.results.vo.ExamJudgeVo;
 import com.exam.demo.results.vo.PageVo;
 import com.exam.demo.service.ExamFillBlankService;
 import org.springframework.beans.BeanUtils;
@@ -115,29 +117,9 @@ public class ExamFillBlankServiceImpl implements ExamFillBlankService {
      * 向题库添加填空题
      */
     @Override
-    public Integer saveExamFillBlank(FillBlankSubmitParam fillBlankSubmitParam) {
-
-        ExamFillBlank examFillBlank = new ExamFillBlank();
-
-        if (StringUtils.isNotBlank(fillBlankSubmitParam.getContext())) {
-            examFillBlank.setContext(fillBlankSubmitParam.getContext());
-        }
-        if (fillBlankSubmitParam.getSubjectId() != null) {
-            examFillBlank.setSubjectId(fillBlankSubmitParam.getSubjectId());
-        }
-        if (fillBlankSubmitParam.getAnswer() != null) {
-            examFillBlank.setAnswer(fillBlankSubmitParam.getAnswer());
-        }
-        if (fillBlankSubmitParam.getScore() != null) {
-            examFillBlank.setScore(fillBlankSubmitParam.getScore());
-        }
-        if (fillBlankSubmitParam.getPicture() != null) {
-
-        }
+    public Integer saveExamFillBlank(ExamFillBlank examFillBlank) {
         return examFillBlankMapper.insert(examFillBlank);
     }
-
-
     /**
      * 修改题库的填空题
      */

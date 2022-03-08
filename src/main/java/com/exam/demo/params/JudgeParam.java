@@ -8,7 +8,7 @@ import java.io.Serializable;
 
 @Data
 @ApiModel(value = "JudgeParam", description = "试题库管理模块，判断题接受前端请求参数的实体类")
-public class JudgeParam {
+public class JudgeParam implements Serializable {
 
     @ApiModelProperty(value = "题目编号")
     private Integer id;

@@ -1,7 +1,7 @@
 package com.exam.demo.service;
 
 import com.exam.demo.entity.ExamSubject;
-import com.exam.demo.params.submit.SubjectSubmitParam;
+import com.exam.demo.params.SelectParam;
 import com.exam.demo.results.vo.ExamSubjectVo;
 import com.exam.demo.results.vo.PageVo;
 
@@ -63,11 +63,4 @@ public interface ExamSubjectService {
      * @return
      */
     Integer deleteExamSubject(Integer id);
-
-    /**
-     *
-     * @param subjectSubmitParam
-     * @return
-     */
-    Integer saveSubject(SubjectSubmitParam subjectSubmitParam);
 }

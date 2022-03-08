@@ -5,11 +5,13 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.exam.demo.entity.ExamFillBlank;
 import com.exam.demo.entity.ExamSubject;
 import com.exam.demo.entity.Subject;
 import com.exam.demo.mapper.SubjectMapper;
+import com.exam.demo.params.SelectParam;
 import com.exam.demo.mapper.ExamSubjectMapper;
-import com.exam.demo.params.submit.SubjectSubmitParam;
+import com.exam.demo.results.vo.ExamJudgeVo;
 import com.exam.demo.results.vo.ExamSubjectVo;
 import com.exam.demo.results.vo.PageVo;
 import com.exam.demo.service.ExamSubjectService;
@@ -52,7 +54,7 @@ public class ExamSubjectServiceImpl implements ExamSubjectService {
         queryWrapper.eq("subject_id",subjectId);
         return examSubjectMapper.selectList(queryWrapper);
     }
-//=========================================================组合查询=======================================================
+
     @Override
     public PageVo<ExamSubjectVo> search(Integer current, Integer pageSize, Integer id, String context, String subject, Integer materialQuestion) {
         Page<ExamSubject> page = new Page<>(current, pageSize);
@@ -98,30 +100,7 @@ public class ExamSubjectServiceImpl implements ExamSubjectService {
         examSubjectVo.setSubject(subjectMapper.selectById(examSubject.getSubjectId()).getName());
         return examSubjectVo;
     }
-//==================================================新增=================================================================
-    @Override
-    public Integer saveSubject(SubjectSubmitParam subjectSubmitParam) {
 
-        ExamSubject examSubject = new ExamSubject();
-
-        if (StringUtils.isNotBlank(subjectSubmitParam.getContext())) {
-            examSubject.setContext(subjectSubmitParam.getContext());
-        }
-        if (subjectSubmitParam.getSubjectId() != null) {
-            examSubject.setSubjectId(subjectSubmitParam.getSubjectId());
-        }
-        if (subjectSubmitParam.getAnswer() != null) {
-            examSubject.setAnswer(subjectSubmitParam.getAnswer());
-        }
-        if (subjectSubmitParam.getScore() != null) {
-            examSubject.setScore(subjectSubmitParam.getScore());
-        }
-        if (subjectSubmitParam.getPicture() != null) {
-
-        }
-        return examSubjectMapper.insert(examSubject);
-    }
-//======================================================================================================================
     @Override
     public Integer saveExamSubject(ExamSubject examSubject) {
         return examSubjectMapper.insert(examSubject);
