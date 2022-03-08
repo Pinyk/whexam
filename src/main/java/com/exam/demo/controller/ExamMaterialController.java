@@ -2,6 +2,7 @@ package com.exam.demo.controller;
 
 import com.exam.demo.entity.ExamMaterial;
 import com.exam.demo.params.MaterialParam;
+import com.exam.demo.params.submit.MaterialSubmitParam;
 import com.exam.demo.results.WebResult;
 import com.exam.demo.results.vo.ExamMaterialVo;
 import com.exam.demo.results.vo.PageVo;
@@ -33,6 +34,21 @@ public class ExamMaterialController {
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
                 .data(examMaterialService.findMaterialProblemByIdAndContext(materialParam.getId(), materialParam.getContext()))
+                .build();
+    }
+
+
+    @PostMapping("saveExamMaterial")
+    @ApiOperation(notes = "LBX", value = "新增材料题")
+    public WebResult<Integer> saveExamMaterial(
+            @ApiParam(value = "新增材料题实体类")
+            @RequestBody
+            MaterialSubmitParam materialSubmitParam
+    ) {
+        return WebResult.<Integer>builder()
+                .code(200)
+                .message(REQUEST_STATUS_SUCCESS)
+                .data(examMaterialService.saveExamMaterial(materialSubmitParam))
                 .build();
     }
 }

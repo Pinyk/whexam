@@ -38,13 +38,7 @@ public class TestPaperServiceImpl implements TestPaperService {
     private SubjectMapper subjectMapper;
 
     @Autowired
-    ScoreMapper scoreMapper;
-
-
-    @Override
-    public List<Map<String, Object>> findTestPaperById(int testPaperId) {
-        return null;
-    }
+    private ScoreMapper scoreMapper;
 
     /**
      *查询进行中考试试卷的卷头
@@ -128,6 +122,11 @@ public class TestPaperServiceImpl implements TestPaperService {
         }
         return testpapers;
 
+    }
+
+    @Override
+    public List<Map<String, Object>> findTestPaperById(int testPaperId) {
+        return null;
     }
 
     /**
