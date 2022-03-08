@@ -87,5 +87,19 @@ public class FileCommit {
         cosclient.shutdown();
         return url;
     }
+    public void delete(String key){
+        // 1 初始化用户身份信息(appid, secretId, secretKey)
+        COSCredentials cred = new BasicCOSCredentials(SecretId, SecretKey);
+        // 2 设置bucket的区域, COS地域的简称 https://cloud.tencent.com/document/product/436/6224
+        ClientConfig clientConfig = new ClientConfig(new Region(region));
+        // 3 生成cos客户端
+        COSClient cosclient = new COSClient(cred, clientConfig);
+
+        cosclient.deleteObject(bucketName,key);
+
+    }
+
+
+
 
 }

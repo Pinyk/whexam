@@ -2,6 +2,7 @@ package com.exam.demo.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.exam.demo.Utils.FileCommit;
+import com.exam.demo.Utils.URLtoUTF8;
 import com.exam.demo.entity.Datatype;
 import com.exam.demo.entity.ShowStudy;
 import com.exam.demo.entity.Study;
@@ -24,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import sun.plugin2.message.Message;
 
 
+import java.lang.annotation.Inherited;
 import java.util.*;
 
 import static com.exam.demo.results.WebResult.REQUEST_STATUS_SUCCESS;
@@ -187,53 +189,33 @@ public class StudyController {
     @DeleteMapping("/delete")
     @ApiOperation(notes = "csx",value = "删除课程接口")
     public WebResult<Integer> delete(@RequestParam @ApiParam(name="study_id") Integer study_id){
-//
-//        String endpoint = "https://oss-cn-beijing.aliyuncs.com";
-//        String accessKeyId = "LTAI5tGtGgwJkpyb9UDrAPj7";
-//        String accessKeySecret = "gTTvD1103beS004i2Cv9fCumY0JftH";
-//        String bucketName = "xiaoningya";
-//              // 注意，这里虽然写成这种固定获取日期目录的形式，逻辑上确实存在问题，但是实际上，filePath的日期目录应该是从数据库查询的
-////        String filePath = new DateTimeLiteralExpression.DateTime().toString("yyyy/MM/dd");
-//
-//        try {
-//            /**
-//             * 注意：在实际项目中，不需要删除OSS文件服务器中的文件，
-//             * 只需要删除数据库存储的文件路径即可！
-//             */
-//            // 建议在方法中创建OSSClient 而不是使用@Bean注入，不然容易出现Connection pool shut down
-//            OSSClient ossClient = new OSSClient(endpoint,
-//                    accessKeyId, accessKeySecret);
-//            // 根据BucketName,filetName删除文件
-//            // 删除目录中的文件，如果是最后一个文件fileoath目录会被删除。
-//
-//
-//            Study study=studyService.findById(study_id);
-////            String fileKey = study.getUrl();
-//            String fileKey = "ceshi.pdf";
-//
-////            String fileKey = study.getUrl().split("https://xiaoningya.oss-cn-beijing.aliyuncs.com/")[1];
-//
-//
-//            ossClient.deleteObject(bucketName, fileKey);
-//            ossClient.shutdown();
-//
-//            System.out.println("文件删除！");
+
+
+        Study study=studyService.findById(study_id);
+        String tempKey=study.getUrl().split("http://xiaoningya-1302847510.cos.ap-chongqing.myqcloud.com/")[1];
+        String key= URLtoUTF8.unescape(tempKey.split("\\?sign=")[0]);
+        FileCommit fileCommit=new FileCommit();
+        fileCommit.delete(key);
             return WebResult.<Integer>builder()
                     .code(200)
                     .message(REQUEST_STATUS_SUCCESS)
                     .data(studyService.delete(study_id))
                     .build();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return WebResult.<Integer>builder()
-//                    .code(Integer.parseInt(Consts.CODE))
-//                    .build();
-//        }
+
     }
 
 
-
-
+//
+//
+//    @DeleteMapping("/deletekey")
+//    @ApiOperation(notes = "csx",value = "删除课程接口")
+//    public void deletekey(@RequestParam @ApiParam(name="study_id") Integer study_id){
+//        Study study=studyService.findById(study_id);
+//        String tempKey=study.getUrl().split("http://xiaoningya-1302847510.cos.ap-chongqing.myqcloud.com/")[1];
+//        String key= URLtoUTF8.unescape(tempKey.split("\\?sign=")[0]);
+//        FileCommit fileCommit=new FileCommit();
+//        fileCommit.delete(key);
+//    }
 
 
 //    //增加新的学习任务
