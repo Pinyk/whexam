@@ -1,11 +1,9 @@
 package com.exam.demo.service;
 
 import com.exam.demo.entity.ExamFillBlank;
-import com.exam.demo.entity.ExamJudge;
-import com.exam.demo.otherEntity.SelectQuestionVo;
+import com.exam.demo.params.submit.FillBlankSubmitParam;
 import com.exam.demo.results.vo.ExamFillBlankVo;
 import com.exam.demo.results.vo.PageVo;
-import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -38,7 +36,7 @@ public interface ExamFillBlankService {
     /**
      * 向题库添加填空题
      */
-    Integer saveExamFillBlank(ExamFillBlank examFillBlank);
+    Integer saveExamFillBlank(FillBlankSubmitParam fillBlankSubmitParam);
 
     /**
      * 修改题库的填空题

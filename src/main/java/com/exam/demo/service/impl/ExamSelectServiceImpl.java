@@ -189,24 +189,19 @@ public class ExamSelectServiceImpl implements ExamSelectService {
             examSelect.setContext(selectSubmitParam.getContext());
         }
         //添加题目选项
-        StringBuffer stringBuffer = new StringBuffer();
-        if (selectSubmitParam.getSelectionA() != null) {
-            stringBuffer.append(selectSubmitParam.getSelectionA());
+        if(selectSubmitParam.getSelectionA() != null && selectSubmitParam.getSelectionB() != null
+                && selectSubmitParam.getSelectionC() != null && selectSubmitParam.getSelectionD() != null) {
+            StringBuffer stringBuffer = new StringBuffer();
+            stringBuffer
+                    .append(selectSubmitParam.getSelectionA())
+                    .append(";")
+                    .append(selectSubmitParam.getSelectionB())
+                    .append(";")
+                    .append(selectSubmitParam.getSelectionC())
+                    .append(";")
+                    .append(selectSubmitParam.getSelectionD());
+            examSelect.setSelection(stringBuffer.toString());
         }
-        if (selectSubmitParam.getSelectionB() != null) {
-            stringBuffer.append(";");
-            stringBuffer.append(selectSubmitParam.getSelectionB());
-        }
-        if (selectSubmitParam.getSelectionC() != null) {
-            stringBuffer.append(";");
-            stringBuffer.append(selectSubmitParam.getSelectionC());
-        }
-        if (selectSubmitParam.getSelectionD() != null) {
-            stringBuffer.append(";");
-            stringBuffer.append(selectSubmitParam.getSelectionD());
-        }
-        examSelect.setSelection(stringBuffer.toString());
-
         //添加题目答案
         examSelect.setAnswer(selectSubmitParam.getAnswer());
 

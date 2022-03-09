@@ -4,8 +4,6 @@ import com.exam.demo.entity.RoleMessage;
 import com.exam.demo.entity.User;
 import com.exam.demo.entity.Userwx;
 import com.exam.demo.otherEntity.UserPojo;
-import com.exam.demo.results.vo.PageVo;
-import com.exam.demo.results.vo.UserSelectVo;
 import io.swagger.models.auth.In;
 
 import java.util.List;
@@ -66,7 +64,7 @@ public interface UserService {
     /**
      * 根据条件查询
      */
-    public PageVo<UserSelectVo> findUser(String name, String nums, String department, String address, Integer currentPage, Integer pageSize, Integer roleid) ;
+    public List<RoleMessage>  findUser(String name, String nums, String department, String address);
 
     /**
      * 根据工号校验

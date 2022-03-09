@@ -1,24 +1,18 @@
 package com.exam.demo.params.submit;
 
+import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
 @Data
-public class SelectSubmitParam {
+@ApiModel(value = "SubjectSubmitParam" , description = "问答题新增实体类")
+public class SubjectSubmitParam {
 
     private String context;
 
-    private String selectionA;
-
-    private String selectionB;
-
-    private String selectionC;
-
-    private String selectionD;
+    private Integer subjectId;
 
     private String answer;
-
-    private Integer subjectId;
 
     private Double score;
 

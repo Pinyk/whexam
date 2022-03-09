@@ -1,6 +1,8 @@
 package com.exam.demo.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -12,6 +14,7 @@ import java.util.Date;
 public class Testpaper {
 
     @ApiModelProperty(value = "试卷主键")
+    @TableId(type = IdType.AUTO)
     private int id;
 
     @ApiModelProperty(value = "试卷对应科目")
@@ -19,6 +22,7 @@ public class Testpaper {
 
     @TableField("`name`")
     @ApiModelProperty(value = "试卷名称")
+    @TableField("`name`")
     private String name;
 
     @ApiModelProperty(value = "试卷总分")
@@ -36,6 +40,7 @@ public class Testpaper {
 
     @TableField("`time`")
     @ApiModelProperty(value = "考试总时长")
+    @TableField("`time`")
     private int time;
 
     @ApiModelProperty(value = "试卷发布者ID")
@@ -46,5 +51,6 @@ public class Testpaper {
 
     @TableField("`repeat`")
     @ApiModelProperty(value = "试题是否打乱")
+    @TableField("`repeat`")
     private String repeat;
 }

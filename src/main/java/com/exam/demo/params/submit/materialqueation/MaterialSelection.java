@@ -1,10 +1,12 @@
-package com.exam.demo.params.submit;
+package com.exam.demo.params.submit.materialqueation;
 
+import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
 @Data
-public class SelectSubmitParam {
+@ApiModel(description = "材料题下的选择题")
+public class MaterialSelection {
 
     private String context;
 
@@ -18,10 +20,8 @@ public class SelectSubmitParam {
 
     private String answer;
 
-    private Integer subjectId;
-
     private Double score;
 
-    private MultipartFile picture;
+    private MultipartFile img;
 
 }

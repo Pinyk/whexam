@@ -1,7 +1,7 @@
 package com.exam.demo.service;
 
 import com.exam.demo.entity.ExamJudge;
-import com.exam.demo.params.SelectParam;
+import com.exam.demo.params.submit.JudgeSubmitParam;
 import com.exam.demo.results.vo.ExamJudgeVo;
 import com.exam.demo.results.vo.PageVo;
 
@@ -47,10 +47,10 @@ public interface ExamJudgeService {
 
     /**
      * 向题库添加判断题目
-     * @param examJudge
+     * @param judgeSubmitParam
      * @return
      */
-    Integer saveExamJudge(ExamJudge examJudge);
+    Integer saveExamJudge(JudgeSubmitParam judgeSubmitParam);
 
     /**
      * 修改题库的判断题目

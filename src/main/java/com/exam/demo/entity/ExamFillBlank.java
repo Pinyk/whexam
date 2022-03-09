@@ -1,8 +1,11 @@
 package com.exam.demo.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import io.swagger.models.auth.In;
 import lombok.Data;
 
 @Data
@@ -11,6 +14,7 @@ import lombok.Data;
 public class ExamFillBlank {
 
     @ApiModelProperty(value = "填空题主键")
+    @TableId(type = IdType.AUTO)
     private int id;
 
     @ApiModelProperty(value = "题目内容")

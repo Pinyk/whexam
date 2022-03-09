@@ -1,5 +1,6 @@
 package com.exam.demo.service;
 
+import com.exam.demo.params.submit.MaterialSubmitParam;
 import com.exam.demo.results.vo.ExamMaterialVo;
 
 
@@ -15,4 +16,10 @@ public interface ExamMaterialService {
     ExamMaterialVo findMaterialProblemByIdAndContext(Integer id, String context);
 
 
+    /**
+     * 新增材料题
+     * @param materialSubmitParam
+     * @return
+     */
+    Integer saveExamMaterial(MaterialSubmitParam materialSubmitParam);
 }

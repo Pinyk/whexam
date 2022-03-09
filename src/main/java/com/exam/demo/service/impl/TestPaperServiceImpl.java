@@ -5,7 +5,11 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.exam.demo.entity.*;
+
+import com.exam.demo.entity.Subject;
+import com.exam.demo.entity.Testpaper;
+import com.exam.demo.entity.UserTestPaperScore;
+
 import com.exam.demo.mapper.*;
 import com.exam.demo.otherEntity.RtTestpaper;
 import com.exam.demo.results.vo.PageVo;
@@ -20,7 +24,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static com.google.common.base.Predicates.and;
 
 @Service
 public class TestPaperServiceImpl implements TestPaperService {
@@ -42,6 +45,7 @@ public class TestPaperServiceImpl implements TestPaperService {
 
     @Autowired
     private ExamMapper examMapper;
+
 
     /**
      *查询进行中考试试卷的卷头
@@ -84,7 +88,8 @@ public class TestPaperServiceImpl implements TestPaperService {
             testpapers.add(map);
 
         }
-       return testpapers;
+        return testpapers;
+
     }
 
     /**
