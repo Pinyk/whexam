@@ -7,6 +7,8 @@ import lombok.Data;
 @Data
 @ApiModel(value="查询员工接口返回实体类")
 public class UserSelectVo {
+    @ApiModelProperty(value="id")
+    private  int id;
     @ApiModelProperty(value="姓名")
     private  String name;
     @ApiModelProperty(value="性别")
@@ -15,6 +17,8 @@ public class UserSelectVo {
     private  String role;
     @ApiModelProperty(value="身份证")
     private  String identity;
+    @ApiModelProperty(value="工作证号")
+    private  String nums;
     @ApiModelProperty(value="电话")
     private  String tele;
     @ApiModelProperty(value="电子邮箱")

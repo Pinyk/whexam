@@ -9,7 +9,6 @@ import com.exam.demo.otherEntity.UserPojo;
 import com.exam.demo.results.vo.ExamSelectVo;
 import com.exam.demo.results.vo.PageVo;
 import com.exam.demo.results.vo.UserSelectVo;
-import com.sun.org.apache.xml.internal.utils.WrappedRuntimeException;
 import org.json.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.exam.demo.service.UserService;
@@ -282,14 +281,14 @@ public class UserServiceImpl implements UserService {
         integers.add(2);
         Page<User> page = new Page<>(currentPage, pageSize);
         LambdaQueryWrapper<User> wrapperSelect = Wrappers.lambdaQuery(User.class);
-        wrapperSelect.in(User::getRoleId,integers);
-        if(!name.isEmpty()){
+        //wrapperSelect.in(User::getRoleId,integers);
+        if(!StringUtils.isBlank(name)){
             wrapperSelect.eq(User::getName,name);
         }
-        if(!nums.isEmpty()){
+        if(!StringUtils.isBlank(nums)){
             wrapperSelect.eq(User::getNums,nums);
         }
-        if(!address.isEmpty()){
+        if(!StringUtils.isBlank(address)){
             wrapperSelect.like(User::getAddress,address);
         }
         if (!StringUtils.isBlank(department)){
