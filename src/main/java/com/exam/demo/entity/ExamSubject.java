@@ -4,15 +4,16 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import io.swagger.models.auth.In;
 import lombok.Data;
 
 @Data
 @ApiModel(value = "examSubject")
-public class ExamSubject {
+public class ExamSubject extends ExamObject{
 
     @ApiModelProperty(value = "主观题主键")
     @TableId(type = IdType.AUTO)
-    private int id;
+    private Integer id;
 
     @ApiModelProperty(value = "题目内容")
     private String context;
@@ -21,10 +22,10 @@ public class ExamSubject {
     private String answer;
 
     @ApiModelProperty(value = "所属科目ID")
-    private int subjectId;
+    private Integer subjectId;
 
     @ApiModelProperty(value = "难度")
-    private int difficulty;
+    private Integer difficulty;
 
     @ApiModelProperty(value = "分数")
     private double score;

@@ -10,7 +10,7 @@ import lombok.Data;
 @Data
 @TableName("exam_material")
 @ApiModel(value = "材料题实体类", description = "材料题表对应的实体类")
-public class ExamMaterial {
+public class ExamMaterial extends ExamObject{
 
     @ApiModelProperty(value = "主键id")
     @TableId(type = IdType.AUTO)

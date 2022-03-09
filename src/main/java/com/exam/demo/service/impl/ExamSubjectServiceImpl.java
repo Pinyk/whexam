@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.exam.demo.Utils.FileCommit;
 import com.exam.demo.entity.ExamSubject;
 import com.exam.demo.entity.Subject;
 import com.exam.demo.mapper.SubjectMapper;
@@ -17,6 +18,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -28,6 +30,9 @@ public class ExamSubjectServiceImpl implements ExamSubjectService {
 
     @Autowired
     SubjectMapper subjectMapper;
+
+    @Autowired
+    FileCommit fileCommit;
 
     @Override
     public List<ExamSubject> findAll() {
@@ -117,9 +122,21 @@ public class ExamSubjectServiceImpl implements ExamSubjectService {
             examSubject.setScore(subjectSubmitParam.getScore());
         }
         if (subjectSubmitParam.getPicture() != null) {
-
+            try {
+                fileCommit.fileCommit(subjectSubmitParam.getPicture());
+                String downLoadUrl = fileCommit.downLoad(subjectSubmitParam.getPicture());
+                String url = downLoadUrl.split("\\?sign=")[0];
+                examSubject.setImgUrl(url);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-        return examSubjectMapper.insert(examSubject);
+        examSubject.setDifficulty(1);
+        examSubject.setMaterialQuestion(0);
+        examSubjectMapper.insert(examSubject);
+
+        //返回插入信息的Id
+        return examSubject.getId();
     }
 //======================================================================================================================
     @Override
