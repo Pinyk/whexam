@@ -52,5 +52,11 @@ public interface ExamMapper extends BaseMapper<Exam> {
     List<Object> findExamFillBlankByTestPaperId(Integer testPaperId);
 
 
+    /**
+     * 根据试卷id查询组成试卷的材料题目
+     * @param testPaperId
+     * @return
+     */
+    List<List<Object>> findExamMaterialByTestPaperId(Integer testPaperId);
 
 }
