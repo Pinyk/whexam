@@ -8,7 +8,7 @@ import lombok.Data;
 
 @Data
 @ApiModel(value = "examJudge")
-public class ExamJudge {
+public class ExamJudge extends ExamObject{
 
     @ApiModelProperty(value = "判断题主键")
     @TableId(type = IdType.AUTO)
@@ -24,7 +24,7 @@ public class ExamJudge {
     private Integer subjectId;
 
     @ApiModelProperty(value = "难度")
-    private int difficulty;
+    private Integer difficulty;
 
     @ApiModelProperty(value = "分数")
     private Double score;

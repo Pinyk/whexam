@@ -4,12 +4,14 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.exam.demo.Utils.FileCommit;
 import com.exam.demo.entity.*;
 import com.exam.demo.mapper.*;
 import com.exam.demo.otherEntity.SelectQuestionVo;
 import com.exam.demo.params.submit.MaterialSubmitParam;
 import com.exam.demo.params.submit.SelectSubmitParam;
 import com.exam.demo.params.submit.materialqueation.MaterialFillBlank;
+import com.exam.demo.params.submit.materialqueation.MaterialJudge;
 import com.exam.demo.params.submit.materialqueation.MaterialSelection;
 import com.exam.demo.params.submit.materialqueation.MaterialSubject;
 import com.exam.demo.results.vo.*;
@@ -18,6 +20,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -46,7 +49,8 @@ public class ExamMaterialServiceImpl implements ExamMaterialService {
     ExamFillBlankMapper examFillBlankMapper;
     @Autowired
     ExamSubjectMapper examSubjectMapper;
-
+    @Autowired
+    FileCommit fileCommit;
     /**
      * 根据材料题id查询并分页
      * @param id 材料题Id
@@ -89,7 +93,6 @@ public class ExamMaterialServiceImpl implements ExamMaterialService {
                         if (examSelect != null) {
                             ExamSelectVo examSelectVo = new ExamSelectVo();
                             BeanUtils.copyProperties(examSelect, examSelectVo);
-                            examSelectVo.setSubject(subjectMapper.selectById(examSelect.getSubjectId()).getName());
                             selectProblems.add(examSelectVo);
                             problemsVo.setSelectProblem(selectProblems);
                         }
@@ -98,7 +101,6 @@ public class ExamMaterialServiceImpl implements ExamMaterialService {
                         if (examFillBlank != null) {
                             ExamFillBlankVo examFillBlankVo = new ExamFillBlankVo();
                             BeanUtils.copyProperties(examFillBlank,examFillBlankVo);
-                            examFillBlankVo.setSubject(subjectMapper.selectById(examFillBlank.getSubjectId()).getName());
                             fillBlankProblems.add(examFillBlankVo);
                             problemsVo.setFillBlankProblem(fillBlankProblems);
                         }
@@ -107,7 +109,6 @@ public class ExamMaterialServiceImpl implements ExamMaterialService {
                         ExamJudgeVo examJudgeVo = new ExamJudgeVo();
                         if (examJudge != null) {
                             BeanUtils.copyProperties(examJudge, examJudgeVo);
-                            examJudgeVo.setSubject(subjectMapper.selectById(examJudge.getSubjectId()).getName());
                             judgeProblems.add(examJudgeVo);
                             problemsVo.setJudgeProblem(judgeProblems);
                         }
@@ -116,7 +117,6 @@ public class ExamMaterialServiceImpl implements ExamMaterialService {
                         if (examSubject != null) {
                             ExamSubjectVo examSubjectVo = new ExamSubjectVo();
                             BeanUtils.copyProperties(examSubject,examSubjectVo);
-                            examSubjectVo.setSubject(subjectMapper.selectById(examSubject.getSubjectId()).getName());
                             subjectProblems.add(examSubjectVo);
                             problemsVo.setSubjectProblem(subjectProblems);
                         }
@@ -131,25 +131,33 @@ public class ExamMaterialServiceImpl implements ExamMaterialService {
 
     @Override
     public Integer saveExamMaterial(MaterialSubmitParam materialSubmitParam) {
-
+        //exam_material表
         ExamMaterial examMaterial = new ExamMaterial();
-        //查询material表
+        //material_problem
+        MaterialProblem materialProblem = new MaterialProblem();
+
+        //插入material表
         if (StringUtils.isNotBlank(materialSubmitParam.getContext())){
             examMaterial.setContext(materialSubmitParam.getContext());
         }
         if (materialSubmitParam.getSubjectId() != null) {
             examMaterial.setSubjectId(materialSubmitParam.getSubjectId());
         }
+        materialMapper.insert(examMaterial);
 
         //将各个题型插入各个表中
         if (!materialSubmitParam.getSingleSelections().isEmpty()) {
             for (MaterialSelection singleSelection : materialSubmitParam.getSingleSelections()) {
-                saveSelection(singleSelection, 1);
+                ExamSelect examSelect = saveSelection(singleSelection, 1);
+                saveMaterialProblem(materialProblem, examSelect, examMaterial.getId(),
+                        examSelect.getId(), 1);
             }
         }
         if (!materialSubmitParam.getMultipleSelections().isEmpty()) {
             for (MaterialSelection multipleSelection : materialSubmitParam.getMultipleSelections()) {
-                saveSelection(multipleSelection, 2);
+                ExamSelect examSelect = saveSelection(multipleSelection, 2);
+                saveMaterialProblem(materialProblem, examSelect, examMaterial.getId(),
+                        examSelect.getId(), 1);
             }
         }
         if (!materialSubmitParam.getExamFillBlanks().isEmpty()) {
@@ -166,11 +174,54 @@ public class ExamMaterialServiceImpl implements ExamMaterialService {
                     examFillBlank.setScore(materialFillBlank.getScore());
                 }
                 if (materialFillBlank.getImg() != null) {
-
+                    try {
+                        fileCommit.fileCommit(materialFillBlank.getImg());
+                        String downLoadUrl = fileCommit.downLoad(materialFillBlank.getImg());
+                        String url = downLoadUrl.split("\\?sign=")[0];
+                        examFillBlank.setImgUrl(url);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
                 examFillBlank.setMaterialQuestion(1);
                 examFillBlankMapper.insert(examFillBlank);
+                saveMaterialProblem(materialProblem, examFillBlank, examMaterial.getId(),
+                        examFillBlank.getId(), 2);
             }
+        }
+        if (!materialSubmitParam.getExamJudges().isEmpty()) {
+
+            for (MaterialJudge materialJudge : materialSubmitParam.getExamJudges()) {
+                ExamJudge examJudge = new ExamJudge();
+
+                if (StringUtils.isNotBlank(materialJudge.getContext())) {
+                    examJudge.setContext(materialJudge.getContext());
+                }
+                if (materialJudge.getAnswer() != null) {
+                    examJudge.setAnswer(materialJudge.getAnswer());
+                }
+                if (materialJudge.getScore() != null) {
+                    examJudge.setScore(materialJudge.getScore());
+                }
+                if (materialJudge.getImg() != null) {
+                    //调用COS服务
+                    try {
+                        fileCommit.fileCommit(materialJudge.getImg());
+                        //写入图片url
+                        String downLoadUrl = fileCommit.downLoad(materialJudge.getImg());
+                        String url = downLoadUrl.split("\\?sign=")[0];
+                        examJudge.setImgUrl(url);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                examJudge.setDifficulty(1);
+                examJudge.setMaterialQuestion(1);
+                examJudgeMapper.insert(examJudge);
+                saveMaterialProblem(materialProblem, examJudge, examMaterial.getId(),
+                        examJudge.getId(), 3);
+            }
+
         }
         if (!materialSubmitParam.getExamSubjects().isEmpty()) {
             for (MaterialSubject materialSubject : materialSubmitParam.getExamSubjects()) {
@@ -186,18 +237,28 @@ public class ExamMaterialServiceImpl implements ExamMaterialService {
                     examSubject.setScore(materialSubject.getScore());
                 }
                 if (materialSubject.getImg() != null) {
-
+                    try {
+                        fileCommit.fileCommit(materialSubject.getImg());
+                        String downLoadUrl = fileCommit.downLoad(materialSubject.getImg());
+                        String url = downLoadUrl.split("\\?sign=")[0];
+                        examSubject.setImgUrl(url);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
                 examSubject.setMaterialQuestion(1);
+                examSubject.setDifficulty(1);
                 examSubjectMapper.insert(examSubject);
+                saveMaterialProblem(materialProblem, examSubject, examMaterial.getId(),
+                        examSubject.getId(), 4);
             }
         }
 
-        return materialMapper.insert(examMaterial);
+        return examMaterial.getId();
     }
 
     //保存选择题
-    private void saveSelection(MaterialSelection selectSubmitParam, Integer type) {
+    private ExamSelect saveSelection(MaterialSelection selectSubmitParam, Integer type) {
         //实例化选择题对象
         ExamSelect examSelect = new ExamSelect();
         //添加题目内容
@@ -205,29 +266,25 @@ public class ExamMaterialServiceImpl implements ExamMaterialService {
             examSelect.setContext(selectSubmitParam.getContext());
         }
         //添加题目选项
-        StringBuffer stringBuffer = new StringBuffer();
-        if (selectSubmitParam.getSelectionA() != null) {
-            stringBuffer.append(selectSubmitParam.getSelectionA());
+        if(selectSubmitParam.getSelectionA() != null && selectSubmitParam.getSelectionB() != null
+                && selectSubmitParam.getSelectionC() != null && selectSubmitParam.getSelectionD() != null) {
+            StringBuffer stringBuffer = new StringBuffer();
+            stringBuffer
+                    .append(selectSubmitParam.getSelectionA())
+                    .append(";")
+                    .append(selectSubmitParam.getSelectionB())
+                    .append(";")
+                    .append(selectSubmitParam.getSelectionC())
+                    .append(";")
+                    .append(selectSubmitParam.getSelectionD());
+            examSelect.setSelection(stringBuffer.toString());
         }
-        if (selectSubmitParam.getSelectionB() != null) {
-            stringBuffer.append(";");
-            stringBuffer.append(selectSubmitParam.getSelectionB());
-        }
-        if (selectSubmitParam.getSelectionC() != null) {
-            stringBuffer.append(";");
-            stringBuffer.append(selectSubmitParam.getSelectionC());
-        }
-        if (selectSubmitParam.getSelectionD() != null) {
-            stringBuffer.append(";");
-            stringBuffer.append(selectSubmitParam.getSelectionD());
-        }
-        examSelect.setSelection(stringBuffer.toString());
 
         //添加题目答案
         examSelect.setAnswer(selectSubmitParam.getAnswer());
 
         //添加题目难度
-
+        examSelect.setDifficulty(1);
         //添加分数
         examSelect.setScore(selectSubmitParam.getScore());
         //添加选择题type
@@ -237,10 +294,32 @@ public class ExamMaterialServiceImpl implements ExamMaterialService {
         //添加图片
         if (selectSubmitParam.getImg() != null) {
             //调用COS存储图片
-
-            //将图片对应的url存入数据库
+            try {
+                fileCommit.fileCommit(selectSubmitParam.getImg());
+                //将图片对应的url存入数据库
+                String downLoadUrl = fileCommit.downLoad(selectSubmitParam.getImg());
+                String url = downLoadUrl.split("\\?sign=")[0];
+                examSelect.setImgUrl(url);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
         }
         examSelectMapper.insert(examSelect);
+        return examSelect;
+    }
+
+    /**
+     * 保存material_problem表数据
+     * @param materialId
+     * @param problemId
+     * @param problemType
+     */
+    private void saveMaterialProblem(MaterialProblem materialProblem, ExamObject examObject, Integer materialId,
+                                        Integer problemId, Integer problemType) {
+        materialProblem.setMaterialId(materialId);
+        materialProblem.setProblemId(problemId);
+        materialProblem.setProblemType(problemType);
+        materialProblemMapper.insert(materialProblem);
     }
 }

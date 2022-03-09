@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.exam.demo.Utils.FileCommit;
 import com.exam.demo.entity.ExamFillBlank;
 import com.exam.demo.entity.Subject;
 import com.exam.demo.mapper.ExamFillBlankMapper;
@@ -17,6 +18,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 @Service
@@ -26,6 +28,8 @@ public class ExamFillBlankServiceImpl implements ExamFillBlankService {
     ExamFillBlankMapper examFillBlankMapper;
     @Autowired
     SubjectMapper subjectMapper;
+    @Autowired
+    FileCommit fileCommit;
     /**
      * 查询所有填空题
      */
@@ -132,9 +136,20 @@ public class ExamFillBlankServiceImpl implements ExamFillBlankService {
             examFillBlank.setScore(fillBlankSubmitParam.getScore());
         }
         if (fillBlankSubmitParam.getPicture() != null) {
-
+            try {
+                fileCommit.fileCommit(fillBlankSubmitParam.getPicture());
+                String downLoadUrl = fileCommit.downLoad(fillBlankSubmitParam.getPicture());
+                String url = downLoadUrl.split("\\?sign=")[0];
+                examFillBlank.setImgUrl(url);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-        return examFillBlankMapper.insert(examFillBlank);
+        examFillBlank.setDifficulty(1);
+        examFillBlank.setMaterialQuestion(0);
+        examFillBlankMapper.insert(examFillBlank);
+
+        return examFillBlank.getId();
     }
 
 

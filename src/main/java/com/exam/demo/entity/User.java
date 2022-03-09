@@ -1,5 +1,7 @@
 package com.exam.demo.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -7,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
+@TableName("user")
 @NoArgsConstructor
 @AllArgsConstructor
 @ApiModel(value = "user")
@@ -25,7 +28,7 @@ public class User {
     private String openid;
 
     @ApiModelProperty(value = "角色ID")
-    private int roleId;
+    private Integer roleId;
 
     @ApiModelProperty(value = "用户头像")
     private String image;
@@ -43,7 +46,7 @@ public class User {
     private double time;
 
     @ApiModelProperty(value = "用户所属部门")
-    private int departmentId;
+    private Integer departmentId;
 
     @ApiModelProperty(value = "用户地址")
     private String position;

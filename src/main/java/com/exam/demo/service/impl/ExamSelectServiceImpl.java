@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.exam.demo.Utils.FileCommit;
 import com.exam.demo.entity.ExamSelect;
 import com.exam.demo.entity.Subject;
 import com.exam.demo.mapper.ExamSelectMapper;
@@ -18,6 +19,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.*;
 
 @Service
@@ -28,6 +30,9 @@ public class ExamSelectServiceImpl implements ExamSelectService {
 
     @Autowired
     SubjectMapper subjectMapper;
+
+    @Autowired
+    FileCommit fileCommit;
 
     /**
      * 对查询的 ExamSelect 进行处理后，将内容复制到 SelectQuestion 中
@@ -209,7 +214,7 @@ public class ExamSelectServiceImpl implements ExamSelectService {
         examSelect.setSubjectId(selectSubmitParam.getSubjectId());
 
         //添加题目难度
-
+        examSelect.setDifficulty(1);
         //添加分数
         examSelect.setScore(selectSubmitParam.getScore());
         //添加选择题type
@@ -219,12 +224,19 @@ public class ExamSelectServiceImpl implements ExamSelectService {
         //添加图片
         if (selectSubmitParam.getPicture() != null) {
             //调用COS存储图片
-
-            //将图片对应的url存入数据库
-
+            try {
+                fileCommit.fileCommit(selectSubmitParam.getPicture());
+                //将图片对应的url存入数据库
+                String downLoadUrl = fileCommit.downLoad(selectSubmitParam.getPicture());
+                String url = downLoadUrl.split("\\?sign=")[0];
+                examSelect.setImgUrl(url);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
+        examSelectMapper.insert(examSelect);
 
-        return examSelectMapper.insert(examSelect);
+        return examSelect.getId();
     }
 //============================================================================================
 

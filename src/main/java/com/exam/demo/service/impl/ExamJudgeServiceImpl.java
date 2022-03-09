@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.exam.demo.Utils.FileCommit;
 import com.exam.demo.entity.ExamJudge;
 import com.exam.demo.entity.Subject;
 import com.exam.demo.mapper.ExamJudgeMapper;
@@ -17,6 +18,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -28,6 +30,9 @@ public class ExamJudgeServiceImpl implements ExamJudgeService {
 
     @Autowired
     private SubjectMapper subjectMapper;
+
+    @Autowired
+    private FileCommit fileCommit;
 
     @Override
     public List<ExamJudge> findAll() {
@@ -120,10 +125,21 @@ public class ExamJudgeServiceImpl implements ExamJudgeService {
         }
         if (judgeSubmitParam.getPicture() != null) {
             //调用COS服务
-
-            //写入图片url
+            try {
+                fileCommit.fileCommit(judgeSubmitParam.getPicture());
+                //写入图片url
+                String downLoadUrl = fileCommit.downLoad(judgeSubmitParam.getPicture());
+                String url = downLoadUrl.split("\\?sign=")[0];
+                examJudge.setImgUrl(url);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-        return examJudgeMapper.insert(examJudge);
+        examJudge.setDifficulty(1);
+        examJudge.setMaterialQuestion(0);
+        examJudgeMapper.insert(examJudge);
+
+        return examJudge.getId();
     }
 //======================================================================================================================
     @Override

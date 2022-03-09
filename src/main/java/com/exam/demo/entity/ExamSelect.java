@@ -8,11 +8,11 @@ import lombok.Data;
 
 @Data
 @ApiModel(value = "examSelect")
-public class ExamSelect {
+public class ExamSelect extends ExamObject{
 
     @ApiModelProperty(value = "选择题主键")
     @TableId(type = IdType.AUTO)
-    private int id;
+    private Integer id;
 
     @ApiModelProperty(value = "题目内容")
     private String context;

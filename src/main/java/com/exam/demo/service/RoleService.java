@@ -1,6 +1,7 @@
 package com.exam.demo.service;
 
-import com.exam.demo.entity.Power;
+import com.exam.demo.results.vo.PageVo;
+import com.exam.demo.results.vo.PowerVo;
 import com.exam.demo.entity.Role;
 
 import java.util.List;
@@ -44,9 +45,9 @@ public interface RoleService {
      * @param nums
      * @param name
      * @param department
-     * @param rolename
+     * @param
      * @return
      */
-    public List<Power> findRole(String nums,String name,String department,String rolename);
+    public PageVo<PowerVo> findRole(String nums, String name, String department,Integer pageCurrent,Integer pageSize);
     public Integer findByRoleName(String name);
 }
