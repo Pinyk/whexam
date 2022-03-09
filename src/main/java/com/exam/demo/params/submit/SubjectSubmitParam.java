@@ -16,6 +16,4 @@ public class SubjectSubmitParam {
 
     private Double score;
 
-    private MultipartFile picture;
-
 }

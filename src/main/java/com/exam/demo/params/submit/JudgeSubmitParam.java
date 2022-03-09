@@ -16,6 +16,4 @@ public class JudgeSubmitParam {
 
     private Double score;
 
-    private MultipartFile picture;
-
 }

@@ -17,6 +17,7 @@ import com.exam.demo.service.ExamFillBlankService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.LinkedList;
@@ -119,7 +120,7 @@ public class ExamFillBlankServiceImpl implements ExamFillBlankService {
      * 向题库添加填空题
      */
     @Override
-    public Integer saveExamFillBlank(FillBlankSubmitParam fillBlankSubmitParam) {
+    public Integer saveExamFillBlank(FillBlankSubmitParam fillBlankSubmitParam, MultipartFile image) {
 
         ExamFillBlank examFillBlank = new ExamFillBlank();
 
@@ -135,10 +136,10 @@ public class ExamFillBlankServiceImpl implements ExamFillBlankService {
         if (fillBlankSubmitParam.getScore() != null) {
             examFillBlank.setScore(fillBlankSubmitParam.getScore());
         }
-        if (fillBlankSubmitParam.getPicture() != null) {
+        if (image != null) {
             try {
-                fileCommit.fileCommit(fillBlankSubmitParam.getPicture());
-                String downLoadUrl = fileCommit.downLoad(fillBlankSubmitParam.getPicture());
+                fileCommit.fileCommit(image);
+                String downLoadUrl = fileCommit.downLoad(image);
                 String url = downLoadUrl.split("\\?sign=")[0];
                 examFillBlank.setImgUrl(url);
             } catch (IOException e) {

@@ -18,6 +18,7 @@ import com.exam.demo.service.ExamSelectService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.*;
@@ -174,19 +175,18 @@ public class ExamSelectServiceImpl implements ExamSelectService {
 
         return examSelectMapper.selectOne(wrapperSelect);
     }
-//======================================================================================================================
 //================================新增保存业务============================================================================
     @Override
-    public Integer saveSingleSelection(SelectSubmitParam selectSubmitParam) {
-        return save(selectSubmitParam, 1);
+    public Integer saveSingleSelection(SelectSubmitParam selectSubmitParam, MultipartFile image) {
+        return save(selectSubmitParam, image, 1);
     }
 
     @Override
-    public Integer saveMultipleSelection(SelectSubmitParam selectSubmitParam) {
-        return save(selectSubmitParam, 2);
+    public Integer saveMultipleSelection(SelectSubmitParam selectSubmitParam, MultipartFile image) {
+        return save(selectSubmitParam, image, 2);
     }
 //======================================================================================================================
-    private Integer save(SelectSubmitParam selectSubmitParam, Integer type) {
+    private Integer save(SelectSubmitParam selectSubmitParam, MultipartFile image,Integer type) {
         //实例化选择题对象
         ExamSelect examSelect = new ExamSelect();
         //添加题目内容
@@ -222,12 +222,12 @@ public class ExamSelectServiceImpl implements ExamSelectService {
         //添加materialQuestion
         examSelect.setMaterialQuestion(0);
         //添加图片
-        if (selectSubmitParam.getPicture() != null) {
+        if (image != null) {
             //调用COS存储图片
             try {
-                fileCommit.fileCommit(selectSubmitParam.getPicture());
+                fileCommit.fileCommit(image);
                 //将图片对应的url存入数据库
-                String downLoadUrl = fileCommit.downLoad(selectSubmitParam.getPicture());
+                String downLoadUrl = fileCommit.downLoad(image);
                 String url = downLoadUrl.split("\\?sign=")[0];
                 examSelect.setImgUrl(url);
             } catch (IOException e) {

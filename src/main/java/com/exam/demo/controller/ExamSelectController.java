@@ -122,12 +122,13 @@ public class ExamSelectController {
     @ApiOperation(value = "单选题新增保存接口", notes = "LBX")
     public WebResult<Integer> saveSingleSelection(
             @ApiParam(name = "选择题新增实体类")
-            @RequestBody SelectSubmitParam selectSubmitParam) {
+            @RequestBody SelectSubmitParam selectSubmitParam,
+            @RequestParam MultipartFile image) {
 
         return WebResult.<Integer>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
-                .data(examSelectService.saveSingleSelection(selectSubmitParam))
+                .data(examSelectService.saveSingleSelection(selectSubmitParam, image))
                 .build();
     }
 
@@ -135,11 +136,12 @@ public class ExamSelectController {
     @ApiOperation(value = "多选题新增保存接口", notes = "LBX")
     public WebResult<Integer> saveMultipleSelection(
             @ApiParam(name = "选择题新增实体类")
-            @RequestBody SelectSubmitParam selectSubmitParam) {
+            @RequestBody SelectSubmitParam selectSubmitParam,
+            @RequestParam MultipartFile image) {
         return WebResult.<Integer>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
-                .data(examSelectService.saveMultipleSelection(selectSubmitParam))
+                .data(examSelectService.saveMultipleSelection(selectSubmitParam, image))
                 .build();
     }
 

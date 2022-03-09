@@ -17,6 +17,7 @@ import com.exam.demo.service.ExamJudgeService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.LinkedList;
@@ -107,7 +108,7 @@ public class ExamJudgeServiceImpl implements ExamJudgeService {
     }
 //===============================================新增填空题===============================================================
     @Override
-    public Integer saveExamJudge(JudgeSubmitParam judgeSubmitParam) {
+    public Integer saveExamJudge(JudgeSubmitParam judgeSubmitParam, MultipartFile image) {
 
         ExamJudge examJudge = new ExamJudge();
 
@@ -123,12 +124,12 @@ public class ExamJudgeServiceImpl implements ExamJudgeService {
         if (judgeSubmitParam.getScore() != null) {
             examJudge.setScore(judgeSubmitParam.getScore());
         }
-        if (judgeSubmitParam.getPicture() != null) {
+        if (image != null) {
             //调用COS服务
             try {
-                fileCommit.fileCommit(judgeSubmitParam.getPicture());
+                fileCommit.fileCommit(image);
                 //写入图片url
-                String downLoadUrl = fileCommit.downLoad(judgeSubmitParam.getPicture());
+                String downLoadUrl = fileCommit.downLoad(image);
                 String url = downLoadUrl.split("\\?sign=")[0];
                 examJudge.setImgUrl(url);
             } catch (IOException e) {

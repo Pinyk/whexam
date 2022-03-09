@@ -4,6 +4,7 @@ import com.exam.demo.entity.ExamJudge;
 import com.exam.demo.params.submit.JudgeSubmitParam;
 import com.exam.demo.results.vo.ExamJudgeVo;
 import com.exam.demo.results.vo.PageVo;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -50,7 +51,7 @@ public interface ExamJudgeService {
      * @param judgeSubmitParam
      * @return
      */
-    Integer saveExamJudge(JudgeSubmitParam judgeSubmitParam);
+    Integer saveExamJudge(JudgeSubmitParam judgeSubmitParam, MultipartFile image);
 
     /**
      * 修改题库的判断题目
