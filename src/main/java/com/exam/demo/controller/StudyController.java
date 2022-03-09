@@ -22,7 +22,7 @@ import net.sf.jsqlparser.expression.DateTimeLiteralExpression;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import sun.plugin2.message.Message;
+
 
 
 import java.lang.annotation.Inherited;
@@ -95,7 +95,7 @@ public class StudyController {
     @GetMapping("findPage")
     @ApiOperation(notes = "csx",value = "按页数查询接口")
     public WebResult<PageVo<Study>> findPage(@RequestParam @ApiParam(name="page") Integer page,
-                                @RequestParam @ApiParam(name="pageSize") Integer pageSize){
+                                             @RequestParam @ApiParam(name="pageSize") Integer pageSize){
         return WebResult.<PageVo<Study>>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
@@ -192,15 +192,15 @@ public class StudyController {
 
 
         Study study=studyService.findById(study_id);
-        String tempKey=study.getUrl().split("http://xiaoningya-1302847510.cos.ap-chongqing.myqcloud.com/")[1];
-        String key= URLtoUTF8.unescape(tempKey.split("\\?sign=")[0]);
+        String key=study.getUrl().split("http://xiaoningya-1302847510.cos.ap-chongqing.myqcloud.com/")[1];
+//        String key= URLtoUTF8.unescape(tempKey.split("\\?sign=")[0]);
         FileCommit fileCommit=new FileCommit();
         fileCommit.delete(key);
-            return WebResult.<Integer>builder()
-                    .code(200)
-                    .message(REQUEST_STATUS_SUCCESS)
-                    .data(studyService.delete(study_id))
-                    .build();
+        return WebResult.<Integer>builder()
+                .code(200)
+                .message(REQUEST_STATUS_SUCCESS)
+                .data(studyService.delete(study_id))
+                .build();
 
     }
 
@@ -245,12 +245,12 @@ public class StudyController {
     @PostMapping("/update")
     @ApiOperation(notes = "csx",value = "更新课程信息接口")
     public WebResult<Integer> update2(@RequestParam @ApiParam(name="id") Integer id,
-                       @RequestParam @ApiParam(name="name") String name,
-                       @RequestParam @ApiParam(name="datatype_id") Integer datatype_id,
-                       @RequestParam @ApiParam(name="url") String url,
-                       @RequestParam @ApiParam(name="subject_id",defaultValue = "0") Integer subject_id,
-                       @RequestParam @ApiParam(name="department_id") Integer departement_id,
-                       @RequestParam @ApiParam(name="time") String time){
+                                      @RequestParam @ApiParam(name="name") String name,
+                                      @RequestParam @ApiParam(name="datatype_id") Integer datatype_id,
+                                      @RequestParam @ApiParam(name="url") String url,
+                                      @RequestParam @ApiParam(name="subject_id",defaultValue = "0") Integer subject_id,
+                                      @RequestParam @ApiParam(name="department_id") Integer departement_id,
+                                      @RequestParam @ApiParam(name="time") String time){
 
         Study study=new Study();
         study.setId(id);
@@ -274,12 +274,12 @@ public class StudyController {
     @RequestMapping(value = "/add",method = RequestMethod.POST)
     @ApiOperation(notes = "csx",value = "插入学习资料接口")
     public Object add(@RequestParam @ApiParam(name="name") String name,
-                          @RequestParam @ApiParam(name="datatype_id") Integer datatype_id,
-                          @RequestParam @ApiParam(name="subject_id",defaultValue = "0") Integer subject_id,
-                          @RequestParam @ApiParam(name="remark") String remark,
-                          @RequestParam(value = "file") MultipartFile mpFile,
-                          @RequestParam @ApiParam(name="time") String time,
-                          @RequestParam @ApiParam(name="typeid") Integer typeid) {
+                      @RequestParam @ApiParam(name="datatype_id") Integer datatype_id,
+                      @RequestParam @ApiParam(name="subject_id",defaultValue = "0") Integer subject_id,
+                      @RequestParam @ApiParam(name="remark") String remark,
+                      @RequestParam(value = "file") MultipartFile mpFile,
+                      @RequestParam @ApiParam(name="time") String time,
+                      @RequestParam @ApiParam(name="typeid") Integer typeid) {
         JSONObject jsonObject = new JSONObject();
 
         if (mpFile.isEmpty()) {
@@ -290,24 +290,25 @@ public class StudyController {
         try {
             FileCommit fileCommit = new FileCommit();
             fileCommit.fileCommit(mpFile);
-            String url = fileCommit.downLoad(mpFile);
+            String TempUrl = fileCommit.downLoad(mpFile);
+            String url=TempUrl.split("\\?sign=")[0];
 //            System.out.println("======================"+url);
             Study study = new Study();
-                study.setName(name);
-                study.setDepartmentid(1);
-                study.setUrl(url);
-                study.setSubjectid(subject_id);
-                study.setDatatypeid(datatype_id);
-                study.setTime(time);
-                study.setTypeid(typeid);
-                study.setBeizhu(remark);
-                this.studyService.insert(study);
-                return WebResult.<Integer>builder()
-                        .code(200)
-                        .message(REQUEST_STATUS_SUCCESS)
-                        .data(1)
-                        .build();
-            } catch(Exception e){
+            study.setName(name);
+            study.setDepartmentid(1);
+            study.setUrl(url);
+            study.setSubjectid(subject_id);
+            study.setDatatypeid(datatype_id);
+            study.setTime(time);
+            study.setTypeid(typeid);
+            study.setBeizhu(remark);
+            this.studyService.insert(study);
+            return WebResult.<Integer>builder()
+                    .code(200)
+                    .message(REQUEST_STATUS_SUCCESS)
+                    .data(1)
+                    .build();
+        } catch(Exception e){
             jsonObject.put(Consts.CODE, 0);
             jsonObject.put(Consts.MSG, "新增失败" + e.getMessage());
             return jsonObject;
