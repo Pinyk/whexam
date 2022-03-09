@@ -46,10 +46,10 @@ public class ExamServiceImpl implements ExamService {
     private SubjectMapper subjectMapper;
 
     @Autowired
-    TestPaperMapper testPaperMapper;
+    private TestPaperMapper testPaperMapper;
 
     @Autowired
-    UserMapper userMapper;
+    private UserMapper userMapper;
 
     @Autowired
     private ExamFillBlankMapper examFillBlankMapper;

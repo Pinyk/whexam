@@ -79,7 +79,7 @@ public class ExamFillBlankController {
     public WebResult<Integer> saveExamFillBlank(
             @ApiParam(value = "填空题新增实体类")
             @RequestBody FillBlankSubmitParam fillBlankSubmitParam,
-            @RequestParam MultipartFile image
+            @RequestParam(value = "file", required = false) MultipartFile image
             ) {
         return WebResult.<Integer>builder()
                 .code(200)
