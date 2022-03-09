@@ -1,10 +1,9 @@
 package com.exam.demo.controller;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.exam.demo.entity.ExamSelect;
 import com.exam.demo.params.SelectParam;
 import com.exam.demo.otherEntity.SelectQuestionVo;
-import com.exam.demo.params.SelectSubmitParam;
+import com.exam.demo.params.submit.SelectSubmitParam;
 import com.exam.demo.results.vo.ExamSelectVo;
 import com.exam.demo.results.vo.PageVo;
 import com.exam.demo.service.ExamSelectService;
@@ -12,7 +11,6 @@ import com.exam.demo.results.WebResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;

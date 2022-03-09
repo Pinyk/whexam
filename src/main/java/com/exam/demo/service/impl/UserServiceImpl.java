@@ -1,28 +1,21 @@
 package com.exam.demo.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.StringUtils;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.exam.demo.entity.*;
+import com.exam.demo.entity.RoleMessage;
+import com.exam.demo.entity.Userwx;
 import com.exam.demo.mapper.*;
 import com.exam.demo.otherEntity.UserPojo;
-import com.exam.demo.results.vo.ExamSelectVo;
-import com.exam.demo.results.vo.PageVo;
-import com.exam.demo.results.vo.UserSelectVo;
-import com.sun.org.apache.xml.internal.utils.WrappedRuntimeException;
 import org.json.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.exam.demo.entity.User;
 import com.exam.demo.service.UserService;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.exam.demo.results.vo.PageVo;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 /**
@@ -276,55 +269,22 @@ public class UserServiceImpl implements UserService {
      * @return
      */
     @Override
-    public PageVo<UserSelectVo> findUser(String name, String nums, String department, String address, Integer currentPage, Integer pageSize, Integer roleid) {
-        LinkedList<Integer> integers = new LinkedList<>();
-        integers.add(1);
-        integers.add(2);
-        Page<User> page = new Page<>(currentPage, pageSize);
-        LambdaQueryWrapper<User> wrapperSelect = Wrappers.lambdaQuery(User.class);
-        wrapperSelect.in(User::getRoleId,integers);
-        if(!name.isEmpty()){
-            wrapperSelect.eq(User::getName,name);
+    public List<RoleMessage> findUser(String name, String nums, String department, String address) {
+        Integer temp=userMapper.findbydepartment(department);
+        if(temp==null&&department.length()!=0)
+            temp=-2;
+        if(name.length()==0)
+            name=null;
+        if(nums.length()==0)
+           nums=null;
+        if(department.length()==0||department==null||temp==null){
+           temp=-1;
         }
-        if(!nums.isEmpty()){
-            wrapperSelect.eq(User::getNums,nums);
-        }
-        if(!address.isEmpty()){
-            wrapperSelect.like(User::getAddress,address);
-        }
-        if (!StringUtils.isBlank(department)){
-            LambdaQueryWrapper<Department> departmentwrapper = Wrappers.lambdaQuery(Department.class);
-            departmentwrapper.select(Department::getId).like(Department::getName,department);
-            List<Department> departmentlist = departmentMapper.selectList(departmentwrapper);
-            if(!departmentlist.isEmpty()){
-                LinkedList<Integer> departmentids = new LinkedList<>();
-                for(Department department1:departmentlist){
-                    departmentids.add(department1.getId());
-                }
-                wrapperSelect.in(User::getDepartmentId,departmentids);
-            }
-        }
-        LinkedList<UserSelectVo> userSelectVos = new LinkedList<>();
-        Page<User> userSelectPage = userMapper.selectPage(page, wrapperSelect);
-        List<User> userSelectList = userSelectPage.getRecords();
-        for(User u : userSelectList) {
-            UserSelectVo userSelectVo = copy(u);
-            userSelectVos.add(userSelectVo);
-        }
-        return PageVo.<UserSelectVo>builder()
-                .values(userSelectVos)
-                .page(currentPage)
-                .size(pageSize)
-                .total(userSelectPage.getTotal())
-                .build();
+        if(address.length()==0)
+            address=null;
+        return userMapper.findUser(name, nums, temp, address);
 
-    }
-    private UserSelectVo copy(User user){
-        UserSelectVo userSelectVo = new UserSelectVo();
-        BeanUtils.copyProperties(user,userSelectVo);
-        userSelectVo.setDepartment(departmentMapper.selectById(user.getDepartmentId()).getName());
-        userSelectVo.setRole(roleMapper.selectById(user.getRoleId()).getName());
-        return  userSelectVo;
+
     }
 
     /**

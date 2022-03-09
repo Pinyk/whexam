@@ -1,16 +1,15 @@
 package com.exam.demo.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.exam.demo.entity.ExamJudge;
-import com.exam.demo.entity.ExamSelect;
 import com.exam.demo.entity.Subject;
 import com.exam.demo.mapper.ExamJudgeMapper;
 import com.exam.demo.mapper.SubjectMapper;
+import com.exam.demo.params.submit.JudgeSubmitParam;
 import com.exam.demo.results.vo.ExamJudgeVo;
 import com.exam.demo.results.vo.PageVo;
 import com.exam.demo.service.ExamJudgeService;
@@ -53,7 +52,7 @@ public class ExamJudgeServiceImpl implements ExamJudgeService {
         queryWrapper.eq("subject_id",subjectId);
         return examJudgeMapper.selectList(queryWrapper);
     }
-
+//=====================================================组合查询===========================================================
     @Override
     public PageVo<ExamJudgeVo> search(Integer current, Integer pageSize, Integer id, String context,String subject, Integer materialQuestion) {
         Page<ExamJudge> page = new Page(current, pageSize);
@@ -101,12 +100,32 @@ public class ExamJudgeServiceImpl implements ExamJudgeService {
         examJudgeVo.setSubject(subjectMapper.selectById(examJudge.getSubjectId()).getName());
         return examJudgeVo;
     }
-
+//===============================================新增填空题===============================================================
     @Override
-    public Integer saveExamJudge(ExamJudge examJudge) {
+    public Integer saveExamJudge(JudgeSubmitParam judgeSubmitParam) {
+
+        ExamJudge examJudge = new ExamJudge();
+
+        if (StringUtils.isNotBlank(judgeSubmitParam.getContext())) {
+            examJudge.setContext(judgeSubmitParam.getContext());
+        }
+        if (judgeSubmitParam.getSubjectId() != null) {
+            examJudge.setSubjectId(judgeSubmitParam.getSubjectId());
+        }
+        if (judgeSubmitParam.getAnswer() != null) {
+            examJudge.setAnswer(judgeSubmitParam.getAnswer());
+        }
+        if (judgeSubmitParam.getScore() != null) {
+            examJudge.setScore(judgeSubmitParam.getScore());
+        }
+        if (judgeSubmitParam.getPicture() != null) {
+            //调用COS服务
+
+            //写入图片url
+        }
         return examJudgeMapper.insert(examJudge);
     }
-
+//======================================================================================================================
     @Override
     public Integer updateExamJudge(ExamJudge examJudge) {
         return examJudgeMapper.updateById(examJudge);

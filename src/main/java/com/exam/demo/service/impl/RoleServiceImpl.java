@@ -1,23 +1,15 @@
 package com.exam.demo.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.StringUtils;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.exam.demo.entity.Department;
-import com.exam.demo.entity.User;
-import com.exam.demo.mapper.DepartmentMapper;
-import com.exam.demo.results.vo.PageVo;
-import com.exam.demo.results.vo.PowerVo;
+import com.exam.demo.entity.Power;
 import com.exam.demo.entity.Role;
 import com.exam.demo.mapper.RoleMapper;
 import com.exam.demo.mapper.UserMapper;
 import com.exam.demo.service.RoleService;
-import org.springframework.beans.BeanUtils;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -32,8 +24,6 @@ public class RoleServiceImpl implements RoleService {
     private UserMapper userMapper;
     @Autowired
     private RoleMapper roleMapper;
-    @Autowired
-    private DepartmentMapper departmentMapper;
 
     /**
      * 查询所有角色
@@ -85,53 +75,33 @@ public class RoleServiceImpl implements RoleService {
      * @param nums
      * @param name
      * @param department
-     * @param
+     * @param rolename
      * @return
      */
     @Override
-    public PageVo<PowerVo> findRole(String nums, String name, String department,Integer currentPage,Integer pageSize) {
-        Page<User> page = new Page<>(currentPage, pageSize);
-        LambdaQueryWrapper<User> wrapperSelect = Wrappers.lambdaQuery(User.class);
-        if(!name.isEmpty()){
-            wrapperSelect.eq(User::getName,name);
+    public List<Power> findRole(String nums, String name, String department, String rolename) {
+        Integer temp1;
+        Integer temp2;
+        temp1=userMapper.findbydepartment(department);
+        temp2=roleMapper.findByRoleName(name);
+        if(temp1==null&&department.length()!=0)
+            temp1=-2;
+        if(temp2==null&&rolename.length()!=0)
+            temp2=-2;
+        if(name.length()==0)
+            name=null;
+        if(nums.length()==0)
+            nums=null;
+        if(department.length()==0||department==null||temp1==null){
+            temp1=-1;
         }
-        if(!nums.isEmpty()){
-            wrapperSelect.eq(User::getNums,nums);
+        if(rolename.length()==0||rolename==null||temp2==null){
+            temp2=-1;
         }
-            if (!StringUtils.isBlank(department)){
-            LambdaQueryWrapper<Department> departmentwrapper = Wrappers.lambdaQuery(Department.class);
-            departmentwrapper.select(Department::getId).like(Department::getName,department);
-            List<Department> departmentlist = departmentMapper.selectList(departmentwrapper);
-            if(!departmentlist.isEmpty()){
-                LinkedList<Integer> departmentids = new LinkedList<>();
-                for(Department department1:departmentlist){
-                    departmentids.add(department1.getId());
-                }
-                wrapperSelect.in(User::getDepartmentId,departmentids);
-            }
-        }
-        LinkedList<PowerVo> userPowerVos = new LinkedList<>();
-        Page<User> userSelectPage = userMapper.selectPage(page, wrapperSelect);
-        List<User> userSelectList = userSelectPage.getRecords();
-        for(User u : userSelectList) {
-            PowerVo powerVo = copy(u);
-           userPowerVos.add(powerVo);
-        }
-        return PageVo.<PowerVo>builder()
-                .values(userPowerVos)
-                .page(currentPage)
-                .size(pageSize)
-                .total(userSelectPage.getTotal())
-                .build();
+
+        return roleMapper.findRole(nums,name,temp1,temp2);
     }
-    private PowerVo copy(User u){
-        PowerVo powerVo = new  PowerVo();
-        BeanUtils.copyProperties(u, powerVo);
-        powerVo.setDepartment(departmentMapper.selectById(u.getDepartmentId()).getName());
-        if(u.getRoleId()!=null)
-        powerVo.setManager(u.getRoleId());
-        return  powerVo;
-    }
+
     /**
      * 通过rolename查找id
      * @param name

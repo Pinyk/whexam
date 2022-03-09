@@ -2,6 +2,7 @@ package com.exam.demo.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.exam.demo.Utils.FileCommit;
+import com.exam.demo.Utils.URLtoUTF8;
 import com.exam.demo.entity.Datatype;
 import com.exam.demo.entity.ShowStudy;
 import com.exam.demo.entity.Study;
@@ -17,10 +18,14 @@ import com.exam.demo.results.WebResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import net.sf.jsqlparser.expression.DateTimeLiteralExpression;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import sun.plugin2.message.Message;
 
+
+import java.lang.annotation.Inherited;
 import java.util.*;
 
 import static com.exam.demo.results.WebResult.REQUEST_STATUS_SUCCESS;
@@ -136,21 +141,9 @@ public class StudyController {
     @GetMapping("/findByTypeid")
     @ApiOperation(notes = "csx",value = "学科小类查询接口")
     public WebResult<List<StudyByType>> findByTypeId(@RequestParam @ApiParam(name="typeid") Integer typeid){
-//
-//
-//        ArrayList<ArrayList<Study>> arrayLists=new ArrayList<>();
-
-
-//        List<Map>,Map> l=new ArrayList<>();
-//        Map<Map<String, Integer>,Map<String, List<Study>>> map=new HashMap();
 
         List<StudyByType> list=new LinkedList<>();
-        Map<Integer, List<Study>> tempMap = new HashMap<>();
 
-//        Map<String, Integer> map1 = new HashMap<>();
-//        Map<String, List<Study>> map2 = new HashMap<>();
-
-        List<List<Study>> arrayLists=new ArrayList<>();
         List<Datatype> datatypes=dataTypeService.findAll();
         List<Study> studies=studyService.findBySubjectType(typeid);
         Iterator<Study> studyIterator = studies.iterator();
@@ -158,16 +151,12 @@ public class StudyController {
         while (datatypeIterator.hasNext()){
             Datatype datatype=datatypeIterator.next();
             List<Study> studies1=new LinkedList<>();
-//            arrayLists.add(studies1);
-//            map1.put("id"+String.valueOf(datatype.getId()) ,datatype.getId());
-//            map2.put("data"+String.valueOf(datatype.getId()),studies1);
-//            map.put(map1,map2);
+
             StudyByType studyByType=new StudyByType();
             studyByType.setId(datatype.getId());
             studyByType.setData(studies1);
             list.add(studyByType);
 
-//            tempMap.put(datatype.getId(),studies1);
 
 
         }
@@ -179,32 +168,16 @@ public class StudyController {
                 Datatype datatype=datatypeIterator1.next();
 
                 if(datatype.getId()==study.getDatatypeid()){
-//                    arrayLists.get(datatype.getId()-1).add(study);
-//                    Map<String, Integer> map3 = new HashMap<>();
-//                    map3.put("id":)
 
-
-//                    .get("id"+String.valueOf(datatype.getId()))
-//                    Map<String, Integer> m=new HashMap<>();
-//                    m.put("id"+String.valueOf(datatype.getId()),datatype.getId());
-//                    Map<String, List<Study>> m2=map.get(m);
-//                    List<Study> s= (List<Study>) map.get(m.get("data"+String.valueOf(datatype.getId())));
-//                    s= ;
-//                    map.get(m.get("data"+String.valueOf(datatype.getId())).add(study);
-//                    map.get(map3);
-//                    tempMap.get(datatype.getId()).add(study);
 
                     list.get(datatype.getId()-1).getData().add(study);
-//                    map1.
+
 
                     break;
                 }
 
             }
         }
-//        Dictionary<Integer, List<Study>> dict1 = new Hashtable<>(tempMap);
-//        Dictionary<Map<String, Integer>,Map<String, List<Study>>> dict = new Hashtable<>(map);
-//        System.out.println(dict1);
         return WebResult.<List<StudyByType>>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
@@ -216,13 +189,34 @@ public class StudyController {
     @DeleteMapping("/delete")
     @ApiOperation(notes = "csx",value = "删除课程接口")
     public WebResult<Integer> delete(@RequestParam @ApiParam(name="study_id") Integer study_id){
-        return WebResult.<Integer>builder()
-                .code(200)
-                .message(REQUEST_STATUS_SUCCESS)
-                .data(studyService.delete(study_id))
-                .build();
+
+
+        Study study=studyService.findById(study_id);
+        String tempKey=study.getUrl().split("http://xiaoningya-1302847510.cos.ap-chongqing.myqcloud.com/")[1];
+        String key= URLtoUTF8.unescape(tempKey.split("\\?sign=")[0]);
+        FileCommit fileCommit=new FileCommit();
+        fileCommit.delete(key);
+            return WebResult.<Integer>builder()
+                    .code(200)
+                    .message(REQUEST_STATUS_SUCCESS)
+                    .data(studyService.delete(study_id))
+                    .build();
 
     }
+
+
+//
+//
+//    @DeleteMapping("/deletekey")
+//    @ApiOperation(notes = "csx",value = "删除课程接口")
+//    public void deletekey(@RequestParam @ApiParam(name="study_id") Integer study_id){
+//        Study study=studyService.findById(study_id);
+//        String tempKey=study.getUrl().split("http://xiaoningya-1302847510.cos.ap-chongqing.myqcloud.com/")[1];
+//        String key= URLtoUTF8.unescape(tempKey.split("\\?sign=")[0]);
+//        FileCommit fileCommit=new FileCommit();
+//        fileCommit.delete(key);
+//    }
+
 
 //    //增加新的学习任务
 //    @PostMapping("/insert")

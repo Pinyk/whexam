@@ -19,6 +19,8 @@ public class StudyServiceImpl implements StudyService {
     @Autowired
     private StudyMapper studyMapperr;
 
+
+
     public List<Study> findAll() {
         //查询所有
 
@@ -55,6 +57,9 @@ public class StudyServiceImpl implements StudyService {
 
     public int delete (int study_id ){
         //根据id进行删除
+
+
+
         return studyMapperr.deleteById(study_id);
     }
 
@@ -72,6 +77,12 @@ public class StudyServiceImpl implements StudyService {
         LambdaQueryWrapper<Study> queryWrapper=new LambdaQueryWrapper<>();
         queryWrapper.eq(Study::getTypeid,typeid);
         return studyMapperr.selectList(queryWrapper);
+    }
+
+    @Override
+    public Study findById(int id) {
+
+        return studyMapperr.selectById(id);
     }
 
 
