@@ -192,8 +192,8 @@ public class StudyController {
 
 
         Study study=studyService.findById(study_id);
-        String tempKey=study.getUrl().split("http://xiaoningya-1302847510.cos.ap-chongqing.myqcloud.com/")[1];
-        String key= URLtoUTF8.unescape(tempKey.split("\\?sign=")[0]);
+        String key=study.getUrl().split("http://xiaoningya-1302847510.cos.ap-chongqing.myqcloud.com/")[1];
+//        String key= URLtoUTF8.unescape(tempKey.split("\\?sign=")[0]);
         FileCommit fileCommit=new FileCommit();
         fileCommit.delete(key);
             return WebResult.<Integer>builder()
@@ -290,7 +290,8 @@ public class StudyController {
         try {
             FileCommit fileCommit = new FileCommit();
             fileCommit.fileCommit(mpFile);
-            String url = fileCommit.downLoad(mpFile);
+            String TempUrl = fileCommit.downLoad(mpFile);
+            String url=TempUrl.split("\\?sign=")[0];
 //            System.out.println("======================"+url);
             Study study = new Study();
                 study.setName(name);
