@@ -342,7 +342,7 @@ public class UserServiceImpl implements UserService {
         now.setNums(userwx.getNums());
         userwxMapper.updateById(now);
         QueryWrapper<User> query = new QueryWrapper<>();
-        wrapper.eq("nums",userwx.getNums());
+        query.eq("nums",userwx.getNums());
         User user = userMapper.selectOne(query);
         UserPojo userPojo = new UserPojo();
         userPojo.setId(user.getId());
