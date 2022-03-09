@@ -23,9 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-
-
-import java.lang.annotation.Inherited;
 import java.util.*;
 
 import static com.exam.demo.results.WebResult.REQUEST_STATUS_SUCCESS;
