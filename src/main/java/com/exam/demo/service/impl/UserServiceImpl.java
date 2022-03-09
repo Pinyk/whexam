@@ -55,8 +55,8 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public UserPojo loginWx(Userwx userwx) {
-//        String s = UserServiceImpl.sendGet("https://api.weixin.qq.com/sns/jscode2session?appid=wxfe52cfbbf230d5ee&secret=3b61d56a43ce72243813b1f71b017c90&js_code=" + userwx.getOpenid() + "&grant_type=authorization_code", "");
-        String s = UserServiceImpl.sendGet("https://api.weixin.qq.com/sns/jscode2session?appid=wx6aa479ffc03709f2&secret=63db36df18e500a5eb16ddd5219fbc30&js_code=" + userwx.getOpenid() + "&grant_type=authorization_code", "");
+        String s = UserServiceImpl.sendGet("https://api.weixin.qq.com/sns/jscode2session?appid=wxfe52cfbbf230d5ee&secret=3b61d56a43ce72243813b1f71b017c90&js_code=" + userwx.getOpenid() + "&grant_type=authorization_code", "");
+//        String s = UserServiceImpl.sendGet("https://api.weixin.qq.com/sns/jscode2session?appid=wx6aa479ffc03709f2&secret=63db36df18e500a5eb16ddd5219fbc30&js_code=" + userwx.getOpenid() + "&grant_type=authorization_code", "");
         JSONObject json = new JSONObject(s);
         System.err.println(s);
         QueryWrapper<Userwx> wrapper = new QueryWrapper<>();
@@ -70,30 +70,41 @@ public class UserServiceImpl implements UserService {
             q.setGender(userwx.getGender());
             userwxMapper.updateById(q);
             QueryWrapper<User> query = new QueryWrapper<>();
-            wrapper.eq("nums",q.getNums());
+            query.eq("nums",q.getNums());
+            System.err.println(q.getNums());
             User user = userMapper.selectOne(query);
-            UserPojo userPojo = new UserPojo();
-            userPojo.setId(user.getId());
-            userPojo.setName(user.getName());
-            userPojo.setGender(user.getGender());
-            userPojo.setPosition(user.getPosition());
-            userPojo.setRole(roleMapper.selectById(user.getRoleId()).getName());
+            if (user != null){
+                UserPojo userPojo = new UserPojo();
+                userPojo.setId(user.getId());
+                userPojo.setName(user.getName());
+                userPojo.setGender(user.getGender());
+                userPojo.setPosition(user.getPosition());
+                userPojo.setRole(roleMapper.selectById(user.getRoleId()).getName());
 //            System.err.println(x.getName());
-            String dname = departmentMapper.selectById(user.getDepartmentId()).getName();
-            userPojo.setDepartment(dname);
-            userPojo.setAddress(user.getAddress());
-            userPojo.setEmail(user.getEmail());
-            userPojo.setTele(user.getTele());
-            userPojo.setTime(user.getTime());
-            userPojo.setWxname(user.getWxname());
-            userPojo.setNums(user.getNums());
-            userPojo.setIdentity(user.getIdentity());
-            return userPojo;
+                String dname = departmentMapper.selectById(user.getDepartmentId()).getName();
+                userPojo.setDepartment(dname);
+                userPojo.setAddress(user.getAddress());
+                userPojo.setEmail(user.getEmail());
+                userPojo.setTele(user.getTele());
+                userPojo.setTime(user.getTime());
+                userPojo.setWxname(user.getWxname());
+                userPojo.setNums(user.getNums());
+                userPojo.setIdentity(user.getIdentity());
+                return userPojo;
+            }else {
+                UserPojo x = new UserPojo();
+                x.setGender(null);
+                x.setName(json.getString("openid"));
+                return x;
+            }
         }else{
             Userwx now = new Userwx(json.getString("openid"), userwx.getGender(), userwx.getImage(), userwx.getWxname());
 //            User now = new User(user.getGender(), "123456", 2, user.getImage(), user.getWxname(), 0, "123456");
             userwxMapper.insert(now);
-            return null;
+            UserPojo x = new UserPojo();
+            x.setGender(null);
+            x.setName(json.getString("openid"));
+            return x;
         }
     }
 
