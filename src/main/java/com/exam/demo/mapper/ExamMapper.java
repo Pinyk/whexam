@@ -52,5 +52,42 @@ public interface ExamMapper extends BaseMapper<Exam> {
     List<Object> findExamFillBlankByTestPaperId(Integer testPaperId);
 
 
+    /**
+     * 根据试卷id查询组成试卷的材料题目
+     * @param testPaperId
+     * @return
+     */
+    List<ExamMaterial> findExamMaterialByTestPaperId(Integer testPaperId);
 
+    /**
+     * 根据材料题id查询组成材料题的单选题目
+     */
+    List<Object> findSingleSelectionByExamMaterialId(Integer emId);
+
+
+    /**
+     * 根据材料题id查询组成材料题的多选题目
+     */
+    List<Object> findMultipulSelectionByExamMaterialId(Integer emId);
+
+    /**
+     * 根据材料题id查询组成材料题的判断题目
+     * @param emId
+     * @return
+     */
+    List<Object> findExamJudgeByExamMaterialId(Integer emId);
+
+    /**
+     * 根据材料题ID查询组成试卷的主观题目
+     * @param emId
+     * @return
+     */
+    List<Object> findExamSubjectByExamMaterialId(Integer emId);
+
+    /**
+     * 根据材料题ID查询组成试卷的填空题目
+     * @param emId
+     * @return
+     */
+    List<Object> findExamFillBlankByExamMaterialId(Integer emId);
 }
