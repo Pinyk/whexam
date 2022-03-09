@@ -54,7 +54,10 @@ public class ExamSelectServiceImpl implements ExamSelectService {
     private ExamSelectVo copy(ExamSelect examSelect) {
         ExamSelectVo examSelectVo = new ExamSelectVo();
         BeanUtils.copyProperties(examSelect,examSelectVo);
-        examSelectVo.setSubject(subjectMapper.selectById(examSelect.getSubjectId()).getName());
+        Integer subjectId = examSelect.getSubjectId();
+        if (subjectId != null && subjectId != 0) {
+            examSelectVo.setSubject(subjectMapper.selectById(subjectId).getName());
+        }
         return examSelectVo;
     }
 //========================================================================================================================
