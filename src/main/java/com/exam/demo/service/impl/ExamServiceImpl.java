@@ -165,6 +165,8 @@ public class ExamServiceImpl implements ExamService {
             }
             scoreDataMapper.insert(scoreData);
         }
+        //材料题
+
         return 1;
     }
 

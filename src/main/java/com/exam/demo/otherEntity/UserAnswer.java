@@ -31,4 +31,5 @@ public class UserAnswer {
 
     @ApiModelProperty(value = "填空题目")
     private List<ExamFillBlank> examFillBlanks;
+
 }
