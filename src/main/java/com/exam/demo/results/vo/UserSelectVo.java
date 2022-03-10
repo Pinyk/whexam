@@ -27,5 +27,8 @@ public class UserSelectVo {
     private  String department;
     @ApiModelProperty(value="地址")
     private  String address;
+    @ApiModelProperty(value="职位")
+    private  String position;
+
 
 }

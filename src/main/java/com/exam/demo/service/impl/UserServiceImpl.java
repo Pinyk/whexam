@@ -281,7 +281,7 @@ public class UserServiceImpl implements UserService {
         integers.add(2);
         Page<User> page = new Page<>(currentPage, pageSize);
         LambdaQueryWrapper<User> wrapperSelect = Wrappers.lambdaQuery(User.class);
-        //wrapperSelect.in(User::getRoleId,integers);
+        wrapperSelect.in(User::getRoleId,integers);
         if(!StringUtils.isBlank(name)){
             wrapperSelect.eq(User::getName,name);
         }
