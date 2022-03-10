@@ -1,6 +1,7 @@
 package com.exam.demo.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.exam.demo.entity.ExamSubject;
 import com.exam.demo.params.SubjectParam;
 import com.exam.demo.params.submit.SubjectSubmitParam;
@@ -20,6 +21,7 @@ import springfox.documentation.annotations.ApiIgnore;
 import java.util.List;
 import java.util.Map;
 
+import static com.exam.demo.results.WebResult.REQUEST_STATUS_ERROR;
 import static com.exam.demo.results.WebResult.REQUEST_STATUS_SUCCESS;
 
 @RestController
@@ -86,6 +88,13 @@ public class ExamSubjectController {
             @ApiParam("分数") @RequestParam(required = false) Double score,
             @ApiParam("上传图片") @RequestParam(required = false) MultipartFile image
             ) {
+        if (StringUtils.isBlank(context) && subjectId == null && StringUtils.isBlank(answer) && score == null
+                && image == null) {
+            return WebResult.<JSONObject>builder()
+                    .code(404)
+                    .message(REQUEST_STATUS_ERROR)
+                    .build();
+        }
         return WebResult.<JSONObject>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
@@ -103,6 +112,13 @@ public class ExamSubjectController {
             @ApiParam("分数") @RequestParam(required = false) Double score,
             @ApiParam("上传图片") @RequestParam(required = false) MultipartFile image
     ) {
+        if (StringUtils.isBlank(context) && subjectId == null && StringUtils.isBlank(answer) && score == null
+                && image == null) {
+            return WebResult.<JSONObject>builder()
+                    .code(404)
+                    .message(REQUEST_STATUS_ERROR)
+                    .build();
+        }
         return WebResult.<JSONObject>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
