@@ -1,5 +1,6 @@
 package com.exam.demo.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
@@ -20,8 +21,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ExamSubjectServiceImpl implements ExamSubjectService {
@@ -106,21 +109,21 @@ public class ExamSubjectServiceImpl implements ExamSubjectService {
     }
 //==================================================新增=================================================================
     @Override
-    public Integer saveSubject(SubjectSubmitParam subjectSubmitParam, MultipartFile image) {
+    public JSONObject saveSubject(String context, Integer subjectId, String answer, Double score, MultipartFile image, boolean isMaterialProblem) {
 
         ExamSubject examSubject = new ExamSubject();
 
-        if (StringUtils.isNotBlank(subjectSubmitParam.getContext())) {
-            examSubject.setContext(subjectSubmitParam.getContext());
+        if (StringUtils.isNotBlank(context)) {
+            examSubject.setContext(context);
         }
-        if (subjectSubmitParam.getSubjectId() != null) {
-            examSubject.setSubjectId(subjectSubmitParam.getSubjectId());
+        if (subjectId != null) {
+            examSubject.setSubjectId(subjectId);
         }
-        if (subjectSubmitParam.getAnswer() != null) {
-            examSubject.setAnswer(subjectSubmitParam.getAnswer());
+        if (StringUtils.isNotBlank(answer)) {
+            examSubject.setAnswer(answer);
         }
-        if (subjectSubmitParam.getScore() != null) {
-            examSubject.setScore(subjectSubmitParam.getScore());
+        if (score != null) {
+            examSubject.setScore(score);
         }
         if (image != null) {
             try {
@@ -133,11 +136,18 @@ public class ExamSubjectServiceImpl implements ExamSubjectService {
             }
         }
         examSubject.setDifficulty(1);
-        examSubject.setMaterialQuestion(0);
+        if (!isMaterialProblem) {
+            examSubject.setMaterialQuestion(0);
+        } else {
+            examSubject.setMaterialQuestion(1);
+        }
         examSubjectMapper.insert(examSubject);
 
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("newRecordId", examSubject.getId());
+
         //返回插入信息的Id
-        return examSubject.getId();
+        return jsonObject;
     }
 //======================================================================================================================
     @Override

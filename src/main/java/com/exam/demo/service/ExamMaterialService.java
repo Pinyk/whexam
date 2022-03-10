@@ -1,7 +1,10 @@
 package com.exam.demo.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.exam.demo.params.submit.MaterialSubmitParam;
 import com.exam.demo.results.vo.ExamMaterialVo;
+
+import java.util.Map;
 
 
 public interface ExamMaterialService {
@@ -18,8 +21,6 @@ public interface ExamMaterialService {
 
     /**
      * 新增材料题
-     * @param materialSubmitParam
-     * @return
      */
-    Integer saveExamMaterial(MaterialSubmitParam materialSubmitParam);
+    Map<String, Object> saveExamMaterial(JSONObject jsonObject);
 }

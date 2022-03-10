@@ -11,12 +11,15 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
+import java.util.Map;
 
+import static com.exam.demo.results.WebResult.REQUEST_STATUS_ERROR;
 import static com.exam.demo.results.WebResult.REQUEST_STATUS_SUCCESS;
 
 
@@ -75,19 +78,51 @@ public class ExamFillBlankController {
     }
 //=========================================================新增============================================================
     @PostMapping("saveExamFillBlank")
-    @ApiOperation(notes = "LBX", value = "新增填空题")
-    public WebResult<Integer> saveExamFillBlank(
-            @ApiParam(value = "填空题新增实体类")
-            @RequestBody FillBlankSubmitParam fillBlankSubmitParam,
-            @RequestParam(value = "file", required = false) MultipartFile image
+    @Transactional
+    @ApiOperation(notes= "LBX", value = "新增填空题")
+    public WebResult<Map<String,Object>> saveExamFillBlank(
+            @ApiParam (value = "填空题题目内容") @RequestParam(required = false) String context,
+            @ApiParam (value = "填空题所属学科ID") @RequestParam(required = false) Integer subjectId,
+            @ApiParam (value = "填空题答案") @RequestParam(required = false) String answer,
+            @ApiParam (value = "填空题分数") @RequestParam(required = false) Double score,
+            @ApiParam (value = "上传图片") @RequestParam(required = false) MultipartFile image
             ) {
-        return WebResult.<Integer>builder()
+        if (context == null && subjectId == null && answer == null && score == null && image == null) {
+            return WebResult.<Map<String,Object>>builder()
+                    .code(404)
+                    .message(REQUEST_STATUS_ERROR)
+                    .build();
+        }
+        return WebResult.<Map<String,Object>>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
-                .data(examFillBlankService.saveExamFillBlank(fillBlankSubmitParam, image))
+                .data(examFillBlankService.saveExamFillBlank(context, subjectId, answer, score, image, false))
                 .build();
     }
 
+    @PostMapping("saveExamFillBlankInMaterial")
+    @Transactional
+    @ApiOperation(notes= "LBX", value = "材料题——新增填空题")
+    public WebResult<Map<String,Object>> saveExamFillBlankInMaterial(
+            @ApiParam (value = "填空题题目内容") @RequestParam(required = false) String context,
+            @ApiParam (value = "填空题所属学科ID") @RequestParam(required = false) Integer subjectId,
+            @ApiParam (value = "填空题答案") @RequestParam(required = false) String answer,
+            @ApiParam (value = "填空题分数") @RequestParam(required = false) Double score,
+            @ApiParam (value = "上传图片") @RequestParam(required = false) MultipartFile image
+    ) {
+        if (context == null && subjectId == null && answer == null && score == null && image == null) {
+            return WebResult.<Map<String,Object>>builder()
+                    .code(404)
+                    .message(REQUEST_STATUS_ERROR)
+                    .build();
+        }
+        return WebResult.<Map<String,Object>>builder()
+                .code(200)
+                .message(REQUEST_STATUS_SUCCESS)
+                .data(examFillBlankService.saveExamFillBlank(context, subjectId, answer, score, image, true))
+                .build();
+    }
+//======================================================================================================================
     @PostMapping("update")
     @ApiOperation(notes = "wxn",value = "修改题库的填空题接口",httpMethod = "POST")
     public WebResult<Integer> updateExamFillBlank(@RequestBody @ApiParam(name="examFillBlank",required=true,value = "id传入null") ExamFillBlank examFillBlank) {

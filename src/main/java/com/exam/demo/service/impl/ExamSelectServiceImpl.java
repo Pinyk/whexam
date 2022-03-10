@@ -1,5 +1,6 @@
 package com.exam.demo.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -180,50 +181,65 @@ public class ExamSelectServiceImpl implements ExamSelectService {
     }
 //================================新增保存业务============================================================================
     @Override
-    public Integer saveSingleSelection(SelectSubmitParam selectSubmitParam, MultipartFile image) {
-        return save(selectSubmitParam, image, 1);
+    public JSONObject saveSingleSelection(String context, Integer subjectId, String selectionA, String selectionB,
+                                          String selectionC, String selectionD, String answer, Double score, MultipartFile image,
+                                          boolean isMaterialProblem) {
+        return save(context, subjectId, selectionA, selectionB, selectionC, selectionD, answer, score, image, isMaterialProblem, 1);
     }
 
     @Override
-    public Integer saveMultipleSelection(SelectSubmitParam selectSubmitParam, MultipartFile image) {
-        return save(selectSubmitParam, image, 2);
+    public JSONObject saveMultipleSelection(String context, Integer subjectId, String selectionA, String selectionB,
+                                         String selectionC, String selectionD, String answer, Double score, MultipartFile image,
+                                         boolean isMaterialProblem) {
+        return save(context, subjectId, selectionA, selectionB, selectionC, selectionD, answer, score, image, isMaterialProblem, 2);
     }
 //======================================================================================================================
-    private Integer save(SelectSubmitParam selectSubmitParam, MultipartFile image,Integer type) {
+    private JSONObject save(String context, Integer subjectId, String selectionA, String selectionB,
+                         String selectionC,String selectionD,String answer, Double score, MultipartFile image,
+                         boolean isMaterialProblem, Integer type) {
         //实例化选择题对象
         ExamSelect examSelect = new ExamSelect();
         //添加题目内容
-        if (selectSubmitParam.getContext() != null) {
-            examSelect.setContext(selectSubmitParam.getContext());
+        if (StringUtils.isNotBlank(context)) {
+            examSelect.setContext(context);
         }
         //添加题目选项
-        if(selectSubmitParam.getSelectionA() != null && selectSubmitParam.getSelectionB() != null
-                && selectSubmitParam.getSelectionC() != null && selectSubmitParam.getSelectionD() != null) {
+        if(selectionA != null && selectionB != null && selectionC != null && selectionD != null) {
             StringBuffer stringBuffer = new StringBuffer();
             stringBuffer
-                    .append(selectSubmitParam.getSelectionA())
+                    .append(selectionA)
                     .append(";")
-                    .append(selectSubmitParam.getSelectionB())
+                    .append(selectionB)
                     .append(";")
-                    .append(selectSubmitParam.getSelectionC())
+                    .append(selectionC)
                     .append(";")
-                    .append(selectSubmitParam.getSelectionD());
+                    .append(selectionD);
             examSelect.setSelection(stringBuffer.toString());
         }
         //添加题目答案
-        examSelect.setAnswer(selectSubmitParam.getAnswer());
+        if (StringUtils.isNotBlank(answer)) {
+            examSelect.setAnswer(answer);
+        }
 
         //添加所属科目Id
-        examSelect.setSubjectId(selectSubmitParam.getSubjectId());
+        if (subjectId != null) {
+            examSelect.setSubjectId(subjectId);
+        }
 
         //添加题目难度
         examSelect.setDifficulty(1);
         //添加分数
-        examSelect.setScore(selectSubmitParam.getScore());
+        if (score != null) {
+            examSelect.setScore(score);
+        }
         //添加选择题type
         examSelect.setType(type);
         //添加materialQuestion
-        examSelect.setMaterialQuestion(0);
+        if (!isMaterialProblem) {
+            examSelect.setMaterialQuestion(0);
+        } else {
+            examSelect.setMaterialQuestion(1);
+        }
         //添加图片
         if (image != null) {
             //调用COS存储图片
@@ -239,7 +255,10 @@ public class ExamSelectServiceImpl implements ExamSelectService {
         }
         examSelectMapper.insert(examSelect);
 
-        return examSelect.getId();
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("newRecordId", examSelect.getId());
+
+        return jsonObject;
     }
 //============================================================================================
 

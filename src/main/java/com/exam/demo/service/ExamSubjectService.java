@@ -1,5 +1,6 @@
 package com.exam.demo.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.exam.demo.entity.ExamSubject;
 import com.exam.demo.params.submit.SubjectSubmitParam;
 import com.exam.demo.results.vo.ExamSubjectVo;
@@ -7,6 +8,7 @@ import com.exam.demo.results.vo.PageVo;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ExamSubjectService {
 
@@ -67,8 +69,7 @@ public interface ExamSubjectService {
 
     /**
      *
-     * @param subjectSubmitParam
      * @return
      */
-    Integer saveSubject(SubjectSubmitParam subjectSubmitParam, MultipartFile image);
+    JSONObject saveSubject(String context, Integer subjectId, String answer, Double score, MultipartFile image, boolean isMaterialProblem);
 }

@@ -1,5 +1,6 @@
 package com.exam.demo.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.exam.demo.entity.ExamSubject;
 import com.exam.demo.params.SubjectParam;
 import com.exam.demo.params.submit.SubjectSubmitParam;
@@ -11,11 +12,13 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
+import java.util.Map;
 
 import static com.exam.demo.results.WebResult.REQUEST_STATUS_SUCCESS;
 
@@ -74,19 +77,37 @@ public class ExamSubjectController {
     }
 //==================================================新增=================================================================
     @PostMapping("saveSubject")
+    @Transactional
     @ApiOperation(notes = "LBX", value = "新增问答题")
-    public WebResult<Integer> saveSubject(
-            @ApiParam(value = "新增问答题实体类")
-            @RequestBody SubjectSubmitParam subjectSubmitParam,
-            @RequestParam MultipartFile image
+    public WebResult<JSONObject> saveSubject(
+            @ApiParam("题目") @RequestParam(required = false) String context,
+            @ApiParam("科目Id") @RequestParam(required = false) Integer subjectId,
+            @ApiParam("答案") @RequestParam(required = false) String answer,
+            @ApiParam("分数") @RequestParam(required = false) Double score,
+            @ApiParam("上传图片") @RequestParam(required = false) MultipartFile image
             ) {
-        return WebResult.<Integer>builder()
+        return WebResult.<JSONObject>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
-                .data(examSubjectService.saveSubject(subjectSubmitParam, image))
+                .data(examSubjectService.saveSubject(context, subjectId, answer, score, image, false))
                 .build();
     }
 
+    @PostMapping("saveSubjectInMaterial")
+    @Transactional
+    @ApiOperation(notes = "LBX", value = "材料题——新增问答题")
+    public WebResult<JSONObject> saveSubjectInMaterial(
+            @ApiParam("题目") @RequestParam(required = false) String context,
+            @ApiParam("答案") @RequestParam(required = false) String answer,
+            @ApiParam("分数") @RequestParam(required = false) Double score,
+            @ApiParam("上传图片") @RequestParam(required = false) MultipartFile image
+    ) {
+        return WebResult.<JSONObject>builder()
+                .code(200)
+                .message(REQUEST_STATUS_SUCCESS)
+                .data(examSubjectService.saveSubject(context, null, answer, score, image, true))
+                .build();
+    }
 //========================================================================================================================
 //    @PostMapping("save")
 //    @ApiOperation(notes = "xiong",value = "向题库添加主观题目接口")

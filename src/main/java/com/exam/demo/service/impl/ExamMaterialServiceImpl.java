@@ -1,5 +1,7 @@
 package com.exam.demo.service.impl;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -23,6 +25,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ExamMaterialServiceImpl implements ExamMaterialService {
@@ -130,196 +133,46 @@ public class ExamMaterialServiceImpl implements ExamMaterialService {
 
 
     @Override
-    public Integer saveExamMaterial(MaterialSubmitParam materialSubmitParam) {
+    public Map<String, Object> saveExamMaterial(JSONObject jsonObject) {
         //exam_material表
         ExamMaterial examMaterial = new ExamMaterial();
         //material_problem
         MaterialProblem materialProblem = new MaterialProblem();
 
-        //插入material表
-        if (StringUtils.isNotBlank(materialSubmitParam.getContext())){
-            examMaterial.setContext(materialSubmitParam.getContext());
+        if (jsonObject.getInteger("subjectId") != null) {
+            examMaterial.setSubjectId(jsonObject.getInteger("subjectId"));
         }
-        if (materialSubmitParam.getSubjectId() != null) {
-            examMaterial.setSubjectId(materialSubmitParam.getSubjectId());
+
+        if (jsonObject.getString("context") != null) {
+            examMaterial.setContext(jsonObject.getString("context"));
         }
         materialMapper.insert(examMaterial);
 
-        //将各个题型插入各个表中
-        if (!materialSubmitParam.getSingleSelections().isEmpty()) {
-            for (MaterialSelection singleSelection : materialSubmitParam.getSingleSelections()) {
-                ExamSelect examSelect = saveSelection(singleSelection, 1);
-                saveMaterialProblem(materialProblem, examSelect, examMaterial.getId(),
-                        examSelect.getId(), 1);
-            }
-        }
-        if (!materialSubmitParam.getMultipleSelections().isEmpty()) {
-            for (MaterialSelection multipleSelection : materialSubmitParam.getMultipleSelections()) {
-                ExamSelect examSelect = saveSelection(multipleSelection, 2);
-                saveMaterialProblem(materialProblem, examSelect, examMaterial.getId(),
-                        examSelect.getId(), 1);
-            }
-        }
-        if (!materialSubmitParam.getExamFillBlanks().isEmpty()) {
-            for (MaterialFillBlank materialFillBlank : materialSubmitParam.getExamFillBlanks()) {
-                ExamFillBlank examFillBlank = new ExamFillBlank();
+        saveMaterialProblem("singleSelections", 1, jsonObject, materialProblem, examMaterial);
+        saveMaterialProblem("multipleSelections", 1, jsonObject, materialProblem, examMaterial);
+        saveMaterialProblem("examFillBlanks", 2, jsonObject, materialProblem, examMaterial);
+        saveMaterialProblem("examJudges", 3, jsonObject, materialProblem, examMaterial);
+        saveMaterialProblem("examSubjects", 4, jsonObject, materialProblem, examMaterial);
 
-                if (StringUtils.isNotBlank(materialFillBlank.getContext())) {
-                    examFillBlank.setContext(materialFillBlank.getContext());
-                }
-                if (materialFillBlank.getAnswer() != null) {
-                    examFillBlank.setAnswer(materialFillBlank.getAnswer());
-                }
-                if (materialFillBlank.getScore() != null) {
-                    examFillBlank.setScore(materialFillBlank.getScore());
-                }
-                if (materialFillBlank.getImg() != null) {
-                    try {
-                        fileCommit.fileCommit(materialFillBlank.getImg());
-                        String downLoadUrl = fileCommit.downLoad(materialFillBlank.getImg());
-                        String url = downLoadUrl.split("\\?sign=")[0];
-                        examFillBlank.setImgUrl(url);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-                examFillBlank.setMaterialQuestion(1);
-                examFillBlankMapper.insert(examFillBlank);
-                saveMaterialProblem(materialProblem, examFillBlank, examMaterial.getId(),
-                        examFillBlank.getId(), 2);
-            }
-        }
-        if (!materialSubmitParam.getExamJudges().isEmpty()) {
-
-            for (MaterialJudge materialJudge : materialSubmitParam.getExamJudges()) {
-                ExamJudge examJudge = new ExamJudge();
-
-                if (StringUtils.isNotBlank(materialJudge.getContext())) {
-                    examJudge.setContext(materialJudge.getContext());
-                }
-                if (materialJudge.getAnswer() != null) {
-                    examJudge.setAnswer(materialJudge.getAnswer());
-                }
-                if (materialJudge.getScore() != null) {
-                    examJudge.setScore(materialJudge.getScore());
-                }
-                if (materialJudge.getImg() != null) {
-                    //调用COS服务
-                    try {
-                        fileCommit.fileCommit(materialJudge.getImg());
-                        //写入图片url
-                        String downLoadUrl = fileCommit.downLoad(materialJudge.getImg());
-                        String url = downLoadUrl.split("\\?sign=")[0];
-                        examJudge.setImgUrl(url);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-                examJudge.setDifficulty(1);
-                examJudge.setMaterialQuestion(1);
-                examJudgeMapper.insert(examJudge);
-                saveMaterialProblem(materialProblem, examJudge, examMaterial.getId(),
-                        examJudge.getId(), 3);
-            }
-
-        }
-        if (!materialSubmitParam.getExamSubjects().isEmpty()) {
-            for (MaterialSubject materialSubject : materialSubmitParam.getExamSubjects()) {
-                ExamSubject examSubject = new ExamSubject();
-
-                if (StringUtils.isNotBlank(materialSubject.getContext())) {
-                    examSubject.setContext(materialSubject.getContext());
-                }
-                if (materialSubject.getAnswer() != null) {
-                    examSubject.setAnswer(materialSubject.getAnswer());
-                }
-                if (materialSubject.getScore() != null) {
-                    examSubject.setScore(materialSubject.getScore());
-                }
-                if (materialSubject.getImg() != null) {
-                    try {
-                        fileCommit.fileCommit(materialSubject.getImg());
-                        String downLoadUrl = fileCommit.downLoad(materialSubject.getImg());
-                        String url = downLoadUrl.split("\\?sign=")[0];
-                        examSubject.setImgUrl(url);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-                examSubject.setMaterialQuestion(1);
-                examSubject.setDifficulty(1);
-                examSubjectMapper.insert(examSubject);
-                saveMaterialProblem(materialProblem, examSubject, examMaterial.getId(),
-                        examSubject.getId(), 4);
-            }
-        }
-
-        return examMaterial.getId();
-    }
-
-    //保存选择题
-    private ExamSelect saveSelection(MaterialSelection selectSubmitParam, Integer type) {
-        //实例化选择题对象
-        ExamSelect examSelect = new ExamSelect();
-        //添加题目内容
-        if (selectSubmitParam.getContext() != null) {
-            examSelect.setContext(selectSubmitParam.getContext());
-        }
-        //添加题目选项
-        if(selectSubmitParam.getSelectionA() != null && selectSubmitParam.getSelectionB() != null
-                && selectSubmitParam.getSelectionC() != null && selectSubmitParam.getSelectionD() != null) {
-            StringBuffer stringBuffer = new StringBuffer();
-            stringBuffer
-                    .append(selectSubmitParam.getSelectionA())
-                    .append(";")
-                    .append(selectSubmitParam.getSelectionB())
-                    .append(";")
-                    .append(selectSubmitParam.getSelectionC())
-                    .append(";")
-                    .append(selectSubmitParam.getSelectionD());
-            examSelect.setSelection(stringBuffer.toString());
-        }
-
-        //添加题目答案
-        examSelect.setAnswer(selectSubmitParam.getAnswer());
-
-        //添加题目难度
-        examSelect.setDifficulty(1);
-        //添加分数
-        examSelect.setScore(selectSubmitParam.getScore());
-        //添加选择题type
-        examSelect.setType(type);
-        //添加materialQuestion
-        examSelect.setMaterialQuestion(1);
-        //添加图片
-        if (selectSubmitParam.getImg() != null) {
-            //调用COS存储图片
-            try {
-                fileCommit.fileCommit(selectSubmitParam.getImg());
-                //将图片对应的url存入数据库
-                String downLoadUrl = fileCommit.downLoad(selectSubmitParam.getImg());
-                String url = downLoadUrl.split("\\?sign=")[0];
-                examSelect.setImgUrl(url);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-        }
-        examSelectMapper.insert(examSelect);
-        return examSelect;
+        JSONObject object = new JSONObject();
+        object.put("newRecordId", examMaterial.getId());
+        return object;
     }
 
     /**
      * 保存material_problem表数据
-     * @param materialId
-     * @param problemId
-     * @param problemType
      */
-    private void saveMaterialProblem(MaterialProblem materialProblem, ExamObject examObject, Integer materialId,
-                                        Integer problemId, Integer problemType) {
-        materialProblem.setMaterialId(materialId);
-        materialProblem.setProblemId(problemId);
-        materialProblem.setProblemType(problemType);
-        materialProblemMapper.insert(materialProblem);
+    private void saveMaterialProblem(String key, Integer problemType, JSONObject jsonObject, MaterialProblem materialProblem,
+                                     ExamMaterial examMaterial) {
+        if (jsonObject.getJSONArray(key) != null && !jsonObject.getJSONArray(key).isEmpty()) {
+            JSONArray jsonArray = jsonObject.getJSONArray(key);
+            for (Object o : jsonArray) {
+                materialProblem.setMaterialId(examMaterial.getId());
+                materialProblem.setProblemId((Integer) o);
+                materialProblem.setProblemType(problemType);
+                materialProblemMapper.insert(materialProblem);
+            }
+        }
     }
+
 }

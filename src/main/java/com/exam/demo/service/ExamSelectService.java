@@ -1,5 +1,6 @@
 package com.exam.demo.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.exam.demo.entity.ExamSelect;
 import com.exam.demo.otherEntity.SelectQuestionVo;
 import com.exam.demo.params.submit.SelectSubmitParam;
@@ -79,15 +80,15 @@ public interface ExamSelectService {
 
     /**
      * 新增单选题
-     * @param selectSubmitParam
      * @return
      */
-    Integer saveSingleSelection(SelectSubmitParam selectSubmitParam, MultipartFile image);
+    JSONObject saveSingleSelection(String context, Integer subjectId, String selectionA, String selectionB,
+                                   String selectionC,String selectionD,String answer, Double score, MultipartFile image, boolean isMaterialProblem);
 
     /**
      * 新增多选题
-     * @param selectSubmitParam
      * @return
      */
-    Integer saveMultipleSelection(SelectSubmitParam selectSubmitParam, MultipartFile image);
+    JSONObject saveMultipleSelection(String context, Integer subjectId, String selectionA, String selectionB,
+                                  String selectionC,String selectionD,String answer, Double score, MultipartFile image, boolean isMaterialProblem);
 }

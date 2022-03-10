@@ -7,6 +7,7 @@ import com.exam.demo.results.vo.PageVo;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ExamJudgeService {
 
@@ -48,10 +49,9 @@ public interface ExamJudgeService {
 
     /**
      * 向题库添加判断题目
-     * @param judgeSubmitParam
      * @return
      */
-    Integer saveExamJudge(JudgeSubmitParam judgeSubmitParam, MultipartFile image);
+    Map<String,Object> saveExamJudge(String context, Integer subjectId, Integer answer, Double score, MultipartFile image, boolean isMaterialProblem);
 
     /**
      * 修改题库的判断题目
