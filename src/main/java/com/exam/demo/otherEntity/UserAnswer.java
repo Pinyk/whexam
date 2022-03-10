@@ -1,9 +1,7 @@
 package com.exam.demo.otherEntity;
 
-import com.exam.demo.entity.ExamFillBlank;
-import com.exam.demo.entity.ExamJudge;
-import com.exam.demo.entity.ExamSelect;
-import com.exam.demo.entity.ExamSubject;
+import com.exam.demo.entity.*;
+import com.exam.demo.params.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -20,16 +18,26 @@ public class UserAnswer {
     @ApiModelProperty(value = "用户Id")
     private Integer userId;
 
-    @ApiModelProperty(value = "判断题目")
-    private List<ExamJudge> examJudges;
+    @ApiModelProperty(value = "单选题目")
+    private List<SelectionAnswer> singleSelections;
 
-    @ApiModelProperty(value = "选择题目")
-    private List<ExamSelect> examSelects;
-
-    @ApiModelProperty(value = "主观题目")
-    private List<ExamSubject> examSubjects;
+    @ApiModelProperty(value = "多选题目")
+    private List<SelectionAnswer> multipleSelections;
 
     @ApiModelProperty(value = "填空题目")
-    private List<ExamFillBlank> examFillBlanks;
+    private List<FillBlankAnswer> examFillBlank;
+
+    @ApiModelProperty(value = "判断题目")
+    private List<JudgeAnswer> examJudge;
+
+
+    @ApiModelProperty(value = "主观题目")
+    private List<SubjectAnswer> examSubject;
+
+
+    @ApiModelProperty(value = "材料题目")
+    private List<MaterialAnswer> examMaterial;
+
+
 
 }

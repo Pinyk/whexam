@@ -27,8 +27,15 @@
         and s.testpaper_id = #{testPaperId}
     </select>
 
-    <update id="updateScoreByUserId" parameterType="score">
+    <update id="updateScoreByUserIdAndTestPaperId" parameterType="score">
         update score set scorenum = #{scorenum}
         where testpaper_id = #{testpaperId} and user_id = #{userId}
     </update>
+    <!--Integer findIsSubmitByUserIdAndTestPaperId(Integer UserId,Integer testPaperId);-->
+
+    <select id="findIsSubmitByUserIdAndTestPaperId" resultType="score">
+        select *
+        from score
+        where user_id = #{param1} and testpaper_id = #{param2}
+    </select>
 </mapper>

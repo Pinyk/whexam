@@ -36,4 +36,7 @@ public class SelectQuestionVo {
 
     @ApiModelProperty(value = "图片URL")
     private String imgUrl;
+
+    @ApiModelProperty(value = "是否是材料题中的")
+    private Integer material_question;
 }

@@ -8,6 +8,12 @@ import java.util.List;
 
 @Repository
 public interface ExamMapper extends BaseMapper<Exam> {
+    /**
+     * 根据试卷id查看试卷是否可以重复考试
+     * @param testPaperId
+     * @return
+     */
+    Testpaper findExamIsRepeatByTestPaperId(Integer testPaperId);
 
     /**
      * 根据试卷ID查询组成试卷的判断题目
@@ -28,14 +34,14 @@ public interface ExamMapper extends BaseMapper<Exam> {
      * @param testPaperId
      * @return
      */
-    List<Object> findSingleSelectionByTestPaperId(Integer testPaperId);
+    List<ExamSelect> findSingleSelectionByTestPaperId(Integer testPaperId);
 
     /**
      * 根据试卷ID查询组成试卷的多选题目
      * @param testPaperId
      * @return
      */
-    List<Object> findMultipleSelectionByTestPaperId(Integer testPaperId);
+    List<ExamSelect> findMultipleSelectionByTestPaperId(Integer testPaperId);
 
     /**
      * 根据试卷ID查询组成试卷的主观题目
@@ -57,6 +63,37 @@ public interface ExamMapper extends BaseMapper<Exam> {
      * @param testPaperId
      * @return
      */
-    List<List<Object>> findExamMaterialByTestPaperId(Integer testPaperId);
+    List<ExamMaterial> findExamMaterialByTestPaperId(Integer testPaperId);
 
+    /**
+     * 根据材料题id查询组成材料题的单选题目
+     */
+    List<ExamSelect> findSingleSelectionByExamMaterialId(Integer emId);
+
+
+    /**
+     * 根据材料题id查询组成材料题的多选题目
+     */
+    List<ExamSelect> findMultipulSelectionByExamMaterialId(Integer emId);
+
+    /**
+     * 根据材料题id查询组成材料题的判断题目
+     * @param emId
+     * @return
+     */
+    List<ExamJudge> findExamJudgeByExamMaterialId(Integer emId);
+
+    /**
+     * 根据材料题ID查询组成材料题的主观题目
+     * @param emId
+     * @return
+     */
+    List<ExamSubject> findExamSubjectByExamMaterialId(Integer emId);
+
+    /**
+     * 根据材料题ID查询组成材料题的填空题目
+     * @param emId
+     * @return
+     */
+    List<ExamFillBlank> findExamFillBlankByExamMaterialId(Integer emId);
 }

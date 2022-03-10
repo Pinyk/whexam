@@ -66,5 +66,5 @@ public interface ExamService {
      * @param userId
      * @return
      */
-    Map<String, List<Object>> findScoreDetailByUIdAndTPId(Integer testPaperId, Integer userId);
+    List<Map<String, Object>> findScoreDetailByUIdAndTPId(Integer testPaperId, Integer userId);
 }

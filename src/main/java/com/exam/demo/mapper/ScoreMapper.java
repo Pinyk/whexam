@@ -16,5 +16,18 @@ public interface ScoreMapper extends BaseMapper<Score> {
 
     Double avgScoreByTestPaperId(Integer testPaperId);
 
-    Integer updateScoreByUserId(Score score);
+    /**
+     * 根据用户id和试卷id修改总成绩
+     * @param score
+     * @return
+     */
+    Integer updateScoreByUserIdAndTestPaperId(Score score);
+
+    /**
+     * 查询该用户是否提交过考试
+     * @param UserId
+     * @param testPaperId
+     * @return
+     */
+    List<Score> findIsSubmitByUserIdAndTestPaperId(Integer UserId,Integer testPaperId);
 }

@@ -4,7 +4,7 @@ import io.swagger.annotations.ApiModel;
 import lombok.Data;
 
 @Data
-@ApiModel()
+@ApiModel(value = "MaterialAnswer")
 public class MaterialAnswer {
 
     private int id;

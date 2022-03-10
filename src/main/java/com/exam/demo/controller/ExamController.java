@@ -165,9 +165,9 @@ public class ExamController {
 
     @GetMapping("findScoreDetailByUIdAndTPId")
     @ApiOperation(notes = "xiong",value = "根据用户ID和试卷ID查询考试明细接口")
-    public WebResult<Map<String, List<Object>>> findScoreDetailByUIdAndTPId(@RequestParam @ApiParam(name="testPaperId",required=true) Integer testPaperId,
+    public WebResult<List<Map<String, Object>>> findScoreDetailByUIdAndTPId(@RequestParam @ApiParam(name="testPaperId",required=true) Integer testPaperId,
                                                                             @RequestParam @ApiParam(name="userId",required=true) Integer userId) {
-        return WebResult.<Map<String, List<Object>>>builder()
+        return WebResult.<List<Map<String, Object>>>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
                 .data(examService.findScoreDetailByUIdAndTPId(testPaperId, userId))

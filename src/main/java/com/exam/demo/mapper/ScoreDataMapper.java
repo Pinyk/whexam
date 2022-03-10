@@ -43,4 +43,11 @@ public interface ScoreDataMapper extends BaseMapper<Scoredata> {
      * @return
      */
     List<Object> findExamFillBlankAnswerByTidAndUid(Integer testPaperId, Integer userID);
+
+    /**
+     * 修改scoredata的记录
+     * @param scoredata
+     * @return
+     */
+    Integer updateScoreDataByUserIdAndTestPaperId(Scoredata scoredata);
 }

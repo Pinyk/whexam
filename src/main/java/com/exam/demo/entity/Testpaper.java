@@ -20,7 +20,7 @@ public class Testpaper {
     @ApiModelProperty(value = "试卷对应科目")
     private int subjectId;
 
-    @TableField("`name`")
+
     @ApiModelProperty(value = "试卷名称")
     @TableField("`name`")
     private String name;
@@ -38,7 +38,7 @@ public class Testpaper {
     @ApiModelProperty(value = "考试结束时间")
     private Date deadTime;
 
-    @TableField("`time`")
+
     @ApiModelProperty(value = "考试总时长")
     @TableField("`time`")
     private int time;
@@ -49,7 +49,7 @@ public class Testpaper {
     @ApiModelProperty(value = "试卷所属部门ID")
     private int departmentId;
 
-    @TableField("`repeat`")
+
     @ApiModelProperty(value = "试题是否打乱")
     @TableField("`repeat`")
     private String repeat;

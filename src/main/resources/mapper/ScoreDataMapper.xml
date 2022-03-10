@@ -13,7 +13,7 @@
 <!--    List<Object> findSingleSelectionAnswerByTidAndUid(Integer testPaperId, Integer userID);-->
     <select id="findSingleSelectionAnswerByTidAndUid" parameterType="Integer" resultType="ScoreData">
         select * from scoredata sd, exam_select es where sd.testpaper_id = #{testPaperId} and sd.user_id = #{userID}
-        and sd.type = 2 and sd.problem_id = es.id and es.type = 1;
+        and sd.type = 2 and sd.problem_id = es.id and es.type = 1 and ;
     </select>
 
 <!--    List<Object> findMultipleSelectionAnswerByTidAndUid(Integer testPaperId, Integer userID);-->
@@ -31,5 +31,18 @@
     <select id="findExamFillBlankAnswerByTidAndUid" parameterType="Integer" resultType="ScoreData">
         select * from scoredata where testpaper_id = #{testPaperId} and user_id = #{userID} and type = 4;
     </select>
+
+    <!--Integer updateScoreDataByUserIdAndTestPaperId(Scoredata scoredata);-->
+
+    <update id="updateScoreDataByUserIdAndTestPaperId" parameterType="com.exam.demo.entity.Scoredata">
+        update scoredata
+        <set>
+            <if test="answer != null">answer = #{answer},</if>
+            <if test="score != null">score = #{score}</if>
+        </set>
+        where user_id = #{userId} and testpaper_id = #{testpaperId} and problem_id = #{problemId}
+    </update>
+
+
 
 </mapper>
