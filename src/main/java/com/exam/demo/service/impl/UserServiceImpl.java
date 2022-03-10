@@ -323,7 +323,8 @@ public class UserServiceImpl implements UserService {
         BeanUtils.copyProperties(user,userSelectVo);
         userSelectVo.setDepartment(departmentMapper.selectById(user.getDepartmentId()).getName());
         userSelectVo.setRole(roleMapper.selectById(user.getRoleId()).getName());
-        return  userSelectVo;
+        userSelectVo.setGenderWord("1".equals(user.getGender()) ? "男" : "女");
+        return userSelectVo;
     }
 
     /**

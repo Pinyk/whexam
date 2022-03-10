@@ -13,7 +13,11 @@ public class UserSelectVo {
     private  String name;
     @ApiModelProperty(value="性别")
     private  String gender;
+    @ApiModelProperty(value="性别文字")
+    private  String genderWord;
     @ApiModelProperty(value="角色")
+    private  Integer roleId;
+    @ApiModelProperty(value="角色文字")
     private  String role;
     @ApiModelProperty(value="身份证")
     private  String identity;
@@ -24,6 +28,8 @@ public class UserSelectVo {
     @ApiModelProperty(value="电子邮箱")
     private  String email;
     @ApiModelProperty(value="部门")
+    private  Integer departmentId;
+    @ApiModelProperty(value="部门文字")
     private  String department;
     @ApiModelProperty(value="地址")
     private  String address;
