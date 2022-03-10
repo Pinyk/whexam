@@ -325,6 +325,13 @@ public class UserServiceImpl implements UserService {
         userSelectVo.setRole(roleMapper.selectById(user.getRoleId()).getName());
         return  userSelectVo;
     }
+    public String add(User user){
+        int insert = userMapper.insert(user);
+        if(insert!=0){
+            return "增加成功";
+        }
+        return "增加失败";
+    }
 
     /**
      * 根据工号校验
