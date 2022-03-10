@@ -148,7 +148,8 @@ public class ExamMaterialServiceImpl implements ExamMaterialService {
             lambdaQueryWrapper.eq(MaterialProblem::getMaterialId, id);
         }
         List<MaterialProblem> materialProblems = materialProblemMapper.selectList(lambdaQueryWrapper);
-        LinkedList<JSONObject> examSelects = new LinkedList<>();
+        LinkedList<JSONObject> examSingleSelects = new LinkedList<>();
+        LinkedList<JSONObject> examMultipleSelects = new LinkedList<>();
         LinkedList<JSONObject> examFillBlanks = new LinkedList<>();
         LinkedList<JSONObject> examJudges = new LinkedList<>();
         LinkedList<JSONObject> examSubjects = new LinkedList<>();
@@ -159,11 +160,11 @@ public class ExamMaterialServiceImpl implements ExamMaterialService {
 
                 if (problemType == 1) {
                     LambdaQueryWrapper<ExamSelect> queryWrapper = new LambdaQueryWrapper<>();
-                    queryWrapper.select(ExamSelect::getId,ExamSelect::getContext,ExamSelect::getSelection,ExamSelect::getScore,
+                    queryWrapper.select(ExamSelect::getContext,ExamSelect::getSelection,ExamSelect::getScore,
                             ExamSelect::getImgUrl,ExamSelect::getType).eq(ExamSelect::getId,problemId);
                     ExamSelect examSelect = examSelectMapper.selectOne(queryWrapper);
                     JSONObject jsonObject1 = new JSONObject();
-                    jsonObject1.put("id", examSelect.getId());
+                    jsonObject1.put("id", problemId);
                     jsonObject1.put("context", examSelect.getContext());
                     jsonObject1.put("selectionA", examSelect.getSelection().split(";")[0]);
                     jsonObject1.put("selectionB", examSelect.getSelection().split(";")[1]);
@@ -173,14 +174,18 @@ public class ExamMaterialServiceImpl implements ExamMaterialService {
                     if (StringUtils.isNotBlank(examSelect.getImgUrl())) {
                         jsonObject1.put("imgUrl", examSelect.getImgUrl());
                     }
-                    examSelects.add(jsonObject1);
+                    if (examSelect.getType() == 1) {
+                        examSingleSelects.add(jsonObject1);
+                    } else {
+                        examMultipleSelects.add(jsonObject1);
+                    }
                 } else if (problemType == 2) {
                     LambdaQueryWrapper<ExamFillBlank> queryWrapper = new LambdaQueryWrapper<>();
-                    queryWrapper.select(ExamFillBlank::getId,ExamFillBlank::getContext,ExamFillBlank::getScore,
+                    queryWrapper.select(ExamFillBlank::getContext,ExamFillBlank::getScore,
                             ExamFillBlank::getImgUrl).eq(ExamFillBlank::getId,problemId);
                     ExamFillBlank examFillBlank = examFillBlankMapper.selectOne(queryWrapper);
                     JSONObject jsonObject1 = new JSONObject();
-                    jsonObject1.put("id", examFillBlank.getId());
+                    jsonObject1.put("id", problemId);
                     jsonObject1.put("context", examFillBlank.getContext());
                     jsonObject1.put("score", examFillBlank.getScore());
                     if (StringUtils.isNotBlank(examFillBlank.getImgUrl())) {
@@ -189,14 +194,40 @@ public class ExamMaterialServiceImpl implements ExamMaterialService {
                     examFillBlanks.add(jsonObject1);
                 } else if (problemType == 3) {
                     LambdaQueryWrapper<ExamJudge> queryWrapper = new LambdaQueryWrapper<>();
-
+                    queryWrapper.select(ExamJudge::getContext, ExamJudge::getScore, ExamJudge::getImgUrl)
+                            .eq(ExamJudge::getId,problemId);
+                    ExamJudge examJudge = examJudgeMapper.selectOne(queryWrapper);
+                    JSONObject jsonObject1 = new JSONObject();
+                    jsonObject1.put("id", problemId);
+                    jsonObject1.put("context", examJudge.getContext());
+                    jsonObject1.put("score", examJudge.getScore());
+                    if (StringUtils.isNotBlank(examJudge.getImgUrl())) {
+                        jsonObject1.put("imgUrl", examJudge.getImgUrl());
+                    }
+                    examJudges.add(jsonObject1);
                 } else {
                     LambdaQueryWrapper<ExamSubject> queryWrapper = new LambdaQueryWrapper<>();
-
+                    queryWrapper.select(ExamSubject::getContext,ExamSubject::getScore,ExamSubject::getImgUrl)
+                            .eq(ExamSubject::getId, problemId);
+                    ExamSubject examSubject = examSubjectMapper.selectOne(queryWrapper);
+                    JSONObject jsonObject1 = new JSONObject();
+                    jsonObject1.put("id", problemId);
+                    jsonObject1.put("context", examSubject.getContext());
+                    jsonObject1.put("score", examSubject.getScore());
+                    if (StringUtils.isNotBlank(examSubject.getImgUrl())) {
+                        jsonObject1.put("imgUrl", examSubject.getImgUrl());
+                    }
+                    examSubjects.add(jsonObject1);
                 }
             }
         }
-        return null;
+        jsonObject.put("examSingleSelects", examSingleSelects);
+        jsonObject.put("examMultipleSelects", examMultipleSelects);
+        jsonObject.put("examFillBlanks", examFillBlanks);
+        jsonObject.put("examJudges", examJudges);
+        jsonObject.put("examSubjects", examSubjects);
+
+        return jsonObject;
     }
 
     @Override
