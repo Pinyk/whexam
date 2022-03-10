@@ -12,6 +12,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
@@ -76,12 +77,13 @@ public class ExamSubjectController {
     @ApiOperation(notes = "LBX", value = "新增问答题")
     public WebResult<Integer> saveSubject(
             @ApiParam(value = "新增问答题实体类")
-            @RequestBody SubjectSubmitParam subjectSubmitParam
+            @RequestBody SubjectSubmitParam subjectSubmitParam,
+            @RequestParam MultipartFile image
             ) {
         return WebResult.<Integer>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
-                .data(examSubjectService.saveSubject(subjectSubmitParam))
+                .data(examSubjectService.saveSubject(subjectSubmitParam, image))
                 .build();
     }
 

@@ -4,6 +4,7 @@ import com.exam.demo.entity.ExamFillBlank;
 import com.exam.demo.params.submit.FillBlankSubmitParam;
 import com.exam.demo.results.vo.ExamFillBlankVo;
 import com.exam.demo.results.vo.PageVo;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -36,7 +37,7 @@ public interface ExamFillBlankService {
     /**
      * 向题库添加填空题
      */
-    Integer saveExamFillBlank(FillBlankSubmitParam fillBlankSubmitParam);
+    Integer saveExamFillBlank(FillBlankSubmitParam fillBlankSubmitParam, MultipartFile image);
 
     /**
      * 修改题库的填空题

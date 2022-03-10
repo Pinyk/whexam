@@ -5,6 +5,7 @@ import com.exam.demo.otherEntity.SelectQuestionVo;
 import com.exam.demo.params.submit.SelectSubmitParam;
 import com.exam.demo.results.vo.ExamSelectVo;
 import com.exam.demo.results.vo.PageVo;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -81,12 +82,12 @@ public interface ExamSelectService {
      * @param selectSubmitParam
      * @return
      */
-    Integer saveSingleSelection(SelectSubmitParam selectSubmitParam);
+    Integer saveSingleSelection(SelectSubmitParam selectSubmitParam, MultipartFile image);
 
     /**
      * 新增多选题
      * @param selectSubmitParam
      * @return
      */
-    Integer saveMultipleSelection(SelectSubmitParam selectSubmitParam);
+    Integer saveMultipleSelection(SelectSubmitParam selectSubmitParam, MultipartFile image);
 }

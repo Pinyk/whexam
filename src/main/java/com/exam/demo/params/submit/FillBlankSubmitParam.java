@@ -16,6 +16,4 @@ public class FillBlankSubmitParam {
 
     private Double score;
 
-    private MultipartFile picture;
-
 }

@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 import static com.exam.demo.results.WebResult.REQUEST_STATUS_ERROR;
 import static com.exam.demo.results.WebResult.REQUEST_STATUS_SUCCESS;
@@ -33,6 +34,16 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @PostMapping("add")
+    @ApiOperation(notes = "add",value="增加用户接口")
+    public WebResult<String> add(@RequestBody @ApiParam(name="用户对象",required=true,
+            value = "User对象") User user){
+        return WebResult.<String>builder()
+                .code(200)
+                .message(REQUEST_STATUS_SUCCESS)
+                .data(userService.add(user))
+                .build();
+    }
     @PostMapping("loginWx")
     @ApiOperation(notes = "gaoyk",value = "微信小程序登录接口")
     public WebResult<UserPojo> loginWx(@RequestBody @ApiParam(name="用户微信对象",required=true,
@@ -118,9 +129,18 @@ public class UserController {
 
     @PostMapping("grantRole")
     @ApiOperation(notes = "gaoyk",value = "更改权限")
-    public WebResult<Boolean> grantRole(@RequestParam @ApiParam(name="user_id",required=true)
-                                                Integer user_id){
-        Boolean msg = userService.grantRole(user_id);
+    public WebResult<Boolean> grantRole(@RequestBody @ApiParam(name="user_id",required=true)
+                                        Map<String, String> map){
+        if (map.get("user_id") == null) {
+            return WebResult.<Boolean>builder()
+                    .code(404)
+                    .message(REQUEST_STATUS_ERROR)
+                    .data(false)
+                    .build();
+        }
+
+        String user_id = map.get("user_id");
+        Boolean msg = userService.grantRole(Integer.parseInt(user_id));
         return WebResult.<Boolean>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
@@ -129,7 +149,7 @@ public class UserController {
     }
     @PostMapping("findUser")
     @ApiOperation(notes ="liu",value="根据条件查询用户")
-    public  WebResult<PageVo<UserSelectVo>> findUser(@ApiParam(name="前端查询条件 UserSelectParam 查询条件实体类") UserSelectParam userSelectParam){
+    public  WebResult<PageVo<UserSelectVo>> findUser(@RequestBody @ApiParam(name="前端查询条件 UserSelectParam 查询条件实体类") UserSelectParam userSelectParam){
             return WebResult.<PageVo<UserSelectVo>>builder()
                     .code(200)
                 .message(REQUEST_STATUS_SUCCESS)

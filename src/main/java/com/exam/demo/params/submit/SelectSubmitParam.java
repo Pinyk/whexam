@@ -1,7 +1,6 @@
 package com.exam.demo.params.submit;
 
 import lombok.Data;
-import org.springframework.web.multipart.MultipartFile;
 
 @Data
 public class SelectSubmitParam {
@@ -21,7 +20,5 @@ public class SelectSubmitParam {
     private Integer subjectId;
 
     private Double score;
-
-    private MultipartFile picture;
 
 }

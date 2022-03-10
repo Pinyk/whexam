@@ -17,6 +17,7 @@ import com.exam.demo.service.ExamSubjectService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.LinkedList;
@@ -105,7 +106,7 @@ public class ExamSubjectServiceImpl implements ExamSubjectService {
     }
 //==================================================新增=================================================================
     @Override
-    public Integer saveSubject(SubjectSubmitParam subjectSubmitParam) {
+    public Integer saveSubject(SubjectSubmitParam subjectSubmitParam, MultipartFile image) {
 
         ExamSubject examSubject = new ExamSubject();
 
@@ -121,10 +122,10 @@ public class ExamSubjectServiceImpl implements ExamSubjectService {
         if (subjectSubmitParam.getScore() != null) {
             examSubject.setScore(subjectSubmitParam.getScore());
         }
-        if (subjectSubmitParam.getPicture() != null) {
+        if (image != null) {
             try {
-                fileCommit.fileCommit(subjectSubmitParam.getPicture());
-                String downLoadUrl = fileCommit.downLoad(subjectSubmitParam.getPicture());
+                fileCommit.fileCommit(image);
+                String downLoadUrl = fileCommit.downLoad(image);
                 String url = downLoadUrl.split("\\?sign=")[0];
                 examSubject.setImgUrl(url);
             } catch (IOException e) {
