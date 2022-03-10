@@ -4,8 +4,10 @@ import com.exam.demo.entity.ExamFillBlank;
 import com.exam.demo.params.submit.FillBlankSubmitParam;
 import com.exam.demo.results.vo.ExamFillBlankVo;
 import com.exam.demo.results.vo.PageVo;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ExamFillBlankService {
     /**
@@ -36,7 +38,7 @@ public interface ExamFillBlankService {
     /**
      * 向题库添加填空题
      */
-    Integer saveExamFillBlank(FillBlankSubmitParam fillBlankSubmitParam);
+    Map<String,Object> saveExamFillBlank(String context, Integer subjectId, String answer, Double score, MultipartFile image, boolean isMaterialProblem);
 
     /**
      * 修改题库的填空题

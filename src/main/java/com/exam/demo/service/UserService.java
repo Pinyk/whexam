@@ -74,4 +74,11 @@ public interface UserService {
      * @return
      */
     public UserPojo check(Userwx userwx);
+
+    /**
+     * 增加用户
+     * @param user
+     * @return
+     */
+    public String add(User user);
 }

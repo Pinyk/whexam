@@ -6,6 +6,7 @@
 
     <!-- List<ExamJudge> findExamJudgeByTestPaperId(Integer testPaperId);  -->
     <select id="findExamJudgeByTestPaperId" parameterType="Integer" resultType="ExamJudge">
+
         select ej.id, ej.context,ej.answer, ej.subject_id, ej.difficulty, ej.score, ej.img_url ,ej.material_question
         from exam e, exam_judge ej
         where e.problem_id = ej.id and e.type = 1 and ej.material_question = 0
@@ -30,7 +31,7 @@
 
     <!--  List<Object> findMultipleSelectionByTestPaperId(Integer testPaperId);  -->
     <select id="findMultipleSelectionByTestPaperId" parameterType="Integer" resultType="ExamSelect">
-        select es.id, es.context, es.selection, es.answer, es.subject_id, es.difficulty,es.score, es.type, es.img_url,es.material_question
+        select es.id, es.context, es.selection,es.answer, es.score, es.img_url
         from exam e, exam_select es
         where e.problem_id = es.id and e.type = 2 and es.material_question = 0
         and es.type = 2 and e.testpaper_id = #{testPaperId}

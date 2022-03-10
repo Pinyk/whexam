@@ -11,11 +11,15 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
+import java.util.Map;
 
+import static com.exam.demo.results.WebResult.REQUEST_STATUS_ERROR;
 import static com.exam.demo.results.WebResult.REQUEST_STATUS_SUCCESS;
 
 @RestController
@@ -74,81 +78,51 @@ public class ExamJudgeController {
 //==========================================================新增=========================================================
 
     @PostMapping("saveExamJudge")
+    @Transactional
     @ApiOperation(notes = "LBX", value = "新增填空题")
-    public WebResult<Integer> saveExamJudge(
-            @ApiParam
-            @RequestBody JudgeSubmitParam judgeSubmitParam
+    public WebResult<Map<String,Object>> saveExamJudge(
+            @ApiParam(value = "题目") @RequestParam(required = false) String context,
+            @ApiParam(value = "科目Id") @RequestParam(required = false) Integer subjectId,
+            @ApiParam(value = "答案 对：0 错：1") @RequestParam(required = false) Integer answer,
+            @ApiParam(value = "分数") @RequestParam(required = false) Double score,
+            @ApiParam(value = "上传图片") @RequestParam(required = false) MultipartFile image
             ) {
-        return WebResult.<Integer>builder()
+        if (context == null && subjectId == null && answer == null && score == null && image == null) {
+            return WebResult.<Map<String,Object>>builder()
+                    .code(404)
+                    .message(REQUEST_STATUS_ERROR)
+                    .build();
+        }
+        return WebResult.<Map<String,Object>>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
-                .data(examJudgeService.saveExamJudge(judgeSubmitParam))
+                .data(examJudgeService.saveExamJudge(context, subjectId, answer, score, image, false))
                 .build();
     }
 
-
-//    @PostMapping("save")
-//    @ApiOperation(notes = "xiong",value = "向题库添加判断题目接口")
-//    public WebResult<Integer> saveExamJudge(@RequestBody @ApiParam(name="examJudge",required=true,value = "id传入null") ExamJudge examJudge) {
-//        return WebResult.<Integer>builder()
-//                .code(200)
-//                .message(REQUEST_STATUS_SUCCESS)
-//                .data(examJudgeService.saveExamJudge(examJudge))
-//                .build();
-//    }
-
-    //@PostMapping("save")
-//    @ApiIgnore
-//    @ApiOperation(notes = "xiong",value = "向题库添加判断题目接口")
-//    public WebResult<Integer> saveExamJudge(@RequestParam @ApiParam(name="context",required=true) String context,
-//                                            @RequestParam @ApiParam(name="answer",required=true) Integer answer,
-//                                            @RequestParam @ApiParam(name="subjectId",required=true) Integer subjectId,
-//                                            @RequestParam @ApiParam(name="score",required=true) Double score,
-//                                            @RequestParam("file") MultipartFile multipartFile) {
-//        if(multipartFile.isEmpty()) {
-//            return WebResult.<Integer>builder()
-//                    .code(404)
-//                    .message(REQUEST_STATUS_ERROR)
-//                    .data(-1)
-//                    .build();
-//        }
-//        //文件名=当前时间到毫秒+原来的文件名
-//        String fileName = System.currentTimeMillis() + multipartFile.getOriginalFilename();
-//        //文件路径
-//        String filePath = System.getProperty("user.dir") + System.getProperty("file.separator") + "img";
-//        //如果文件路径不存在，新增该路径
-//        File file1 = new File(filePath);
-//        if(!file1.exists()){
-//            file1.mkdir();
-//        }
-//        //实际的文件地址
-//        File dest = new File(filePath + System.getProperty("file.separator") + fileName);
-//        //存储到数据库里的相对文件地址
-//        String storeUrlPath = "/img/" + fileName;
-//        try {
-//            multipartFile.transferTo(dest);
-//            // 添加到数据库
-//            ExamJudge examJudge = new ExamJudge();
-//            examJudge.setContext(context);
-//            examJudge.setAnswer(answer);
-//            examJudge.setDifficulty(1);
-//            examJudge.setSubjectId(subjectId);
-//            examJudge.setScore(score);
-//            examJudge.setImgUrl(storeUrlPath);
-//            return WebResult.<Integer>builder()
-//                    .code(200)
-//                    .message(REQUEST_STATUS_SUCCESS)
-//                    .data(examJudgeService.saveExamJudge(examJudge))//添加到数据库
-//                    .build();
-//        } catch (Exception e) {
-//            return WebResult.<Integer>builder()
-//                    .code(404)
-//                    .message(REQUEST_STATUS_ERROR)
-//                    .data(-1)
-//                    .build();
-//        }
-//    }
-
+    @PostMapping("saveExamJudgeInMaterial")
+    @Transactional
+    @ApiOperation(notes = "LBX", value = "材料题——新增填空题")
+    public WebResult<Map<String,Object>> saveExamJudgeInMaterial(
+            @ApiParam(value = "题目") @RequestParam(required = false) String context,
+            @ApiParam(value = "科目Id") @RequestParam(required = false) Integer subjectId,
+            @ApiParam(value = "答案 对：0 错：1") @RequestParam(required = false) Integer answer,
+            @ApiParam(value = "分数") @RequestParam(required = false) Double score,
+            @ApiParam(value = "上传图片") @RequestParam(required = false) MultipartFile image
+    ) {
+        if (context == null && answer == null && score == null && image == null) {
+            return WebResult.<Map<String,Object>>builder()
+                    .code(404)
+                    .message(REQUEST_STATUS_ERROR)
+                    .build();
+        }
+        return WebResult.<Map<String,Object>>builder()
+                .code(200)
+                .message(REQUEST_STATUS_SUCCESS)
+                .data(examJudgeService.saveExamJudge(context, subjectId, answer, score, image, true))
+                .build();
+    }
+//======================================================================================================================
     @PostMapping("update")
     @ApiOperation(notes = "xiong",value = "修改题库的判断题目接口")
     public WebResult<Integer> updateExamJudge(@RequestBody @ApiParam(name="examJudge",required=true) ExamJudge examJudge) {

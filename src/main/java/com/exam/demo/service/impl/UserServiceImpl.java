@@ -9,7 +9,6 @@ import com.exam.demo.otherEntity.UserPojo;
 import com.exam.demo.results.vo.ExamSelectVo;
 import com.exam.demo.results.vo.PageVo;
 import com.exam.demo.results.vo.UserSelectVo;
-import com.sun.org.apache.xml.internal.utils.WrappedRuntimeException;
 import org.json.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.exam.demo.service.UserService;
@@ -283,13 +282,13 @@ public class UserServiceImpl implements UserService {
         Page<User> page = new Page<>(currentPage, pageSize);
         LambdaQueryWrapper<User> wrapperSelect = Wrappers.lambdaQuery(User.class);
         wrapperSelect.in(User::getRoleId,integers);
-        if(!name.isEmpty()){
+        if(!StringUtils.isBlank(name)){
             wrapperSelect.eq(User::getName,name);
         }
-        if(!nums.isEmpty()){
+        if(!StringUtils.isBlank(nums)){
             wrapperSelect.eq(User::getNums,nums);
         }
-        if(!address.isEmpty()){
+        if(!StringUtils.isBlank(address)){
             wrapperSelect.like(User::getAddress,address);
         }
         if (!StringUtils.isBlank(department)){
@@ -324,7 +323,15 @@ public class UserServiceImpl implements UserService {
         BeanUtils.copyProperties(user,userSelectVo);
         userSelectVo.setDepartment(departmentMapper.selectById(user.getDepartmentId()).getName());
         userSelectVo.setRole(roleMapper.selectById(user.getRoleId()).getName());
-        return  userSelectVo;
+        userSelectVo.setGenderWord("1".equals(user.getGender()) ? "男" : "女");
+        return userSelectVo;
+    }
+    public String add(User user){
+        int insert = userMapper.insert(user);
+        if(insert!=0){
+            return "增加成功";
+        }
+        return "增加失败";
     }
 
     /**
@@ -344,21 +351,25 @@ public class UserServiceImpl implements UserService {
         QueryWrapper<User> query = new QueryWrapper<>();
         query.eq("nums",userwx.getNums());
         User user = userMapper.selectOne(query);
-        UserPojo userPojo = new UserPojo();
-        userPojo.setId(user.getId());
-        userPojo.setName(user.getName());
-        userPojo.setGender(user.getGender());
-        userPojo.setPosition(user.getPosition());
-        userPojo.setRole(roleMapper.selectById(user.getRoleId()).getName());
-        String dname = departmentMapper.selectById(user.getDepartmentId()).getName();
-        userPojo.setDepartment(dname);
-        userPojo.setAddress(user.getAddress());
-        userPojo.setEmail(user.getEmail());
-        userPojo.setTele(user.getTele());
-        userPojo.setTime(user.getTime());
-        userPojo.setWxname(user.getWxname());
-        userPojo.setNums(user.getNums());
-        userPojo.setIdentity(user.getIdentity());
-        return userPojo;
+        if(user != null){
+            UserPojo userPojo = new UserPojo();
+            userPojo.setId(user.getId());
+            userPojo.setName(user.getName());
+            userPojo.setGender(user.getGender());
+            userPojo.setPosition(user.getPosition());
+            userPojo.setRole(roleMapper.selectById(user.getRoleId()).getName());
+            String dname = departmentMapper.selectById(user.getDepartmentId()).getName();
+            userPojo.setDepartment(dname);
+            userPojo.setAddress(user.getAddress());
+            userPojo.setEmail(user.getEmail());
+            userPojo.setTele(user.getTele());
+            userPojo.setTime(user.getTime());
+            userPojo.setWxname(user.getWxname());
+            userPojo.setNums(user.getNums());
+            userPojo.setIdentity(user.getIdentity());
+            return userPojo;
+        }else {
+            return null;
+        }
     }
 }

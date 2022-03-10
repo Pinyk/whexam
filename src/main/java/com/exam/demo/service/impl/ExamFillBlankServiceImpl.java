@@ -14,13 +14,15 @@ import com.exam.demo.params.submit.FillBlankSubmitParam;
 import com.exam.demo.results.vo.ExamFillBlankVo;
 import com.exam.demo.results.vo.PageVo;
 import com.exam.demo.service.ExamFillBlankService;
+import com.google.gson.JsonObject;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
+
 @Service
 public class ExamFillBlankServiceImpl implements ExamFillBlankService {
 
@@ -119,26 +121,26 @@ public class ExamFillBlankServiceImpl implements ExamFillBlankService {
      * 向题库添加填空题
      */
     @Override
-    public Integer saveExamFillBlank(FillBlankSubmitParam fillBlankSubmitParam) {
+    public Map<String,Object> saveExamFillBlank(String context, Integer subjectId, String answer, Double score, MultipartFile image, boolean isMaterialProblem) {
 
         ExamFillBlank examFillBlank = new ExamFillBlank();
 
-        if (StringUtils.isNotBlank(fillBlankSubmitParam.getContext())) {
-            examFillBlank.setContext(fillBlankSubmitParam.getContext());
+        if (StringUtils.isNotBlank(context)) {
+            examFillBlank.setContext(context);
         }
-        if (fillBlankSubmitParam.getSubjectId() != null) {
-            examFillBlank.setSubjectId(fillBlankSubmitParam.getSubjectId());
+        if (subjectId != null) {
+            examFillBlank.setSubjectId(subjectId);
         }
-        if (fillBlankSubmitParam.getAnswer() != null) {
-            examFillBlank.setAnswer(fillBlankSubmitParam.getAnswer());
+        if (answer != null) {
+            examFillBlank.setAnswer(answer);
         }
-        if (fillBlankSubmitParam.getScore() != null) {
-            examFillBlank.setScore(fillBlankSubmitParam.getScore());
+        if (score != null) {
+            examFillBlank.setScore(score);
         }
-        if (fillBlankSubmitParam.getPicture() != null) {
+        if (image != null) {
             try {
-                fileCommit.fileCommit(fillBlankSubmitParam.getPicture());
-                String downLoadUrl = fileCommit.downLoad(fillBlankSubmitParam.getPicture());
+                fileCommit.fileCommit(image);
+                String downLoadUrl = fileCommit.downLoad(image);
                 String url = downLoadUrl.split("\\?sign=")[0];
                 examFillBlank.setImgUrl(url);
             } catch (IOException e) {
@@ -146,10 +148,15 @@ public class ExamFillBlankServiceImpl implements ExamFillBlankService {
             }
         }
         examFillBlank.setDifficulty(1);
-        examFillBlank.setMaterialQuestion(0);
+        if (!isMaterialProblem) {
+            examFillBlank.setMaterialQuestion(0);
+        } else {
+            examFillBlank.setMaterialQuestion(1);
+        }
         examFillBlankMapper.insert(examFillBlank);
-
-        return examFillBlank.getId();
+        HashMap<String, Object> map = new LinkedHashMap<>();
+        map.put("newRecordId", examFillBlank.getId());
+        return map;
     }
 
 

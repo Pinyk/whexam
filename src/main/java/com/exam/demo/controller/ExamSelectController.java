@@ -1,5 +1,6 @@
 package com.exam.demo.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.exam.demo.entity.ExamSelect;
 import com.exam.demo.params.SelectParam;
 import com.exam.demo.otherEntity.SelectQuestionVo;
@@ -13,6 +14,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.annotations.ApiIgnore;
@@ -117,32 +119,119 @@ public class ExamSelectController {
                         selectParam.getCurrentPage(), selectParam.getPageSize(), 2, 0))
                 .build();
     }
-
+//========================================新增===========================================================================
     @PostMapping("saveSingleSelection")
+    @Transactional
     @ApiOperation(value = "单选题新增保存接口", notes = "LBX")
-    public WebResult<Integer> saveSingleSelection(
-            @ApiParam(name = "选择题新增实体类")
-            @RequestBody SelectSubmitParam selectSubmitParam) {
-
-        return WebResult.<Integer>builder()
+    public WebResult<JSONObject> saveSingleSelection(
+            @ApiParam("题目") @RequestParam(required = false) String context,
+            @ApiParam("科目Id") @RequestParam(required = false) Integer subjectId,
+            @ApiParam("A选项") @RequestParam(required = false) String selectionA,
+            @ApiParam("B选项") @RequestParam(required = false) String selectionB,
+            @ApiParam("C选项") @RequestParam(required = false) String selectionC,
+            @ApiParam("D选项") @RequestParam(required = false) String selectionD,
+            @ApiParam("答案") @RequestParam(required = false) String answer,
+            @ApiParam("分数") @RequestParam(required = false) Double score,
+            @ApiParam("上传图片") @RequestParam(required = false) MultipartFile image) {
+        if (context == null && subjectId == null && selectionA == null && selectionC == null && selectionD == null
+                && selectionB == null && answer == null && score == null) {
+            return WebResult.<JSONObject>builder()
+                    .code(404)
+                    .message(REQUEST_STATUS_ERROR)
+                    .build();
+        }
+        return WebResult.<JSONObject>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
-                .data(examSelectService.saveSingleSelection(selectSubmitParam))
+                .data(examSelectService.saveSingleSelection(context, subjectId, selectionA, selectionB, selectionC,
+                        selectionD,answer, score, image, false))
+                .build();
+    }
+
+    @PostMapping("saveSingleSelectionInMaterial")
+    @Transactional
+    @ApiOperation(value = "材料题——单选题新增保存接口", notes = "LBX")
+    public WebResult<JSONObject> saveSingleSelectionInMaterial(
+            @ApiParam("题目") @RequestParam(required = false) String context,
+            @ApiParam("科目Id") @RequestParam(required = false) Integer subjectId,
+            @ApiParam("A选项") @RequestParam(required = false) String selectionA,
+            @ApiParam("B选项") @RequestParam(required = false) String selectionB,
+            @ApiParam("C选项") @RequestParam(required = false) String selectionC,
+            @ApiParam("D选项") @RequestParam(required = false) String selectionD,
+            @ApiParam("答案") @RequestParam(required = false) String answer,
+            @ApiParam("分数") @RequestParam(required = false) Double score,
+            @ApiParam("上传图片") @RequestParam(required = false) MultipartFile image) {
+        if (context == null && subjectId == null && selectionA == null && selectionC == null && selectionD == null
+                && selectionB == null && answer == null && score == null) {
+            return WebResult.<JSONObject>builder()
+                    .code(404)
+                    .message(REQUEST_STATUS_ERROR)
+                    .build();
+        }
+        return WebResult.<JSONObject>builder()
+                .code(200)
+                .message(REQUEST_STATUS_SUCCESS)
+                .data(examSelectService.saveSingleSelection(context, subjectId, selectionA, selectionB, selectionC,
+                        selectionD,answer, score, image, true))
                 .build();
     }
 
     @PostMapping("saveMultipleSelection")
+    @Transactional
     @ApiOperation(value = "多选题新增保存接口", notes = "LBX")
-    public WebResult<Integer> saveMultipleSelection(
-            @ApiParam(name = "选择题新增实体类")
-            @RequestBody SelectSubmitParam selectSubmitParam) {
-        return WebResult.<Integer>builder()
+    public WebResult<JSONObject> saveMultipleSelection(
+            @ApiParam("题目") @RequestParam(required = false) String context,
+            @ApiParam("科目Id") @RequestParam(required = false) Integer subjectId,
+            @ApiParam("A选项") @RequestParam(required = false) String selectionA,
+            @ApiParam("B选项") @RequestParam(required = false) String selectionB,
+            @ApiParam("C选项") @RequestParam(required = false) String selectionC,
+            @ApiParam("D选项") @RequestParam(required = false) String selectionD,
+            @ApiParam("答案") @RequestParam(required = false) String answer,
+            @ApiParam("分数") @RequestParam(required = false) Double score,
+            @ApiParam("上传图片") @RequestParam(required = false) MultipartFile image) {
+        if (context == null && subjectId == null && selectionA == null && selectionC == null && selectionD == null
+                && selectionB == null && answer == null && score == null) {
+            return WebResult.<JSONObject>builder()
+                    .code(404)
+                    .message(REQUEST_STATUS_ERROR)
+                    .build();
+        }
+        return WebResult.<JSONObject>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
-                .data(examSelectService.saveMultipleSelection(selectSubmitParam))
+                .data(examSelectService.saveMultipleSelection(context, subjectId, selectionA, selectionB, selectionC,
+                        selectionD,answer, score, image, false))
                 .build();
     }
 
+    @PostMapping("saveMultipleSelectionInMaterial")
+    @Transactional
+    @ApiOperation(value = "材料题——多选题新增保存接口", notes = "LBX")
+    public WebResult<JSONObject> saveMultipleSelectionInMaterial(
+            @ApiParam("题目") @RequestParam(required = false) String context,
+            @ApiParam("科目Id") @RequestParam(required = false) Integer subjectId,
+            @ApiParam("A选项") @RequestParam(required = false) String selectionA,
+            @ApiParam("B选项") @RequestParam(required = false) String selectionB,
+            @ApiParam("C选项") @RequestParam(required = false) String selectionC,
+            @ApiParam("D选项") @RequestParam(required = false) String selectionD,
+            @ApiParam("答案") @RequestParam(required = false) String answer,
+            @ApiParam("分数") @RequestParam(required = false) Double score,
+            @ApiParam("上传图片") @RequestParam(required = false) MultipartFile image) {
+        if (context == null && subjectId == null && selectionA == null && selectionC == null && selectionD == null
+                && selectionB == null && answer == null && score == null) {
+            return WebResult.<JSONObject>builder()
+                    .code(404)
+                    .message(REQUEST_STATUS_ERROR)
+                    .build();
+        }
+        return WebResult.<JSONObject>builder()
+                .code(200)
+                .message(REQUEST_STATUS_SUCCESS)
+                .data(examSelectService.saveMultipleSelection(context, subjectId, selectionA, selectionB, selectionC,
+                        selectionD,answer, score, image, true))
+                .build();
+    }
+//======================================================================================================================
     @PostMapping("update")
     @ApiIgnore
     @ApiOperation(notes = "xiong",value = "修改题库的选择题目接口")

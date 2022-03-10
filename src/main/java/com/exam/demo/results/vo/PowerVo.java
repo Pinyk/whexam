@@ -16,6 +16,8 @@ public class PowerVo {
     private  String department;
     @ApiModelProperty(value="权限")
     private  Integer manager=2;
+    @ApiModelProperty(value="职位")
+    private  String position;
 
     public PowerVo(String name, String nums, String department, Integer manager) {
         this.name = name;

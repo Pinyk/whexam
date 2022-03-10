@@ -17,10 +17,11 @@ import com.exam.demo.service.ExamJudgeService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.jws.Oneway;
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class ExamJudgeServiceImpl implements ExamJudgeService {
@@ -107,28 +108,28 @@ public class ExamJudgeServiceImpl implements ExamJudgeService {
     }
 //===============================================新增填空题===============================================================
     @Override
-    public Integer saveExamJudge(JudgeSubmitParam judgeSubmitParam) {
+    public Map<String,Object> saveExamJudge(String context, Integer subjectId, Integer answer, Double score, MultipartFile image, boolean isMaterialProblem) {
 
         ExamJudge examJudge = new ExamJudge();
 
-        if (StringUtils.isNotBlank(judgeSubmitParam.getContext())) {
-            examJudge.setContext(judgeSubmitParam.getContext());
+        if (StringUtils.isNotBlank(context)) {
+            examJudge.setContext(context);
         }
-        if (judgeSubmitParam.getSubjectId() != null) {
-            examJudge.setSubjectId(judgeSubmitParam.getSubjectId());
+        if (subjectId != null) {
+            examJudge.setSubjectId(subjectId);
         }
-        if (judgeSubmitParam.getAnswer() != null) {
-            examJudge.setAnswer(judgeSubmitParam.getAnswer());
+        if (answer != null) {
+            examJudge.setAnswer(answer);
         }
-        if (judgeSubmitParam.getScore() != null) {
-            examJudge.setScore(judgeSubmitParam.getScore());
+        if (score != null) {
+            examJudge.setScore(score);
         }
-        if (judgeSubmitParam.getPicture() != null) {
+        if (image != null) {
             //调用COS服务
             try {
-                fileCommit.fileCommit(judgeSubmitParam.getPicture());
+                fileCommit.fileCommit(image);
                 //写入图片url
-                String downLoadUrl = fileCommit.downLoad(judgeSubmitParam.getPicture());
+                String downLoadUrl = fileCommit.downLoad(image);
                 String url = downLoadUrl.split("\\?sign=")[0];
                 examJudge.setImgUrl(url);
             } catch (IOException e) {
@@ -136,10 +137,15 @@ public class ExamJudgeServiceImpl implements ExamJudgeService {
             }
         }
         examJudge.setDifficulty(1);
-        examJudge.setMaterialQuestion(0);
+        if (!isMaterialProblem) {
+            examJudge.setMaterialQuestion(0);
+        } else {
+            examJudge.setMaterialQuestion(1);
+        }
         examJudgeMapper.insert(examJudge);
-
-        return examJudge.getId();
+        HashMap<String, Object> map = new LinkedHashMap<>();
+        map.put("newRecordId", examJudge.getId());
+        return map;
     }
 //======================================================================================================================
     @Override
