@@ -105,6 +105,7 @@ public class ExamJudgeController {
     @ApiOperation(notes = "LBX", value = "材料题——新增填空题")
     public WebResult<Map<String,Object>> saveExamJudgeInMaterial(
             @ApiParam(value = "题目") @RequestParam(required = false) String context,
+            @ApiParam(value = "科目Id") @RequestParam(required = false) Integer subjectId,
             @ApiParam(value = "答案 对：0 错：1") @RequestParam(required = false) Integer answer,
             @ApiParam(value = "分数") @RequestParam(required = false) Double score,
             @ApiParam(value = "上传图片") @RequestParam(required = false) MultipartFile image
@@ -118,7 +119,7 @@ public class ExamJudgeController {
         return WebResult.<Map<String,Object>>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
-                .data(examJudgeService.saveExamJudge(context, null, answer, score, image, true))
+                .data(examJudgeService.saveExamJudge(context, subjectId, answer, score, image, true))
                 .build();
     }
 //======================================================================================================================

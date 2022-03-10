@@ -98,6 +98,7 @@ public class ExamSubjectController {
     @ApiOperation(notes = "LBX", value = "材料题——新增问答题")
     public WebResult<JSONObject> saveSubjectInMaterial(
             @ApiParam("题目") @RequestParam(required = false) String context,
+            @ApiParam("科目Id") @RequestParam(required = false) Integer subjectId,
             @ApiParam("答案") @RequestParam(required = false) String answer,
             @ApiParam("分数") @RequestParam(required = false) Double score,
             @ApiParam("上传图片") @RequestParam(required = false) MultipartFile image
@@ -105,7 +106,7 @@ public class ExamSubjectController {
         return WebResult.<JSONObject>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
-                .data(examSubjectService.saveSubject(context, null, answer, score, image, true))
+                .data(examSubjectService.saveSubject(context, subjectId, answer, score, image, true))
                 .build();
     }
 //========================================================================================================================
