@@ -326,6 +326,13 @@ public class UserServiceImpl implements UserService {
         userSelectVo.setGenderWord("1".equals(user.getGender()) ? "男" : "女");
         return userSelectVo;
     }
+    public String add(User user){
+        int insert = userMapper.insert(user);
+        if(insert!=0){
+            return "增加成功";
+        }
+        return "增加失败";
+    }
 
     /**
      * 根据工号校验

@@ -34,6 +34,16 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @PostMapping("add")
+    @ApiOperation(notes = "add",value="增加用户接口")
+    public WebResult<String> add(@RequestBody @ApiParam(name="用户对象",required=true,
+            value = "User对象") User user){
+        return WebResult.<String>builder()
+                .code(200)
+                .message(REQUEST_STATUS_SUCCESS)
+                .data(userService.add(user))
+                .build();
+    }
     @PostMapping("loginWx")
     @ApiOperation(notes = "gaoyk",value = "微信小程序登录接口")
     public WebResult<UserPojo> loginWx(@RequestBody @ApiParam(name="用户微信对象",required=true,
