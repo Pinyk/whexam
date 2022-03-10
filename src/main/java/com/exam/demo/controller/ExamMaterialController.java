@@ -13,13 +13,11 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
+import static com.exam.demo.results.WebResult.REQUEST_STATUS_ERROR;
 import static com.exam.demo.results.WebResult.REQUEST_STATUS_SUCCESS;
 
 @RestController
@@ -30,14 +28,38 @@ public class ExamMaterialController {
     @Autowired
     ExamMaterialService examMaterialService;
 
-    @PostMapping("findMaterialProblemByIdAndContext")
+    @PostMapping("searchMaterial")
     @ApiOperation(value = "LBX", notes = "材料题的组合查询")
-    public WebResult<ExamMaterialVo> findMaterialProblemByIdAndContext(@ApiParam(value = "试题库管理模块，材料题接收前端请求参数的实体类")
-                                                             @RequestBody MaterialParam materialParam) {
-        return WebResult.<ExamMaterialVo>builder()
+    public WebResult<PageVo<ExamMaterialVo>> searchMaterial(
+            @RequestBody JSONObject jsonObject) {
+        if (jsonObject == null) {
+            return WebResult.<PageVo<ExamMaterialVo>>builder()
+                    .code(404)
+                    .message(REQUEST_STATUS_ERROR)
+                    .build();
+        }
+        return WebResult.<PageVo<ExamMaterialVo>>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
-                .data(examMaterialService.findMaterialProblemByIdAndContext(materialParam.getId(), materialParam.getContext()))
+                .data(examMaterialService.searchMaterial(jsonObject.getInteger("id"),
+                        jsonObject.getString("context"), jsonObject.getInteger("subjectId"),
+                        jsonObject.getInteger("currentPage"), jsonObject.getInteger("pageSize")))
+                .build();
+    }
+
+    @GetMapping("previewById")
+    @ApiOperation(value = "LBX", notes = "材料题详情预览")
+    public WebResult<Map<String, Object>> previewById(@ApiParam("材料题id") @RequestParam Integer id) {
+        if (id == null) {
+            return WebResult.<Map<String, Object>>builder()
+                    .code(404)
+                    .message(REQUEST_STATUS_ERROR)
+                    .build();
+        }
+        return WebResult.<Map<String, Object>>builder()
+                .code(200)
+                .message(REQUEST_STATUS_SUCCESS)
+                .data(examMaterialService.previewById(id))
                 .build();
     }
 
@@ -46,6 +68,12 @@ public class ExamMaterialController {
     @Transactional
     @ApiOperation(notes = "LBX", value = "新增材料题")
     public WebResult<Map<String, Object>> saveExamMaterial(@RequestBody JSONObject jsonObject) {
+        if (jsonObject == null) {
+            return WebResult.<Map<String, Object>>builder()
+                    .code(404)
+                    .message(REQUEST_STATUS_ERROR)
+                    .build();
+        }
         return WebResult.<Map<String, Object>>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)

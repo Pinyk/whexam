@@ -1,6 +1,7 @@
 package com.exam.demo.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.exam.demo.entity.ExamSelect;
 import com.exam.demo.params.SelectParam;
 import com.exam.demo.otherEntity.SelectQuestionVo;
@@ -133,8 +134,8 @@ public class ExamSelectController {
             @ApiParam("答案") @RequestParam(required = false) String answer,
             @ApiParam("分数") @RequestParam(required = false) Double score,
             @ApiParam("上传图片") @RequestParam(required = false) MultipartFile image) {
-        if (context == null && subjectId == null && selectionA == null && selectionC == null && selectionD == null
-                && selectionB == null && answer == null && score == null) {
+        if (StringUtils.isBlank(context) && subjectId == null &&StringUtils.isBlank(selectionA) && StringUtils.isBlank(selectionB) && StringUtils.isBlank(selectionC)
+                && StringUtils.isBlank(selectionD) && StringUtils.isBlank(answer) && score == null) {
             return WebResult.<JSONObject>builder()
                     .code(404)
                     .message(REQUEST_STATUS_ERROR)
@@ -161,8 +162,8 @@ public class ExamSelectController {
             @ApiParam("答案") @RequestParam(required = false) String answer,
             @ApiParam("分数") @RequestParam(required = false) Double score,
             @ApiParam("上传图片") @RequestParam(required = false) MultipartFile image) {
-        if (context == null && subjectId == null && selectionA == null && selectionC == null && selectionD == null
-                && selectionB == null && answer == null && score == null) {
+        if (StringUtils.isBlank(context) && subjectId == null &&StringUtils.isBlank(selectionA) && StringUtils.isBlank(selectionB) && StringUtils.isBlank(selectionC)
+                && StringUtils.isBlank(selectionD) && StringUtils.isBlank(answer) && score == null) {
             return WebResult.<JSONObject>builder()
                     .code(404)
                     .message(REQUEST_STATUS_ERROR)
@@ -189,8 +190,8 @@ public class ExamSelectController {
             @ApiParam("答案") @RequestParam(required = false) String answer,
             @ApiParam("分数") @RequestParam(required = false) Double score,
             @ApiParam("上传图片") @RequestParam(required = false) MultipartFile image) {
-        if (context == null && subjectId == null && selectionA == null && selectionC == null && selectionD == null
-                && selectionB == null && answer == null && score == null) {
+        if (StringUtils.isBlank(context) && subjectId == null &&StringUtils.isBlank(selectionA) && StringUtils.isBlank(selectionB) && StringUtils.isBlank(selectionC)
+                && StringUtils.isBlank(selectionD) && StringUtils.isBlank(answer) && score == null) {
             return WebResult.<JSONObject>builder()
                     .code(404)
                     .message(REQUEST_STATUS_ERROR)
@@ -217,8 +218,8 @@ public class ExamSelectController {
             @ApiParam("答案") @RequestParam(required = false) String answer,
             @ApiParam("分数") @RequestParam(required = false) Double score,
             @ApiParam("上传图片") @RequestParam(required = false) MultipartFile image) {
-        if (context == null && subjectId == null && selectionA == null && selectionC == null && selectionD == null
-                && selectionB == null && answer == null && score == null) {
+        if (StringUtils.isBlank(context) && subjectId == null &&StringUtils.isBlank(selectionA) && StringUtils.isBlank(selectionB) && StringUtils.isBlank(selectionC)
+                && StringUtils.isBlank(selectionD) && StringUtils.isBlank(answer) && score == null) {
             return WebResult.<JSONObject>builder()
                     .code(404)
                     .message(REQUEST_STATUS_ERROR)

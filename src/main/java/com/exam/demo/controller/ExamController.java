@@ -62,9 +62,9 @@ public class ExamController {
                 .build();
     }
 
-    @PostMapping("randomComponentPaper")
-    @ApiOperation(notes = "xiong",value = "组建试卷试题接口")
-    public WebResult<Integer> randomComponentPaper(@RequestParam @ApiParam(name="testPaperId",required=true) Integer testPaperId,
+    @PostMapping("componentTestPaper")
+    @ApiOperation(notes = "LBX",value = "组建试卷试题接口")
+    public WebResult<Integer> componentTestPaper(@RequestParam @ApiParam(name="testPaperId",required=true) Integer testPaperId,
                                         @RequestParam @ApiParam(name="subjectId",required=true) Integer subjectId,
                                         @RequestParam @ApiParam(name="judgeCount",required=true) Integer judgeCount,
                                         @RequestParam @ApiParam(name="singleCount",required=true) Integer singleCount,

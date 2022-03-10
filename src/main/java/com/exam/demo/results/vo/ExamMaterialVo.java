@@ -10,18 +10,15 @@ import java.io.Serializable;
 public class ExamMaterialVo implements Serializable{
 
     @ApiModelProperty(value = "主键id")
-    Integer id;
+    private Integer id;
 
     @ApiModelProperty(value = "题目内容")
-    String context;
-
-    @ApiModelProperty(value = "材料题包含的问题", notes = "这个属性后面需要更改类型，根据实际需求")
-    ProblemsVo problems;
-
-    @ApiModelProperty(value = "难度")
-    Integer difficulty;
+    private String context;
 
     @ApiModelProperty(value = "科目")
-    String subject;
+    private String subject;
+
+    @ApiModelProperty(value = "分数")
+    private Double score;
 
 }

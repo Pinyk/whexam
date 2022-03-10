@@ -21,7 +21,7 @@ import static com.exam.demo.results.WebResult.REQUEST_STATUS_SUCCESS;
 
 @RestController
 @RequestMapping("testPaper")
-@Api(value="/testPaper",tags={"试卷卷头操作接口"})
+@Api(value="/testPaper",tags={"试卷操作接口"})
 public class TestPaperController {
 
     @Autowired
@@ -39,7 +39,7 @@ public class TestPaperController {
     }
 //=========================================根据试卷id查询试卷详情============================================================
     @GetMapping("findTestPaperById")
-    @ApiOperation(notes = "", value = "根据试卷id查询试卷详情")
+    @ApiOperation(notes = "YXY", value = "根据试卷id查询试卷详情")
     public WebResult<List<Map<String, Object>>> findTestPaperById(@RequestParam int testPaperId) {
         return WebResult.<List<Map<String, Object>>>builder()
                 .code(200)
@@ -49,7 +49,7 @@ public class TestPaperController {
     }
 //=============================================查询卷头==============================================================
     @PostMapping("findCurrentTestPaperHead")
-    @ApiOperation(notes = "LBX", value = "查询进行中考试试卷的卷头")
+    @ApiOperation(notes = "YXY", value = "查询进行中考试试卷的卷头")
     public WebResult<List<Map<String, Object>>> findCurrentTestPaperHead(Integer userId) {
         return WebResult.<List<Map<String, Object>>>builder()
                 .code(200)
@@ -59,7 +59,7 @@ public class TestPaperController {
     }
 
     @PostMapping("findHistorialTestPaperHead")
-    @ApiOperation(notes = "LBX", value = "查询历史考试试卷的卷头")
+    @ApiOperation(notes = "YXY", value = "查询历史考试试卷的卷头")
     public WebResult<List<Map<String, Object>>> findHistorialTestPaperHead(Integer userId) {
         return WebResult.<List<Map<String, Object>>>builder()
                 .code(200)
