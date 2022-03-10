@@ -139,7 +139,7 @@ public class ExamServiceImpl implements ExamService {
                 if (isRepeat.equals("true") && scoreMapper.findIsSubmitByUserIdAndTestPaperId(userId,testPaperId).size() >= 1){
                     scoreDataMapper.updateScoreDataByUserIdAndTestPaperId(scoreData);
                 }else{
-                    scoreDataMapper.insert(scoreData);
+                    scoreDataMapper.insertScoreData(scoreData);
                 }
 
             }
@@ -168,7 +168,7 @@ public class ExamServiceImpl implements ExamService {
                 if (isRepeat.equals("true") && scoreMapper.findIsSubmitByUserIdAndTestPaperId(userId,testPaperId).size() >= 1){
                     scoreDataMapper.updateScoreDataByUserIdAndTestPaperId(scoreData);
                 }else{
-                    scoreDataMapper.insert(scoreData);
+                    scoreDataMapper.insertScoreData(scoreData);
                 }
 
             }
@@ -198,7 +198,7 @@ public class ExamServiceImpl implements ExamService {
                 if (isRepeat.equals("true") && scoreMapper.findIsSubmitByUserIdAndTestPaperId(userId,testPaperId).size() >= 1){
                     scoreDataMapper.updateScoreDataByUserIdAndTestPaperId(scoreData);
                 }else {
-                    scoreDataMapper.insert(scoreData);
+                    scoreDataMapper.insertScoreData(scoreData);
                 }
             }
         }
@@ -220,7 +220,7 @@ public class ExamServiceImpl implements ExamService {
                 if (isRepeat.equals("true") && scoreMapper.findIsSubmitByUserIdAndTestPaperId(userId,testPaperId).size() >= 1){
                     scoreDataMapper.updateScoreDataByUserIdAndTestPaperId(scoreData);
                 }else{
-                    scoreDataMapper.insert(scoreData);
+                    scoreDataMapper.insertScoreData(scoreData);
                 }
             }
         }
@@ -246,7 +246,7 @@ public class ExamServiceImpl implements ExamService {
                 if (isRepeat.equals("true") && scoreMapper.findIsSubmitByUserIdAndTestPaperId(userId,testPaperId).size() >= 1){
                     scoreDataMapper.updateScoreDataByUserIdAndTestPaperId(scoreData);
                 }else {
-                    scoreDataMapper.insert(scoreData);
+                    scoreDataMapper.insertScoreData(scoreData);
                 }
             }
         }
@@ -267,7 +267,7 @@ public class ExamServiceImpl implements ExamService {
 
                 //单选题
                 if (!materialSingleSelects.isEmpty() || materialSingleSelects.size() != 0){
-                    for(SelectionAnswer examSelect : materialMultipleSelects) {
+                    for(SelectionAnswer examSelect : materialSingleSelects) {
                         //正确答案
                         String answer = examSelectService.findById(examSelect.getId()).getAnswer();
                         Scoredata scoreData = new Scoredata();
@@ -287,7 +287,7 @@ public class ExamServiceImpl implements ExamService {
                         if (isRepeat.equals("true") && scoreMapper.findIsSubmitByUserIdAndTestPaperId(userId,testPaperId).size() >= 1){
                             scoreDataMapper.updateScoreDataByUserIdAndTestPaperId(scoreData);
                         }else{
-                            scoreDataMapper.insert(scoreData);
+                            scoreDataMapper.insertScoreData(scoreData);
                         }
                     }
                 }
@@ -314,7 +314,7 @@ public class ExamServiceImpl implements ExamService {
                         if (isRepeat.equals("true") && scoreMapper.findIsSubmitByUserIdAndTestPaperId(userId,testPaperId).size() >= 1){
                             scoreDataMapper.updateScoreDataByUserIdAndTestPaperId(scoreData);
                         }else {
-                            scoreDataMapper.insert(scoreData);
+                            scoreDataMapper.insertScoreData(scoreData);
                         }
                     }
                 }
@@ -344,7 +344,7 @@ public class ExamServiceImpl implements ExamService {
                         if (isRepeat.equals("true") && scoreMapper.findIsSubmitByUserIdAndTestPaperId(userId,testPaperId).size() >= 1){
                             scoreDataMapper.updateScoreDataByUserIdAndTestPaperId(scoreData);
                         }else {
-                            scoreDataMapper.insert(scoreData);
+                            scoreDataMapper.insertScoreData(scoreData);
                         }
                     }
 
@@ -366,7 +366,7 @@ public class ExamServiceImpl implements ExamService {
                         if (isRepeat.equals("true") && scoreMapper.findIsSubmitByUserIdAndTestPaperId(userId,testPaperId).size() >= 1){
                             scoreDataMapper.updateScoreDataByUserIdAndTestPaperId(scoreData);
                         }else {
-                            scoreDataMapper.insert(scoreData);
+                            scoreDataMapper.insertScoreData(scoreData);
                         }
 
                     }
@@ -393,7 +393,7 @@ public class ExamServiceImpl implements ExamService {
                         if (isRepeat.equals("true") && scoreMapper.findIsSubmitByUserIdAndTestPaperId(userId,testPaperId).size() >= 1){
                             scoreDataMapper.updateScoreDataByUserIdAndTestPaperId(scoreData);
                         }else {
-                            scoreDataMapper.insert(scoreData);
+                            scoreDataMapper.insertScoreData(scoreData);
                         }
                     }
                 }

@@ -50,4 +50,6 @@ public interface ScoreDataMapper extends BaseMapper<Scoredata> {
      * @return
      */
     Integer updateScoreDataByUserIdAndTestPaperId(Scoredata scoredata);
+
+    Integer insertScoreData(Scoredata scoredata);
 }

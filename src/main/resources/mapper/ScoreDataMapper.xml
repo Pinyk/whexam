@@ -6,7 +6,7 @@
 
 <!--    List<Object> findExamJudgeAnswerByTidAndUid(Integer testPaperId, Integer userID);-->
     <select id="findExamJudgeAnswerByTidAndUid" parameterType="Integer" resultType="ScoreData">
-        select * from scoredata where testpaper_id = #{testPaperId} and user_id = #{userID} and type = 1;
+        select * from scoredata where testpaper_id = #{testPaperId} and user_id = #{userID} and 'type' = 1;
     </select>
 
 
@@ -24,24 +24,81 @@
 
 <!--    List<Object> findExamSubjectAnswerByTidAndUid(Integer testPaperId, Integer userID);-->
     <select id="findExamSubjectAnswerByTidAndUid" parameterType="Integer" resultType="ScoreData">
-        select * from scoredata where testpaper_id = #{testPaperId} and user_id = #{userID} and type = 3;
+        select * from scoredata where testpaper_id = #{testPaperId} and user_id = #{userID} and 'type' = 3;
     </select>
 
 <!--    List<Object> findExamFillBlankAnswerByTidAndUid(Integer testPaperId, Integer userID);-->
     <select id="findExamFillBlankAnswerByTidAndUid" parameterType="Integer" resultType="ScoreData">
-        select * from scoredata where testpaper_id = #{testPaperId} and user_id = #{userID} and type = 4;
+        select * from scoredata where testpaper_id = #{testPaperId} and user_id = #{userID} and 'type' = 4;
     </select>
 
     <!--Integer updateScoreDataByUserIdAndTestPaperId(Scoredata scoredata);-->
 
     <update id="updateScoreDataByUserIdAndTestPaperId" parameterType="com.exam.demo.entity.Scoredata">
-        update scoredata
-        <set>
-            <if test="answer != null">answer = #{answer},</if>
-            <if test="score != null">score = #{score}</if>
-        </set>
-        where user_id = #{userId} and testpaper_id = #{testpaperId} and problem_id = #{problemId}
+        update scoredata set answer = #{answer},score = #{score}
+        where user_id = #{userId} and testpaper_id = #{testpaperId} and problem_id = #{problemId} and types = #{type}
+        <!--<set>-->
+        <!--<if test="answer != null">answer = #{answer},</if>-->
+        <!--<if test="score != null">score = #{score}</if>-->
+        <!--</set>-->
     </update>
+    <!--Integer insertScoreData(Scoredata scoredata);-->
+
+
+
+
+    <insert id="insertScoreData">
+        insert into scoredata(`testpaper_id`, `user_id`, `type`, `problem_id`, `answer`, `score`)
+        values
+        (#{testpaperId},#{userId},#{type},#{problemId},#{answer},#{score})
+        <!--insert into scoredata-->
+        <!--<trim prefix="(" suffix=")" suffixOverrides=",">-->
+            <!--<if test="id != null">-->
+                <!--id,-->
+            <!--</if>-->
+            <!--<if test="testpaper_id != null">-->
+                <!--testpaper_id,-->
+            <!--</if>-->
+            <!--<if test="user_id != null">-->
+                <!--user_id,-->
+            <!--</if>-->
+            <!--<if test="'type' != null">-->
+                <!--'type',-->
+            <!--</if>-->
+            <!--<if test="problem_id != null">-->
+                <!--problem_id,-->
+            <!--</if>-->
+            <!--<if test="answer != null">-->
+                <!--answer,-->
+            <!--</if>-->
+            <!--<if test="score != null">-->
+                <!--score,-->
+            <!--</if>-->
+        <!--</trim>-->
+        <!--<trim prefix="values (" suffix=")" suffixOverrides=",">-->
+            <!--<if test="id != null">-->
+                <!--#{id},-->
+            <!--</if>-->
+            <!--<if test="testpaperId != null">-->
+                <!--#{testpaperId},-->
+            <!--</if>-->
+            <!--<if test="userId != null">-->
+                <!--#{userId},-->
+            <!--</if>-->
+            <!--<if test="type != null">-->
+                <!--#{type},-->
+            <!--</if>-->
+            <!--<if test="problemId != null">-->
+                <!--#{problemId},-->
+            <!--</if>-->
+            <!--<if test="answer != null">-->
+                <!--#{answer},-->
+            <!--</if>-->
+            <!--<if test="score != null">-->
+                <!--#{score},-->
+            <!--</if>-->
+        <!--</trim>-->
+    </insert>
 
 
 

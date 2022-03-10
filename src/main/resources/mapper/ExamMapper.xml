@@ -31,7 +31,7 @@
 
     <!--  List<Object> findMultipleSelectionByTestPaperId(Integer testPaperId);  -->
     <select id="findMultipleSelectionByTestPaperId" parameterType="Integer" resultType="ExamSelect">
-        select es.id, es.context, es.selection,es.answer, es.score, es.img_url
+        select es.id, es.context, es.selection, es.answer, es.subject_id, es.difficulty,es.score, es.type, es.img_url,es.material_question
         from exam e, exam_select es
         where e.problem_id = es.id and e.type = 2 and es.material_question = 0
         and es.type = 2 and e.testpaper_id = #{testPaperId}
