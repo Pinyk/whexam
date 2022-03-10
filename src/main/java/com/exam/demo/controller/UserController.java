@@ -141,10 +141,19 @@ public class UserController {
     @ApiOperation(notes ="gaoyk",value="工号验证用户")
     public  WebResult<UserPojo> findUser(@RequestBody @ApiParam(name="用户微信对象",required=true,
             value = "传入[openid][nums]参数") Userwx userwx){
-        return WebResult.<UserPojo>builder()
-                .code(200)
-                .message(REQUEST_STATUS_SUCCESS)
-                .data(userService.check(userwx))
-                .build();
+        if(userService.check(userwx) != null){
+            return WebResult.<UserPojo>builder()
+                    .code(200)
+                    .message(REQUEST_STATUS_SUCCESS)
+                    .data(userService.check(userwx))
+                    .build();
+        }else {
+            return WebResult.<UserPojo>builder()
+                    .code(404)
+                    .message(REQUEST_STATUS_ERROR)
+                    .data(userService.check(userwx))
+                    .build();
+        }
+
     }
 }

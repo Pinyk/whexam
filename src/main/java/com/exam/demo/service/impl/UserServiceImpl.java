@@ -344,21 +344,25 @@ public class UserServiceImpl implements UserService {
         QueryWrapper<User> query = new QueryWrapper<>();
         query.eq("nums",userwx.getNums());
         User user = userMapper.selectOne(query);
-        UserPojo userPojo = new UserPojo();
-        userPojo.setId(user.getId());
-        userPojo.setName(user.getName());
-        userPojo.setGender(user.getGender());
-        userPojo.setPosition(user.getPosition());
-        userPojo.setRole(roleMapper.selectById(user.getRoleId()).getName());
-        String dname = departmentMapper.selectById(user.getDepartmentId()).getName();
-        userPojo.setDepartment(dname);
-        userPojo.setAddress(user.getAddress());
-        userPojo.setEmail(user.getEmail());
-        userPojo.setTele(user.getTele());
-        userPojo.setTime(user.getTime());
-        userPojo.setWxname(user.getWxname());
-        userPojo.setNums(user.getNums());
-        userPojo.setIdentity(user.getIdentity());
-        return userPojo;
+        if(user != null){
+            UserPojo userPojo = new UserPojo();
+            userPojo.setId(user.getId());
+            userPojo.setName(user.getName());
+            userPojo.setGender(user.getGender());
+            userPojo.setPosition(user.getPosition());
+            userPojo.setRole(roleMapper.selectById(user.getRoleId()).getName());
+            String dname = departmentMapper.selectById(user.getDepartmentId()).getName();
+            userPojo.setDepartment(dname);
+            userPojo.setAddress(user.getAddress());
+            userPojo.setEmail(user.getEmail());
+            userPojo.setTele(user.getTele());
+            userPojo.setTime(user.getTime());
+            userPojo.setWxname(user.getWxname());
+            userPojo.setNums(user.getNums());
+            userPojo.setIdentity(user.getIdentity());
+            return userPojo;
+        }else {
+            return null;
+        }
     }
 }
