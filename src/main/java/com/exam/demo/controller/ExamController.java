@@ -120,13 +120,11 @@ public class ExamController {
                 .build();
     }
 
-    @GetMapping("findDetail")
+    @PostMapping("findDetail")
     @ApiOperation(notes = "LBX",value = "查询考试成绩详情接口")
-    public WebResult<PageVo<JSONObject>> findDetail(
-            @RequestParam @ApiParam(name = "currentPage") Integer currentPage,
-            @RequestParam @ApiParam(name = "sizePage") Integer sizePage,
-            @RequestParam @ApiParam(name="testPaperId") Integer testPaperId) {
-        if (currentPage == null && sizePage == null && testPaperId == null) {
+    public WebResult<PageVo<JSONObject>> findDetail(@RequestBody JSONObject jsonObject){
+        if (jsonObject.getInteger("currentPage") == null && jsonObject.getInteger("pageSize") == null
+                && jsonObject.getInteger("testPaperId") == null) {
             return WebResult.<PageVo<JSONObject>>builder()
                     .code(404)
                     .message(REQUEST_STATUS_ERROR)
@@ -135,7 +133,8 @@ public class ExamController {
         return WebResult.<PageVo<JSONObject>>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
-                .data(scoreService.findByTestPaperId(testPaperId, currentPage, sizePage))
+                .data(scoreService.findByTestPaperId(jsonObject.getInteger("testPaperId"), jsonObject.getInteger("currentPage"),
+                        jsonObject.getInteger("pageSize")))
                 .build();
     }
 
