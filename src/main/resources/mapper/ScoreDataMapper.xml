@@ -6,7 +6,7 @@
 
 <!--    List<Object> findExamJudgeAnswerByTidAndUid(Integer testPaperId, Integer userID);-->
     <select id="findExamJudgeAnswerByTidAndUid" parameterType="Integer" resultType="ScoreData">
-        select * from scoredata where testpaper_id = #{testPaperId} and user_id = #{userID} and 'type' = 1;
+        select * from scoredata where testpaper_id = #{testPaperId} and user_id = #{userID} and `type` = 1;
     </select>
 
 
@@ -24,19 +24,19 @@
 
 <!--    List<Object> findExamSubjectAnswerByTidAndUid(Integer testPaperId, Integer userID);-->
     <select id="findExamSubjectAnswerByTidAndUid" parameterType="Integer" resultType="ScoreData">
-        select * from scoredata where testpaper_id = #{testPaperId} and user_id = #{userID} and 'type' = 3;
+        select * from scoredata where testpaper_id = #{testPaperId} and user_id = #{userID} and `type` = 3;
     </select>
 
 <!--    List<Object> findExamFillBlankAnswerByTidAndUid(Integer testPaperId, Integer userID);-->
     <select id="findExamFillBlankAnswerByTidAndUid" parameterType="Integer" resultType="ScoreData">
-        select * from scoredata where testpaper_id = #{testPaperId} and user_id = #{userID} and 'type' = 4;
+        select * from scoredata where testpaper_id = #{testPaperId} and user_id = #{userID} and `type` = 4;
     </select>
 
     <!--Integer updateScoreDataByUserIdAndTestPaperId(Scoredata scoredata);-->
 
     <update id="updateScoreDataByUserIdAndTestPaperId" parameterType="com.exam.demo.entity.Scoredata">
         update scoredata set answer = #{answer},score = #{score}
-        where user_id = #{userId} and testpaper_id = #{testpaperId} and problem_id = #{problemId} and types = #{type}
+        where user_id = #{userId} and testpaper_id = #{testpaperId} and problem_id = #{problemId} and `type` = #{type}
         <!--<set>-->
         <!--<if test="answer != null">answer = #{answer},</if>-->
         <!--<if test="score != null">score = #{score}</if>-->
