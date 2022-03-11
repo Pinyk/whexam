@@ -68,6 +68,20 @@ public class TestPaperController {
                 .build();
     }
 
+//==================================================组件试卷==============================================================
+
+    @PostMapping("assembingTestPaper")
+    @ApiOperation(notes = "LBX", value = "组件试卷")
+    public WebResult<Map<String, Object>> assembingTestPaper() {
+        return null;
+    }
+
+    @GetMapping("searchTestQuestion")
+    @ApiOperation(notes = "LBX", value = "组件试卷时，组合查询题库中的题")
+    public WebResult<Map<String, Object>> searchTestQuestion() {
+        return null;
+    }
+
 //======================================================================================================================
     @PostMapping("addTestPaper")
     @ApiOperation(notes = "xiong",value = "添加试卷头信息接口")

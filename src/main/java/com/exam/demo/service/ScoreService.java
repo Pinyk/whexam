@@ -1,8 +1,11 @@
 package com.exam.demo.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.exam.demo.entity.UserTestPaperScore;
+import com.exam.demo.results.vo.PageVo;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ScoreService {
 
@@ -18,7 +21,7 @@ public interface ScoreService {
      * @param testPaperId
      * @return
      */
-    List<UserTestPaperScore> findByTestPaperId(Integer testPaperId);
+    PageVo<JSONObject> findByTestPaperId(Integer testPaperId, Integer currentPage, Integer pageSize);
 
     /**
      * 根据试卷ID 求本场考试的平均成绩

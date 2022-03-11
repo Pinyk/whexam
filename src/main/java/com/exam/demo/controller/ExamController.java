@@ -1,8 +1,10 @@
 package com.exam.demo.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.exam.demo.entity.*;
 import com.exam.demo.otherEntity.RtTestpaper;
 import com.exam.demo.otherEntity.UserAnswer;
+import com.exam.demo.results.vo.PageVo;
 import com.exam.demo.results.vo.TestpaperVo;
 import com.exam.demo.service.ExamService;
 import com.exam.demo.service.ScoreService;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
+import static com.exam.demo.results.WebResult.REQUEST_STATUS_ERROR;
 import static com.exam.demo.results.WebResult.REQUEST_STATUS_SUCCESS;
 
 @RestController
@@ -118,12 +121,21 @@ public class ExamController {
     }
 
     @GetMapping("findDetail")
-    @ApiOperation(notes = "xiong",value = "查询考试成绩详情接口")
-    public WebResult<List<UserTestPaperScore>> findDetail(@RequestParam @ApiParam(name="testPaperId",required=true) Integer testPaperId) {
-        return WebResult.<List<UserTestPaperScore>>builder()
+    @ApiOperation(notes = "LBX",value = "查询考试成绩详情接口")
+    public WebResult<PageVo<JSONObject>> findDetail(
+            @RequestParam @ApiParam(name = "currentPage") Integer currentPage,
+            @RequestParam @ApiParam(name = "sizePage") Integer sizePage,
+            @RequestParam @ApiParam(name="testPaperId") Integer testPaperId) {
+        if (currentPage == null && sizePage == null && testPaperId == null) {
+            return WebResult.<PageVo<JSONObject>>builder()
+                    .code(404)
+                    .message(REQUEST_STATUS_ERROR)
+                    .build();
+        }
+        return WebResult.<PageVo<JSONObject>>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
-                .data(scoreService.findByTestPaperId(testPaperId))
+                .data(scoreService.findByTestPaperId(testPaperId, currentPage, sizePage))
                 .build();
     }
 
