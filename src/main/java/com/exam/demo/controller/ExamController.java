@@ -14,6 +14,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -64,22 +65,24 @@ public class ExamController {
                 .data(examService.addProblem(exam))
                 .build();
     }
-
+//=========================================组建试卷试题接口=================================================================
     @PostMapping("componentTestPaper")
+    @Transactional
     @ApiOperation(notes = "LBX",value = "组建试卷试题接口")
-    public WebResult<Integer> componentTestPaper(@RequestParam @ApiParam(name="testPaperId",required=true) Integer testPaperId,
-                                        @RequestParam @ApiParam(name="subjectId",required=true) Integer subjectId,
-                                        @RequestParam @ApiParam(name="judgeCount",required=true) Integer judgeCount,
-                                        @RequestParam @ApiParam(name="singleCount",required=true) Integer singleCount,
-                                        @RequestParam @ApiParam(name="multipleCount",required=true) Integer multipleCount,
-                                        @RequestParam @ApiParam(name="subjectCount",required=true) Integer subjectCount) {
-        return WebResult.<Integer>builder()
+    public WebResult<Map<String, Object>> componentTestPaper(@RequestBody JSONObject jsonObject) {
+        if (jsonObject == null) {
+            return WebResult.<Map<String, Object>>builder()
+                    .code(404)
+                    .message(REQUEST_STATUS_ERROR)
+                    .build();
+        }
+        return WebResult.<Map<String, Object>>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
-                .data(examService.randomComponentPaper(testPaperId, subjectId, judgeCount, singleCount, multipleCount, subjectCount))
+                .data(examService.componentTestPaper(jsonObject))
                 .build();
     }
-
+//======================================================================================================================
     @DeleteMapping("deleteProblem/{id}")
     @ApiOperation(notes = "xiong",value = "删除试卷试题接口")
     public WebResult<Integer> deleteProblem(@PathVariable @ApiParam(name="id",required=true) Integer id) {

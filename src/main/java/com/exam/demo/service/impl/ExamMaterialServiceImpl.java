@@ -101,7 +101,7 @@ public class ExamMaterialServiceImpl implements ExamMaterialService {
      * 根据ID查找材料题总分
      * @return
      */
-    private Double getMaterialTotalScore(Integer id) {
+    public Double getMaterialTotalScore(Integer id) {
         double total = 0.0;
         //在中间表中查出包含题目的Id
         LambdaQueryWrapper<MaterialProblem> lambdaQueryWrapper = new LambdaQueryWrapper<>();

@@ -1,5 +1,6 @@
 package com.exam.demo.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
@@ -14,6 +15,9 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
@@ -58,6 +62,17 @@ public class ExamServiceImpl implements ExamService {
     @Autowired
     private ExamFillBlankMapper examFillBlankMapper;
 
+    @Autowired
+    private ExamSelectMapper examSelectMapper;
+
+    @Autowired
+    private ExamJudgeMapper examJudgeMapper;
+
+    @Autowired
+    private ExamSubjectMapper examSubjectMapper;
+
+    @Autowired
+    private ExamMaterialService examMaterialService;
 
     /**
      * 对选择题内容进行处理，并写入selectQuestion
@@ -427,60 +442,76 @@ public class ExamServiceImpl implements ExamService {
     }
 
     /**
-     * 随机组建试卷
-     * 需要：1.科目类型；2.判断、选择、主观各几道；
-     * @return
+     * 组建试卷
      */
     @Override
-    public Integer randomComponentPaper(Integer testPaperId, Integer subjectId, Integer judgeCount, Integer singleCount, Integer multipleCount, Integer subjectCount) {
-        int count = 0;
-        Random random = new Random();
+    public Map<String, Object> componentTestPaper(JSONObject jsonObject) {
 
-        List<ExamJudge> examJudges = examJudgeService.findBySubjectId(subjectId);
-        List<ExamSelect> singleSelections = examSelectService.findBySubjectId(subjectId, 1);
-        List<ExamSelect> multipleSelections = examSelectService.findBySubjectId(subjectId, 2);
-        List<ExamSubject> examSubjects = examSubjectService.findBySubjectId(subjectId);
+        Testpaper testpaper = new Testpaper();
+        //查询testpaper表
+        testpaper.setSubjectId(jsonObject.getInteger("subjectId"));
+        testpaper.setName(jsonObject.getString("name"));
+        testpaper.setTotalscore(jsonObject.getDouble("totalScore"));
+        testpaper.setPassscore(jsonObject.getDouble("passScore"));
+        System.out.println(jsonObject.getString("startTime"));
 
-        while(count++ < judgeCount) {
-            ExamJudge examJudge = examJudges.get(random.nextInt(examJudges.size()));
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
+            testpaper.setStartTime(simpleDateFormat.parse(jsonObject.getString("startTime")));
+            testpaper.setDeadTime(simpleDateFormat.parse(jsonObject.getString("endTime")));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        testpaper.setTime(jsonObject.getInteger("totalTime"));
+        testpaper.setUserId(jsonObject.getInteger("userId"));
+
+        Object[] departmentIds = jsonObject.getJSONArray("departmentId").toArray();
+        StringBuffer stringBuffer = new StringBuffer();
+        for (int i = 0; i < departmentIds.length; i++) {
+            if (i < departmentIds.length - 1) {
+                stringBuffer.append(departmentIds[i].toString()).append(" ");
+            } else {
+                stringBuffer.append(departmentIds[i].toString());
+            }
+        }
+        testpaper.setDepartmentId(stringBuffer.toString());
+        testpaper.setRepeat(jsonObject.getBoolean("repeat").toString());
+        //testpaper.setExtra(jsonObject.getString("extra"));
+        testPaperMapper.insert(testpaper);
+
+        //插入exam表
+        insertIntoExam("singleSelections", jsonObject, 1, testpaper);
+        insertIntoExam("multiSelections", jsonObject, 1, testpaper);
+        insertIntoExam("fb", jsonObject, 2, testpaper);
+        insertIntoExam("judge", jsonObject, 3, testpaper);
+        insertIntoExam("sub", jsonObject, 4, testpaper);
+        insertIntoExam("material", jsonObject, 5, testpaper);
+
+        JSONObject jsonObject1 = new JSONObject();
+        jsonObject1.put("newRecordId", testpaper.getId());
+        return jsonObject1;
+
+    }
+    //插入exam表
+    private void insertIntoExam(String problemType, JSONObject jsonObject, Integer type, Testpaper testpaper) {
+        for (Object problemId : jsonObject.getJSONArray(problemType)) {
             Exam exam = new Exam();
-            exam.setTestpaperId(testPaperId);
-            exam.setType(1);
-            exam.setProblemId(examJudge.getId());
-            exam.setScore(examJudge.getScore());
+            exam.setTestpaperId(testpaper.getId());
+            exam.setType(type);
+            exam.setProblemId((Integer) problemId);
+            if (problemType.equals("singleSelections") || problemType.equals("multiSelections")) {
+                exam.setScore(examSelectMapper.selectById((Integer) problemId).getScore());
+            } else if (problemType.equals("fb")) {
+                exam.setScore(examFillBlankMapper.selectById((Integer) problemId).getScore());
+            } else if (problemType.equals("judge")) {
+                exam.setScore(examJudgeMapper.selectById((Integer) problemId).getScore());
+            } else if (problemType.equals("sub")) {
+                exam.setScore(examSubjectMapper.selectById((Integer) problemId).getScore());
+            } else if (problemType.equals("material")) {
+                exam.setScore(examMaterialService.getMaterialTotalScore((Integer) problemId));
+            }
             examMapper.insert(exam);
         }
-        count = 0;
-        while(count++ < singleCount) {
-            ExamSelect examSelect = singleSelections.get(random.nextInt(singleSelections.size()));
-            Exam exam = new Exam();
-            exam.setTestpaperId(testPaperId);
-            exam.setType(1);
-            exam.setProblemId(examSelect.getId());
-            exam.setScore(examSelect.getScore());
-            examMapper.insert(exam);
-        }
-        count = 0;
-        while(count++ < multipleCount) {
-            ExamSelect examSelect = multipleSelections.get(random.nextInt(multipleSelections.size()));
-            Exam exam = new Exam();
-            exam.setTestpaperId(testPaperId);
-            exam.setType(1);
-            exam.setProblemId(examSelect.getId());
-            exam.setScore(examSelect.getScore());
-            examMapper.insert(exam);
-        }
-        count = 0;
-        while(count++ < subjectCount) {
-            ExamSubject examSubject = examSubjects.get(random.nextInt(examSubjects.size()));
-            Exam exam = new Exam();
-            exam.setTestpaperId(testPaperId);
-            exam.setType(3);
-            exam.setProblemId(examSubject.getId());
-            exam.setScore(examSubject.getScore());
-            examMapper.insert(exam);
-        }
-        return 1;
     }
 
     /**
@@ -568,16 +599,6 @@ public class ExamServiceImpl implements ExamService {
      * @param userId
      * @return
      */
-//    @Override
-//    public Map<String, List<Object>> findScoreDetailByUIdAndTPId(Integer testPaperId, Integer userId) {
-//        Map<String, List<Object>> result = findByTestPaperId(testPaperId);
-//
-//        QueryWrapper<Scoredata> queryWrapper = new QueryWrapper<>();
-//        queryWrapper.eq("testpaper_id",testPaperId);
-//        queryWrapper.eq("user_id",userId);
-//        result.put("userAnswerDetail", Collections.singletonList(scoreDataMapper.selectList(queryWrapper)));
-//        return result;
-//    }
     @Override
     public List<Map<String, Object>> findScoreDetailByUIdAndTPId(Integer testPaperId, Integer userId) {
         //Map<String, List<Object>>

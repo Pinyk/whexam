@@ -83,44 +83,44 @@ public class TestPaperController {
     }
 
 //======================================================================================================================
-    @PostMapping("addTestPaper")
-    @ApiOperation(notes = "xiong",value = "添加试卷头信息接口")
-    public WebResult<Integer> addTestPaper(@RequestParam @ApiParam(name="subjectId",required=true) Integer subjectId,
-                                           @RequestParam @ApiParam(name="name",required=true) String name,
-                                           @RequestParam @ApiParam(name="totalscore",required=true) Double totalscore,
-                                           @RequestParam @ApiParam(name="passscore",required=true) Double passscore,
-                                           @RequestParam @ApiParam(name="startTime",required=true) String startTime,
-                                           @RequestParam @ApiParam(name="deadTime",required=true) String deadTime,
-                                           @RequestParam @ApiParam(name="time",required=true) Integer time,
-                                           @RequestParam @ApiParam(name="userId",required=true) Integer userId,
-                                           @RequestParam @ApiParam(name="departmentId",required=true) Integer departmentId,
-                                           @RequestParam @ApiParam(name="repeat",required=true) String repeat) {
-        Testpaper testpaper = new Testpaper();
-        testpaper.setSubjectId(subjectId);
-        testpaper.setName(name);
-        testpaper.setTotalscore(totalscore);
-        testpaper.setPassscore(passscore);
-        testpaper.setTime(time);
-        testpaper.setUserId(userId);
-        testpaper.setDepartmentId(departmentId);
-        testpaper.setRepeat(repeat);
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        try {
-            testpaper.setStartTime(dateFormat.parse(startTime));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        try {
-            testpaper.setDeadTime(dateFormat.parse(deadTime));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return WebResult.<Integer>builder()
-                .code(200)
-                .message(REQUEST_STATUS_SUCCESS)
-                .data(testPaperService.addTestPaper(testpaper))
-                .build();
-    }
+//    @PostMapping("addTestPaper")
+//    @ApiOperation(notes = "xiong",value = "添加试卷头信息接口")
+//    public WebResult<Integer> addTestPaper(@RequestParam @ApiParam(name="subjectId",required=true) Integer subjectId,
+//                                           @RequestParam @ApiParam(name="name",required=true) String name,
+//                                           @RequestParam @ApiParam(name="totalscore",required=true) Double totalscore,
+//                                           @RequestParam @ApiParam(name="passscore",required=true) Double passscore,
+//                                           @RequestParam @ApiParam(name="startTime",required=true) String startTime,
+//                                           @RequestParam @ApiParam(name="deadTime",required=true) String deadTime,
+//                                           @RequestParam @ApiParam(name="time",required=true) Integer time,
+//                                           @RequestParam @ApiParam(name="userId",required=true) Integer userId,
+//                                           @RequestParam @ApiParam(name="departmentId",required=true) Integer departmentId,
+//                                           @RequestParam @ApiParam(name="repeat",required=true) String repeat) {
+//        Testpaper testpaper = new Testpaper();
+//        testpaper.setSubjectId(subjectId);
+//        testpaper.setName(name);
+//        testpaper.setTotalscore(totalscore);
+//        testpaper.setPassscore(passscore);
+//        testpaper.setTime(time);
+//        testpaper.setUserId(userId);
+//        testpaper.setDepartmentId(departmentId);
+//        testpaper.setRepeat(repeat);
+//
+//        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+//        try {
+//            testpaper.setStartTime(dateFormat.parse(startTime));
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+//        try {
+//            testpaper.setDeadTime(dateFormat.parse(deadTime));
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return WebResult.<Integer>builder()
+//                .code(200)
+//                .message(REQUEST_STATUS_SUCCESS)
+//                .data(testPaperService.addTestPaper(testpaper))
+//                .build();
+//    }
 }
