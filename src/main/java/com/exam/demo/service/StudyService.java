@@ -2,6 +2,7 @@ package com.exam.demo.service;
 
 import com.exam.demo.entity.Study;
 import com.exam.demo.results.vo.PageVo;
+import com.exam.demo.results.vo.StudyVo;
 
 import java.util.List;
 /**
@@ -24,5 +25,7 @@ public interface StudyService {
     public List<Study> findBySubjectType(int typeid);
 
     Study findById(int id);
+
+    PageVo<StudyVo> search(String name,String beizhu,String subject,String type,Integer currentPage, Integer pageSize);
 
 }

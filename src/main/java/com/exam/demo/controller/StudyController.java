@@ -2,11 +2,12 @@ package com.exam.demo.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.exam.demo.Utils.FileCommit;
-import com.exam.demo.Utils.URLtoUTF8;
 import com.exam.demo.entity.Datatype;
 import com.exam.demo.entity.ShowStudy;
 import com.exam.demo.entity.Study;
 import com.exam.demo.entity.StudyByType;
+import com.exam.demo.params.StudyParam;
+import com.exam.demo.results.vo.StudyVo;
 import com.exam.demo.service.*;
 import com.exam.demo.results.vo.PageVo;
 import com.exam.demo.service.DataTypeService;
@@ -18,7 +19,6 @@ import com.exam.demo.results.WebResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import net.sf.jsqlparser.expression.DateTimeLiteralExpression;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -46,6 +46,18 @@ public class StudyController {
     private SubjectService subjectService;
     @Autowired
     private SubjectTypeService subjectTypeService;
+
+    @PostMapping("search")
+    @ApiOperation(notes = "wxn",value = "组合查询")
+    public WebResult<PageVo<StudyVo>> search(@ApiParam(name="前端查询条件 StudyParam 查询条件实体类")
+                                             @RequestBody StudyParam studyParam){
+        return WebResult.<PageVo<StudyVo>>builder()
+                .code(200)
+                .message(REQUEST_STATUS_SUCCESS)
+                .data(studyService.search(studyParam.getName(),studyParam.getBeizhu(),studyParam.getSubject(),
+                        studyParam.getType(),studyParam.getCurrentPage(),studyParam.getPageSize()))
+                .build();
+    }
 
     @GetMapping("findAll")
     @ApiOperation(notes = "csx",value = "全部学习资料查询接口")
