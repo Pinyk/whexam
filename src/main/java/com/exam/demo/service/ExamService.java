@@ -31,11 +31,7 @@ public interface ExamService {
      */
     Integer addProblem(Exam exam);
 
-    /**
-     * 随机组建试卷
-     * @return
-     */
-    Map<String, Object> componentTestPaper(JSONObject jsonObject);
+
 
     /**
      * 删除试卷试题

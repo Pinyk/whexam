@@ -65,23 +65,6 @@ public class ExamController {
                 .data(examService.addProblem(exam))
                 .build();
     }
-//=========================================组建试卷试题接口=================================================================
-    @PostMapping("componentTestPaper")
-    @Transactional
-    @ApiOperation(notes = "LBX",value = "组建试卷试题接口")
-    public WebResult<Map<String, Object>> componentTestPaper(@RequestBody JSONObject jsonObject) {
-        if (jsonObject == null) {
-            return WebResult.<Map<String, Object>>builder()
-                    .code(404)
-                    .message(REQUEST_STATUS_ERROR)
-                    .build();
-        }
-        return WebResult.<Map<String, Object>>builder()
-                .code(200)
-                .message(REQUEST_STATUS_SUCCESS)
-                .data(examService.componentTestPaper(jsonObject))
-                .build();
-    }
 //======================================================================================================================
     @DeleteMapping("deleteProblem/{id}")
     @ApiOperation(notes = "xiong",value = "删除试卷试题接口")

@@ -441,78 +441,7 @@ public class ExamServiceImpl implements ExamService {
         return examMapper.insert(exam);
     }
 
-    /**
-     * 组建试卷
-     */
-    @Override
-    public Map<String, Object> componentTestPaper(JSONObject jsonObject) {
 
-        Testpaper testpaper = new Testpaper();
-        //查询testpaper表
-        testpaper.setSubjectId(jsonObject.getInteger("subjectId"));
-        testpaper.setName(jsonObject.getString("name"));
-        testpaper.setTotalscore(jsonObject.getDouble("totalScore"));
-        testpaper.setPassscore(jsonObject.getDouble("passScore"));
-        System.out.println(jsonObject.getString("startTime"));
-
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        try {
-            testpaper.setStartTime(simpleDateFormat.parse(jsonObject.getString("startTime")));
-            testpaper.setDeadTime(simpleDateFormat.parse(jsonObject.getString("endTime")));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        testpaper.setTime(jsonObject.getInteger("totalTime"));
-        testpaper.setUserId(jsonObject.getInteger("userId"));
-
-        Object[] departmentIds = jsonObject.getJSONArray("departmentId").toArray();
-        StringBuffer stringBuffer = new StringBuffer();
-        for (int i = 0; i < departmentIds.length; i++) {
-            if (i < departmentIds.length - 1) {
-                stringBuffer.append(departmentIds[i].toString()).append(" ");
-            } else {
-                stringBuffer.append(departmentIds[i].toString());
-            }
-        }
-        testpaper.setDepartmentId(stringBuffer.toString());
-        testpaper.setRepeat(jsonObject.getBoolean("repeat").toString());
-        //testpaper.setExtra(jsonObject.getString("extra"));
-        testPaperMapper.insert(testpaper);
-
-        //插入exam表
-        insertIntoExam("singleSelections", jsonObject, 1, testpaper);
-        insertIntoExam("multiSelections", jsonObject, 1, testpaper);
-        insertIntoExam("fb", jsonObject, 2, testpaper);
-        insertIntoExam("judge", jsonObject, 3, testpaper);
-        insertIntoExam("sub", jsonObject, 4, testpaper);
-        insertIntoExam("material", jsonObject, 5, testpaper);
-
-        JSONObject jsonObject1 = new JSONObject();
-        jsonObject1.put("newRecordId", testpaper.getId());
-        return jsonObject1;
-
-    }
-    //插入exam表
-    private void insertIntoExam(String problemType, JSONObject jsonObject, Integer type, Testpaper testpaper) {
-        for (Object problemId : jsonObject.getJSONArray(problemType)) {
-            Exam exam = new Exam();
-            exam.setTestpaperId(testpaper.getId());
-            exam.setType(type);
-            exam.setProblemId((Integer) problemId);
-            if (problemType.equals("singleSelections") || problemType.equals("multiSelections")) {
-                exam.setScore(examSelectMapper.selectById((Integer) problemId).getScore());
-            } else if (problemType.equals("fb")) {
-                exam.setScore(examFillBlankMapper.selectById((Integer) problemId).getScore());
-            } else if (problemType.equals("judge")) {
-                exam.setScore(examJudgeMapper.selectById((Integer) problemId).getScore());
-            } else if (problemType.equals("sub")) {
-                exam.setScore(examSubjectMapper.selectById((Integer) problemId).getScore());
-            } else if (problemType.equals("material")) {
-                exam.setScore(examMaterialService.getMaterialTotalScore((Integer) problemId));
-            }
-            examMapper.insert(exam);
-        }
-    }
 
     /**
      * 删除试卷试题
