@@ -22,6 +22,7 @@ import java.sql.Date;
 @ApiModel(value = "user")
 @TableName("data")
 public class Study {
+
     @ApiModelProperty(value = "资料主键")
     @TableId(type = IdType.AUTO)
     private Integer id;
