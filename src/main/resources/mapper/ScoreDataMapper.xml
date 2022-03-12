@@ -37,16 +37,8 @@
     <update id="updateScoreDataByUserIdAndTestPaperId" parameterType="com.exam.demo.entity.Scoredata">
         update scoredata set answer = #{answer},score = #{score}
         where user_id = #{userId} and testpaper_id = #{testpaperId} and problem_id = #{problemId} and `type` = #{type}
-        <!--<set>-->
-        <!--<if test="answer != null">answer = #{answer},</if>-->
-        <!--<if test="score != null">score = #{score}</if>-->
-        <!--</set>-->
     </update>
     <!--Integer insertScoreData(Scoredata scoredata);-->
-
-
-
-
     <insert id="insertScoreData">
         insert into scoredata(`testpaper_id`, `user_id`, `type`, `problem_id`, `answer`, `score`)
         values
