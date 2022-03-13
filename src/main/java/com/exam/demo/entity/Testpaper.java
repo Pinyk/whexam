@@ -31,7 +31,6 @@ public class Testpaper {
     @ApiModelProperty(value = "试卷及格分")
     private double passscore;
 
-
     @ApiModelProperty(value = "考试开始时间")
     private Date startTime;
 
@@ -47,10 +46,12 @@ public class Testpaper {
     private int userId;
 
     @ApiModelProperty(value = "试卷所属部门ID")
-    private int departmentId;
-
+    private String departmentId;
 
     @ApiModelProperty(value = "试题是否打乱")
     @TableField("`repeat`")
     private String repeat;
+
+    @ApiModelProperty(value = "考试说明")
+    private String extra;
 }

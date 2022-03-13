@@ -1,5 +1,6 @@
 package com.exam.demo.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.exam.demo.entity.Testpaper;
 import com.exam.demo.otherEntity.RtTestpaper;
 import com.exam.demo.results.vo.PageVo;
@@ -142,5 +143,19 @@ public interface TestPaperService {
      * @return
      */
     List<Map<String, Object>> findTestPaperById(int testPaperId);
+
+    /**
+     * 组建试卷
+     * @param jsonObject
+     * @return
+     */
+    Map<String, Object> componentTestPaper(JSONObject jsonObject);
+
+    /**
+     * 删除试卷
+     * @param id
+     * @return
+     */
+    Map<String, Object> deleteTestPaper(Integer id);
 
 }

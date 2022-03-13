@@ -133,9 +133,10 @@ public class ExamJudgeController {
                 .build();
     }
 
-    @DeleteMapping("delete/{id}")
-    @ApiOperation(notes = "xiong",value = "删除题库中的判断题目接口")
-    public WebResult<Integer> deleteExamJudge(@PathVariable @ApiParam(name="id",required=true,value = "id传入null") Integer id) {
+    @DeleteMapping("delete")
+    @Transactional
+    @ApiOperation(notes = "LBX",value = "删除题库中的判断题目接口")
+    public WebResult<Integer> deleteExamJudge(@RequestParam @ApiParam(name="id",required=true) Integer id) {
         return WebResult.<Integer>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)

@@ -1,5 +1,6 @@
 package com.exam.demo.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
@@ -12,6 +13,7 @@ import com.exam.demo.mapper.*;
 import com.exam.demo.otherEntity.RtTestpaper;
 import com.exam.demo.otherEntity.SelectQuestionVo;
 import com.exam.demo.results.vo.PageVo;
+import com.exam.demo.service.ExamMaterialService;
 import com.exam.demo.service.SubjectService;
 import com.exam.demo.service.TestPaperService;
 import com.exam.demo.results.vo.TestpaperVo;
@@ -21,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -48,6 +51,21 @@ public class TestPaperServiceImpl implements TestPaperService {
 
     @Autowired
     private SubjectService subjectService;
+
+    @Autowired
+    private ExamSelectMapper examSelectMapper;
+
+    @Autowired
+    private ExamSubjectMapper examSubjectMapper;
+
+    @Autowired
+    private ExamFillBlankMapper examFillBlankMapper;
+
+    @Autowired
+    private ExamJudgeMapper examJudgeMapper;
+
+    @Autowired
+    private ExamMaterialService examMaterialService;
 
 
     /**
@@ -199,104 +217,91 @@ public class TestPaperServiceImpl implements TestPaperService {
         return testpapers;
     }
 
+    /**
+     * 组建试卷
+     */
+    @Override
+    public Map<String, Object> componentTestPaper(JSONObject jsonObject) {
 
+        Testpaper testpaper = new Testpaper();
+        //查询testpaper表
+        testpaper.setSubjectId(jsonObject.getInteger("subjectId"));
+        testpaper.setName(jsonObject.getString("name"));
+        testpaper.setTotalscore(jsonObject.getDouble("totalScore"));
+        testpaper.setPassscore(jsonObject.getDouble("passScore"));
+        System.out.println(jsonObject.getString("startTime"));
 
-//        //单选题singleSelections
-//        List<ExamSelect> singleSelections = examMapper.findSingleSelectionByTestPaperId(testPaperId);
-//        Map<String,Object> map1 = new LinkedHashMap<>();
-//
-//        List<Map<String,Object>> singleSelectionArray = new ArrayList<>();
-//
-//
-//        for (ExamSelect list:singleSelections){
-//            //存放选择题
-//            Map<String,Object> map11 = new LinkedHashMap<>();
-//            map11.put("id",list.getId());
-//            map11.put("context",list.getContext());
-//            map11.put("selections",list.getSelection());
-//            map11.put("answer",list.getAnswer());//数据库中直接存选项
-//            map11.put("score",list.getScore());
-//            map11.put("imgUrl",list.getImgUrl());
-//            singleSelectionArray.add(map11);
-//
-//        }
-//        map1.put("singleSelections",singleSelectionArray);
-//
-//        //多选题multipleSelections
-//        List<ExamSelect> multipleSelections = examMapper.findMultipleSelectionByTestPaperId(testPaperId);
-//
-//        List<Map<String,Object>> multipulSelectionArray = new ArrayList<>();
-//
-//        for (ExamSelect list:multipleSelections){
-//            Map<String,Object> map22 = new LinkedHashMap<>();
-//            map22.put("id",list.getId());
-//            map22.put("context",list.getContext());
-//            map22.put("selections",list.getSelection());
-//            map22.put("answer",list.getAnswer());//数据库中直接存选项
-//            map22.put("score",list.getScore());
-//            map22.put("imgUrl",list.getImgUrl());
-//            multipulSelectionArray.add(map22);
-//
-//        }
-//        map1.put("multipulSelections",multipulSelectionArray);
-//
-//        //填空题examFillBlank
-//
-//        List<ExamFillBlank> examFillBlanks = examMapper.findExamFillBlankByTestPaperId(testPaperId);
-//        List<Map<String,Object>> examFillBlanksArray = new ArrayList<>();
-//
-//        for (ExamFillBlank list:examFillBlanks){
-//            Map<String,Object> map33 = new LinkedHashMap<>();
-//            map33.put("id",list.getId());
-//            map33.put("context",list.getContext());
-//            map33.put("answer",list.getAnswer());//数据库中直接存选项
-//            map33.put("score",list.getScore());
-//            map33.put("imgUrl",list.getImgUrl());
-//            examFillBlanksArray.add(map33);
-//
-//        }
-//        map1.put("examFillBlank",examFillBlanksArray);
-//
-//
-//        //判断题examJudge
-//
-//        List<ExamJudge> examJudges = examMapper.findExamJudgeByTestPaperId(testPaperId);
-//        List<Map<String,Object>> examJudgesArray = new ArrayList<>();
-//
-//        for (ExamJudge list:examJudges){
-//            Map<String,Object> map44 = new LinkedHashMap<>();
-//            map44.put("id",list.getId());
-//            map44.put("context",list.getContext());
-//            map44.put("answer",list.getAnswer());//数据库中直接存选项
-//            map44.put("score",list.getScore());
-//            map44.put("imgUrl",list.getImgUrl());
-//            examJudgesArray.add(map44);
-//
-//        }
-//        map1.put("examJudge",examJudgesArray);
-//
-//
-//        //主观题examSubject
-//
-//        List<ExamSubject> examSubjects = examMapper.findExamSubjectByTestPaperId(testPaperId);
-//        List<Map<String,Object>> examSubjectsArray = new ArrayList<>();
-//
-//        for (ExamSubject list:examSubjects){
-//            Map<String,Object> map55 = new LinkedHashMap<>();
-//            map55.put("id",list.getId());
-//            map55.put("context",list.getContext());
-//            map55.put("answer",list.getAnswer());//数据库中直接存选项
-//            map55.put("score",list.getScore());
-//            map55.put("imgUrl",list.getImgUrl());
-//            examSubjectsArray.add(map55);
-//
-//        }
-//        map1.put("examSubject",examSubjectsArray);
-//
-//        //材料题examMaterial
-//
-//        testpapers.add(map1);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
+            testpaper.setStartTime(simpleDateFormat.parse(jsonObject.getString("startTime")));
+            testpaper.setDeadTime(simpleDateFormat.parse(jsonObject.getString("endTime")));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        testpaper.setTime(jsonObject.getInteger("totalTime"));
+        testpaper.setUserId(jsonObject.getInteger("userId"));
 
+        Object[] departmentIds = jsonObject.getJSONArray("departmentId").toArray();
+        StringBuffer stringBuffer = new StringBuffer();
+        for (int i = 0; i < departmentIds.length; i++) {
+            if (i < departmentIds.length - 1) {
+                stringBuffer.append(departmentIds[i].toString()).append(" ");
+            } else {
+                stringBuffer.append(departmentIds[i].toString());
+            }
+        }
+        testpaper.setDepartmentId(stringBuffer.toString());
+        testpaper.setRepeat(jsonObject.getBoolean("repeat").toString());
+        testpaper.setExtra(jsonObject.getString("extra"));
+        testPaperMapper.insert(testpaper);
+
+        //插入exam表
+        insertIntoExam("singleSelections", jsonObject, 1, testpaper);
+        insertIntoExam("multiSelections", jsonObject, 1, testpaper);
+        insertIntoExam("fb", jsonObject, 2, testpaper);
+        insertIntoExam("judge", jsonObject, 3, testpaper);
+        insertIntoExam("sub", jsonObject, 4, testpaper);
+        insertIntoExam("material", jsonObject, 5, testpaper);
+
+        JSONObject jsonObject1 = new JSONObject();
+        jsonObject1.put("newRecordId", testpaper.getId());
+        return jsonObject1;
+
+    }
+
+    @Override
+    public Map<String, Object> deleteTestPaper(Integer id) {
+        //删除试卷题目详情
+        LambdaQueryWrapper<Exam> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        //删除试卷
+        lambdaQueryWrapper.eq(Exam::getTestpaperId, id);
+        examMapper.delete(lambdaQueryWrapper);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("deletedTestPaperTotal", testPaperMapper.deleteById(id));
+        return jsonObject;
+    }
+
+    //插入exam表
+    private void insertIntoExam(String problemType, JSONObject jsonObject, Integer type, Testpaper testpaper) {
+        for (Object problemId : jsonObject.getJSONArray(problemType)) {
+            Exam exam = new Exam();
+            exam.setTestpaperId(testpaper.getId());
+            exam.setType(type);
+            exam.setProblemId((Integer) problemId);
+            if (problemType.equals("singleSelections") || problemType.equals("multiSelections")) {
+                exam.setScore(examSelectMapper.selectById((Integer) problemId).getScore());
+            } else if (problemType.equals("fb")) {
+                exam.setScore(examFillBlankMapper.selectById((Integer) problemId).getScore());
+            } else if (problemType.equals("judge")) {
+                exam.setScore(examJudgeMapper.selectById((Integer) problemId).getScore());
+            } else if (problemType.equals("sub")) {
+                exam.setScore(examSubjectMapper.selectById((Integer) problemId).getScore());
+            } else if (problemType.equals("material")) {
+                exam.setScore(examMaterialService.getMaterialTotalScore((Integer) problemId));
+            }
+            examMapper.insert(exam);
+        }
+    }
 
     /**
      * 将 Testpaper 中的内容修改复制到 RtTestpaper 中
@@ -542,11 +547,18 @@ public class TestPaperServiceImpl implements TestPaperService {
         BeanUtils.copyProperties(testpaper, testpaperVo);
         testpaperVo.setStartTime(df.format(testpaper.getStartTime()));
         testpaperVo.setDeadTime(df.format(testpaper.getDeadTime()));
-        testpaperVo.setDepartment(departmentMapper.selectById(testpaper.getDepartmentId()).getName());
+
+        String[] s = testpaper.getDepartmentId().split(" ");
+        if (s.length != 0) {
+            LinkedList<String> list = new LinkedList<>();
+            for (String s1 : s) {
+                list.add(departmentMapper.selectById(s1).getName());
+            }
+            testpaperVo.setDepartment(list);
+        }
         testpaperVo.setSubject(subjectMapper.selectById(testpaper.getSubjectId()).getName());
         testpaperVo.setUserName(userMapper.selectById(testpaper.getUserId()).getName());
         return testpaperVo;
-
     }
 
     /**
@@ -577,7 +589,7 @@ public class TestPaperServiceImpl implements TestPaperService {
             }
             queryWrapper.like(StringUtils.isNotBlank(testPaperName),Testpaper::getName, testPaperName);
             if (departmentId != null) {
-                queryWrapper.eq(Testpaper::getDepartmentId, departmentId);
+                queryWrapper.like(Testpaper::getDepartmentId, departmentId.toString());
             }
             if (!StringUtils.isBlank(subject)) {
                 //根据学科名称查询id
@@ -590,12 +602,17 @@ public class TestPaperServiceImpl implements TestPaperService {
             }
             queryWrapper.last("and " + sql);
         }
+        if (departmentId != null) {
+            queryWrapper.like(Testpaper::getDepartmentId, departmentId.toString());
+        }
         Page<Testpaper> testpaperPage = testPaperMapper.selectPage(page, queryWrapper);
         //将查询对象转为交互返回对象
         LinkedList<TestpaperVo> testpaperVos = new LinkedList<>();
         //遍历查询结果，并将符合条件的存入交互对象中
-        for (Testpaper testpaper : testpaperPage.getRecords()) {
-            testpaperVos.add(copyTestpaperBean(new TestpaperVo(), testpaper));
+        if (!testpaperPage.getRecords().isEmpty()) {
+            for (Testpaper testpaper : testpaperPage.getRecords()) {
+                testpaperVos.add(copyTestpaperBean(new TestpaperVo(), testpaper));
+            }
         }
         HashMap<String, Object> map = new HashMap<>();
         map.put("total", testpaperPage.getTotal());

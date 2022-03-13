@@ -81,4 +81,21 @@ public class ExamMaterialController {
                 .build();
     }
 
+    @DeleteMapping("delete")
+    @Transactional
+    @ApiOperation(notes = "LBX", value = "删除材料题")
+    public WebResult<Map<String, Object>> deleteExamMaterial(@RequestParam @ApiParam(name = "删除材料的Id",
+            required = true) Integer id) {
+        if (id == null) {
+            return WebResult.<Map<String, Object>>builder()
+                    .code(404)
+                    .message(REQUEST_STATUS_ERROR)
+                    .build();
+        }
+        return WebResult.<Map<String, Object>>builder()
+                .code(200)
+                .message(REQUEST_STATUS_SUCCESS)
+                .data(examMaterialService.deleteExamMaterial(id))
+                .build();
+    }
 }

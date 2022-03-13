@@ -155,6 +155,8 @@ public class ExamJudgeServiceImpl implements ExamJudgeService {
 
     @Override
     public Integer deleteExamJudge(Integer id) {
-        return examJudgeMapper.deleteById(id);
+        LambdaQueryWrapper<ExamJudge> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(ExamJudge::getMaterialQuestion, 0).eq(ExamJudge::getId, id);
+        return examJudgeMapper.delete(lambdaQueryWrapper);
     }
 }

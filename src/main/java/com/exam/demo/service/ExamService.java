@@ -1,9 +1,11 @@
 package com.exam.demo.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.exam.demo.entity.*;
 import com.exam.demo.otherEntity.UserAnswer;
 import com.exam.demo.results.vo.TestpaperVo;
 
+import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
 
@@ -29,11 +31,7 @@ public interface ExamService {
      */
     Integer addProblem(Exam exam);
 
-    /**
-     * 随机组建试卷
-     * @return
-     */
-    Integer randomComponentPaper(Integer testPaperId, Integer subjectId, Integer judgeCount, Integer singleCount, Integer multipleCount, Integer subjectCOunt);
+
 
     /**
      * 删除试卷试题

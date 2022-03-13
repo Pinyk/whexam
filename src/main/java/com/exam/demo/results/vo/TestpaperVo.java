@@ -3,6 +3,7 @@ package com.exam.demo.results.vo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import java.util.List;
 
 import java.io.Serializable;
 
@@ -71,6 +72,6 @@ public class TestpaperVo implements Serializable{
             dataType = "String",
             name = "department",
             example = "1")
-    private String department;
+    private List<String> department;
 
 }

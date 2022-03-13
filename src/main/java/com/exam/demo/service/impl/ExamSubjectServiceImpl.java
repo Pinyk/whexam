@@ -162,6 +162,8 @@ public class ExamSubjectServiceImpl implements ExamSubjectService {
 
     @Override
     public Integer deleteExamSubject(Integer id) {
-        return examSubjectMapper.deleteById(id);
+        LambdaQueryWrapper<ExamSubject> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(ExamSubject::getId,id).eq(ExamSubject::getMaterialQuestion, 0);
+        return examSubjectMapper.delete(lambdaQueryWrapper);
     }
 }

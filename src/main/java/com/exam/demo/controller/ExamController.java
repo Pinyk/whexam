@@ -14,6 +14,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -64,22 +65,7 @@ public class ExamController {
                 .data(examService.addProblem(exam))
                 .build();
     }
-
-    @PostMapping("componentTestPaper")
-    @ApiOperation(notes = "LBX",value = "组建试卷试题接口")
-    public WebResult<Integer> componentTestPaper(@RequestParam @ApiParam(name="testPaperId",required=true) Integer testPaperId,
-                                        @RequestParam @ApiParam(name="subjectId",required=true) Integer subjectId,
-                                        @RequestParam @ApiParam(name="judgeCount",required=true) Integer judgeCount,
-                                        @RequestParam @ApiParam(name="singleCount",required=true) Integer singleCount,
-                                        @RequestParam @ApiParam(name="multipleCount",required=true) Integer multipleCount,
-                                        @RequestParam @ApiParam(name="subjectCount",required=true) Integer subjectCount) {
-        return WebResult.<Integer>builder()
-                .code(200)
-                .message(REQUEST_STATUS_SUCCESS)
-                .data(examService.randomComponentPaper(testPaperId, subjectId, judgeCount, singleCount, multipleCount, subjectCount))
-                .build();
-    }
-
+//======================================================================================================================
     @DeleteMapping("deleteProblem/{id}")
     @ApiOperation(notes = "xiong",value = "删除试卷试题接口")
     public WebResult<Integer> deleteProblem(@PathVariable @ApiParam(name="id",required=true) Integer id) {
@@ -151,10 +137,10 @@ public class ExamController {
 
     @GetMapping("findTestPaperDetail")
     @ApiOperation(notes = "LBX", value = "组合查询试卷（试卷ID，试卷名字，试卷所属部门，科目）")
-    public WebResult<List<TestpaperVo>> combinedQueryTestPaper(@RequestParam(required = false) @ApiParam(name = "试卷id", required = true) Integer testPaperId,
-                                                               @RequestParam(required = false) @ApiParam(name = "试卷名称", required = true) String testPaperName,
-                                                               @RequestParam(required = false) @ApiParam(name = "试卷所属部门", required = true) String departmentName,
-                                                               @RequestParam(required = false) @ApiParam(name = "科目", required = true) String subject) {
+    public WebResult<List<TestpaperVo>> combinedQueryTestPaper(@RequestParam(required = false) @ApiParam(name = "试卷id") int testPaperId,
+                                                               @RequestParam(required = false) @ApiParam(name = "试卷名称") String testPaperName,
+                                                               @RequestParam(required = false) @ApiParam(name = "试卷所属部门") String departmentName,
+                                                               @RequestParam(required = false) @ApiParam(name = "科目") String subject) {
         return WebResult.<List<TestpaperVo>>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
