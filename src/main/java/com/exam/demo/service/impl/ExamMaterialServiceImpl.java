@@ -141,8 +141,6 @@ public class ExamMaterialServiceImpl implements ExamMaterialService {
     @Override
     public Map<String, Object> deleteExamMaterial(Integer id) {
 
-        //删除exam_中的记录material
-        materialMapper.deleteById(id);
         //根据中间表删除各个类型的题
         LambdaQueryWrapper<MaterialProblem> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper.eq(MaterialProblem::getMaterialId, id);
@@ -167,7 +165,7 @@ public class ExamMaterialServiceImpl implements ExamMaterialService {
         materialProblemMapper.delete(queryWrapper);
 
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("deletedRecordId", id);
+        jsonObject.put("deletedRecordTotal", materialMapper.deleteById(id));
 
         return jsonObject;
     }
