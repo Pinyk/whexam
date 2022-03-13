@@ -16,10 +16,15 @@ public class ExamFillBlankVo implements Serializable{
     @ApiModelProperty(value = "题目")
     private String context;
 
+    @ApiModelProperty(value = "答案")
+    private String answer;
+
     @ApiModelProperty(value = "所属科目")
     private String subject;
 
     @ApiModelProperty(value = "分数")
     private double score;
 
+    @ApiModelProperty(value = "图片url")
+    private String imgUrl;
 }

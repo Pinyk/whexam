@@ -56,6 +56,7 @@ public class ScoreServiceImpl implements ScoreService {
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("testPaperName", testPaperMapper.selectById(record.getTestpaperId()).getName());
                 jsonObject.put("userName", userMapper.selectById(record.getUserId()).getName());
+                jsonObject.put("userId", record.getUserId());
                 jsonObject.put("score", record.getScorenum());
                 jsonObject.put("totalScore", testPaperMapper.selectById(record.getTestpaperId()).getTotalscore());
                 jsonObject.put("passScore", testPaperMapper.selectById(record.getTestpaperId()).getPassscore());
