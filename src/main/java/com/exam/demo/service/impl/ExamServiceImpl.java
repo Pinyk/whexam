@@ -547,24 +547,36 @@ public class ExamServiceImpl implements ExamService {
         map.put("singleSelections", change2(scoreDataMapper.findSingleSelectionAnswerByTidAndUid(testPaperId, userId)));
         map.put("multipleSelections", change2(scoreDataMapper.findMultipleSelectionAnswerByTidAndUid(testPaperId, userId)));
         map.put("examFillBlank", scoreDataMapper.findExamFillBlankAnswerByTidAndUid(testPaperId, userId));
-        map.put("examJudge", scoreDataMapper.findExamJudgeAnswerByTidAndUid(testPaperId, userId));
+        List<UserOtherAnswer> judgeAnswers = scoreDataMapper.findExamJudgeAnswerByTidAndUid(testPaperId, userId);
+        if (!judgeAnswers.isEmpty() || judgeAnswers.size() != 0){
+            for(UserOtherAnswer otherAnswer: judgeAnswers){
+                if (otherAnswer.getAnswer().equals("0")){
+                    otherAnswer.setAnswer("false");
+                }else if (otherAnswer.getAnswer().equals("1")){
+                    otherAnswer.setAnswer("true");
+                }
+            }
+        }
+        map.put("examJudge", judgeAnswers);
+
         map.put("examSubject", scoreDataMapper.findExamSubjectAnswerByTidAndUid(testPaperId, userId));
         List<ExamMaterial> examMaterials  = examMapper.findExamMaterialByTestPaperId(testPaperId);
         List<Map<String,Object>> list = new ArrayList<>();
-        for (ExamMaterial examMaterial : examMaterials){
-            Map<String,Object> map1 = new LinkedHashMap<>();
-            map1.put("id",examMaterial.getId());
-            map1.put("context",examMaterial.getContext());
-            Map<String,Object> map2 = new HashMap<>();
-            map2.put("singleSelections", change2(scoreDataMapper.findSingleSelectionAnswerByMaterialId(testPaperId,userId,examMaterial.getId())));
-            map2.put("multipleSelections",change2(scoreDataMapper.findMutipleSelectionAnswerByMaterialId(testPaperId,userId, examMaterial.getId())));
-            map2.put("examFillBlank",scoreDataMapper.findExamFillBlankAnswerByMaterialId(testPaperId,userId,examMaterial.getId()));
-            map2.put("examJudge",scoreDataMapper.findExamJudgeAnswerByMaterialId(testPaperId,userId,examMaterial.getId()));
-            map2.put("examSubject",scoreDataMapper.findExamSubjectAnswerByMaterialId(testPaperId,userId,examMaterial.getId()));
-            map1.put("question",map2);
-            list.add(map1);
+        if (examMaterials.size()!=0 || !examMaterials.isEmpty()) {
+            for (ExamMaterial examMaterial : examMaterials) {
+                Map<String, Object> map1 = new LinkedHashMap<>();
+                map1.put("id", examMaterial.getId());
+                map1.put("context", examMaterial.getContext());
+                Map<String, Object> map2 = new HashMap<>();
+                map2.put("singleSelections", change2(scoreDataMapper.findSingleSelectionAnswerByMaterialId(testPaperId, userId, examMaterial.getId())));
+                map2.put("multipleSelections", change2(scoreDataMapper.findMutipleSelectionAnswerByMaterialId(testPaperId, userId, examMaterial.getId())));
+                map2.put("examFillBlank", scoreDataMapper.findExamFillBlankAnswerByMaterialId(testPaperId, userId, examMaterial.getId()));
+                map2.put("examJudge", scoreDataMapper.findExamJudgeAnswerByMaterialId(testPaperId, userId, examMaterial.getId()));
+                map2.put("examSubject", scoreDataMapper.findExamSubjectAnswerByMaterialId(testPaperId, userId, examMaterial.getId()));
+                map1.put("question", map2);
+                list.add(map1);
+            }
         }
-
         map.put("examMaterial",list);
         result.add(map);
 
