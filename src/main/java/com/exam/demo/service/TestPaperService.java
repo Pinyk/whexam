@@ -144,5 +144,18 @@ public interface TestPaperService {
      */
     List<Map<String, Object>> findTestPaperById(int testPaperId);
 
+    /**
+     * 组建试卷
+     * @param jsonObject
+     * @return
+     */
     Map<String, Object> componentTestPaper(JSONObject jsonObject);
+
+    /**
+     * 删除试卷
+     * @param id
+     * @return
+     */
+    Map<String, Object> deleteTestPaper(Integer id);
+
 }

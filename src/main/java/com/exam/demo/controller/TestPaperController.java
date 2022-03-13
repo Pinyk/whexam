@@ -88,4 +88,21 @@ public class TestPaperController {
                 .data(testPaperService.componentTestPaper(jsonObject))
                 .build();
     }
+//=========================================删除试卷=======================================================================
+    @DeleteMapping("deleteTestPaper")
+    @Transactional
+    @ApiOperation(notes = "LBX", value = "删除试卷及试卷题目详情")
+    public WebResult<Map<String,Object>> deleteTestPaper(@RequestParam @ApiParam(name = "试卷Id", required = true) Integer id) {
+        if (id == null) {
+            return WebResult.<Map<String, Object>>builder()
+                    .code(404)
+                    .message(REQUEST_STATUS_ERROR)
+                    .build();
+        }
+        return WebResult.<Map<String, Object>>builder()
+                .code(200)
+                .message(REQUEST_STATUS_SUCCESS)
+                .data(testPaperService.deleteTestPaper(id))
+                .build();
+    }
 }

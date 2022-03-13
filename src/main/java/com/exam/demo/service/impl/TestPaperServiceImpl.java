@@ -268,6 +268,19 @@ public class TestPaperServiceImpl implements TestPaperService {
         return jsonObject1;
 
     }
+
+    @Override
+    public Map<String, Object> deleteTestPaper(Integer id) {
+        //删除试卷题目详情
+        LambdaQueryWrapper<Exam> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        //删除试卷
+        lambdaQueryWrapper.eq(Exam::getTestpaperId, id);
+        examMapper.delete(lambdaQueryWrapper);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("deletedTestPaperTotal", testPaperMapper.deleteById(id));
+        return jsonObject;
+    }
+
     //插入exam表
     private void insertIntoExam(String problemType, JSONObject jsonObject, Integer type, Testpaper testpaper) {
         for (Object problemId : jsonObject.getJSONArray(problemType)) {
@@ -289,103 +302,6 @@ public class TestPaperServiceImpl implements TestPaperService {
             examMapper.insert(exam);
         }
     }
-
-//        //单选题singleSelections
-//        List<ExamSelect> singleSelections = examMapper.findSingleSelectionByTestPaperId(testPaperId);
-//        Map<String,Object> map1 = new LinkedHashMap<>();
-//
-//        List<Map<String,Object>> singleSelectionArray = new ArrayList<>();
-//
-//
-//        for (ExamSelect list:singleSelections){
-//            //存放选择题
-//            Map<String,Object> map11 = new LinkedHashMap<>();
-//            map11.put("id",list.getId());
-//            map11.put("context",list.getContext());
-//            map11.put("selections",list.getSelection());
-//            map11.put("answer",list.getAnswer());//数据库中直接存选项
-//            map11.put("score",list.getScore());
-//            map11.put("imgUrl",list.getImgUrl());
-//            singleSelectionArray.add(map11);
-//
-//        }
-//        map1.put("singleSelections",singleSelectionArray);
-//
-//        //多选题multipleSelections
-//        List<ExamSelect> multipleSelections = examMapper.findMultipleSelectionByTestPaperId(testPaperId);
-//
-//        List<Map<String,Object>> multipulSelectionArray = new ArrayList<>();
-//
-//        for (ExamSelect list:multipleSelections){
-//            Map<String,Object> map22 = new LinkedHashMap<>();
-//            map22.put("id",list.getId());
-//            map22.put("context",list.getContext());
-//            map22.put("selections",list.getSelection());
-//            map22.put("answer",list.getAnswer());//数据库中直接存选项
-//            map22.put("score",list.getScore());
-//            map22.put("imgUrl",list.getImgUrl());
-//            multipulSelectionArray.add(map22);
-//
-//        }
-//        map1.put("multipulSelections",multipulSelectionArray);
-//
-//        //填空题examFillBlank
-//
-//        List<ExamFillBlank> examFillBlanks = examMapper.findExamFillBlankByTestPaperId(testPaperId);
-//        List<Map<String,Object>> examFillBlanksArray = new ArrayList<>();
-//
-//        for (ExamFillBlank list:examFillBlanks){
-//            Map<String,Object> map33 = new LinkedHashMap<>();
-//            map33.put("id",list.getId());
-//            map33.put("context",list.getContext());
-//            map33.put("answer",list.getAnswer());//数据库中直接存选项
-//            map33.put("score",list.getScore());
-//            map33.put("imgUrl",list.getImgUrl());
-//            examFillBlanksArray.add(map33);
-//
-//        }
-//        map1.put("examFillBlank",examFillBlanksArray);
-//
-//
-//        //判断题examJudge
-//
-//        List<ExamJudge> examJudges = examMapper.findExamJudgeByTestPaperId(testPaperId);
-//        List<Map<String,Object>> examJudgesArray = new ArrayList<>();
-//
-//        for (ExamJudge list:examJudges){
-//            Map<String,Object> map44 = new LinkedHashMap<>();
-//            map44.put("id",list.getId());
-//            map44.put("context",list.getContext());
-//            map44.put("answer",list.getAnswer());//数据库中直接存选项
-//            map44.put("score",list.getScore());
-//            map44.put("imgUrl",list.getImgUrl());
-//            examJudgesArray.add(map44);
-//
-//        }
-//        map1.put("examJudge",examJudgesArray);
-//
-//
-//        //主观题examSubject
-//
-//        List<ExamSubject> examSubjects = examMapper.findExamSubjectByTestPaperId(testPaperId);
-//        List<Map<String,Object>> examSubjectsArray = new ArrayList<>();
-//
-//        for (ExamSubject list:examSubjects){
-//            Map<String,Object> map55 = new LinkedHashMap<>();
-//            map55.put("id",list.getId());
-//            map55.put("context",list.getContext());
-//            map55.put("answer",list.getAnswer());//数据库中直接存选项
-//            map55.put("score",list.getScore());
-//            map55.put("imgUrl",list.getImgUrl());
-//            examSubjectsArray.add(map55);
-//
-//        }
-//        map1.put("examSubject",examSubjectsArray);
-//
-//        //材料题examMaterial
-//
-//        testpapers.add(map1);
-
 
     /**
      * 将 Testpaper 中的内容修改复制到 RtTestpaper 中
