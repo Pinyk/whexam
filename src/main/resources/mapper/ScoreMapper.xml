@@ -34,8 +34,15 @@
     <!--Integer findIsSubmitByUserIdAndTestPaperId(Integer UserId,Integer testPaperId);-->
 
     <select id="findIsSubmitByUserIdAndTestPaperId" resultType="score">
-        select *
+        select score.scorenum
         from score
         where user_id = #{param1} and testpaper_id = #{param2}
+    </select>
+    <!--List<UserTestPaperScore> findByTestPaperIdAndUserId(@Param("testPaperId") Integer testPaperId, @Param("userID") Integer userID);-->
+
+    <select id="findByTestPaperIdAndUserId" parameterType="Integer" resultType="UserTestPaperScore">
+        select *
+        from score
+        where testpaper_id=#{testPaperId} and user_id = #{userID}
     </select>
 </mapper>

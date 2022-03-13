@@ -67,4 +67,12 @@ public interface ExamService {
      * @return
      */
     List<Map<String, Object>> findScoreDetailByUIdAndTPId(Integer testPaperId, Integer userId);
+
+    /**
+     * 根据用户ID和试卷ID查询考试明细接口
+     * @param testPaperId
+     * @param userId
+     * @return
+     */
+    List<Map<String, Object>> exportUserAnswerByUIdAndTPId(Integer testPaperId, Integer userId);
 }

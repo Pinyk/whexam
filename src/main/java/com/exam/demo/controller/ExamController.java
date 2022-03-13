@@ -184,4 +184,14 @@ public class ExamController {
                 .data(examService.findScoreDetailByUIdAndTPId(testPaperId, userId))
                 .build();
     }
+    @GetMapping("exportUserAnswerByUIdAndTPId")
+    @ApiOperation(notes = "YXY",value = "导出用户答卷情况接口")
+    public WebResult<List<Map<String,Object>>> exportUserAnswerByUIdAndTPId(@RequestParam @ApiParam(name="testPaperId",required=true) Integer testPaperId,
+                                                                            @RequestParam @ApiParam(name="userId",required=true) Integer userId) {
+        return WebResult.<List<Map<String, Object>>>builder()
+                .code(200)
+                .message(REQUEST_STATUS_SUCCESS)
+                .data(examService.exportUserAnswerByUIdAndTPId(testPaperId, userId))
+                .build();
+    }
 }

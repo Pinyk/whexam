@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @TableName("user")
 @NoArgsConstructor
 @AllArgsConstructor
-@ApiModel(value = "user")
+@ApiModel(value = "`user` ")
 public class User {
 
     @ApiModelProperty(value = "用户主键")
