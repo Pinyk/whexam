@@ -275,6 +275,8 @@ public class ExamSelectServiceImpl implements ExamSelectService {
 
     @Override
     public Integer deleteExamSelect(Integer id) {
-        return examSelectMapper.deleteById(id);
+        LambdaQueryWrapper<ExamSelect> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(ExamSelect::getMaterialQuestion, 0).eq(ExamSelect::getId, id);
+        return examSelectMapper.delete(lambdaQueryWrapper);
     }
 }

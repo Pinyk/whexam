@@ -497,13 +497,24 @@ public class ExamServiceImpl implements ExamService {
         List<Testpaper> testpapers = testPaperMapper.selectList(wrapper);
         //将查询对象转为交互返回对象
         LinkedList<TestpaperVo> testpaperVos = new LinkedList<>();
-        for (Testpaper testpaper : testpapers) {
-            TestpaperVo testpaperVo = new TestpaperVo();
-            BeanUtils.copyProperties(testpaper, testpaperVo);
-            testpaperVo.setDepartment(departmentName);
-            testpaperVo.setSubject(subject);
-            testpaperVos.add(testpaperVo);
+        if (!testpapers.isEmpty()){
+            for (Testpaper testpaper : testpapers) {
+                TestpaperVo testpaperVo = new TestpaperVo();
+                BeanUtils.copyProperties(testpaper, testpaperVo);
+
+                String[] s = testpaper.getDepartmentId().split(" ");
+                if (s.length != 0) {
+                    LinkedList<String> list = new LinkedList<>();
+                    for (String s1 : s) {
+                        list.add(departmentMapper.selectById(s1).getName());
+                    }
+                    testpaperVo.setDepartment(list);
+                }
+                testpaperVo.setSubject(subject);
+                testpaperVos.add(testpaperVo);
+            }
         }
+
         return testpaperVos;
     }
 

@@ -137,10 +137,10 @@ public class ExamController {
 
     @GetMapping("findTestPaperDetail")
     @ApiOperation(notes = "LBX", value = "组合查询试卷（试卷ID，试卷名字，试卷所属部门，科目）")
-    public WebResult<List<TestpaperVo>> combinedQueryTestPaper(@RequestParam(required = false) @ApiParam(name = "试卷id", required = true) Integer testPaperId,
-                                                               @RequestParam(required = false) @ApiParam(name = "试卷名称", required = true) String testPaperName,
-                                                               @RequestParam(required = false) @ApiParam(name = "试卷所属部门", required = true) String departmentName,
-                                                               @RequestParam(required = false) @ApiParam(name = "科目", required = true) String subject) {
+    public WebResult<List<TestpaperVo>> combinedQueryTestPaper(@RequestParam(required = false) @ApiParam(name = "试卷id") int testPaperId,
+                                                               @RequestParam(required = false) @ApiParam(name = "试卷名称") String testPaperName,
+                                                               @RequestParam(required = false) @ApiParam(name = "试卷所属部门") String departmentName,
+                                                               @RequestParam(required = false) @ApiParam(name = "科目") String subject) {
         return WebResult.<List<TestpaperVo>>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)

@@ -244,10 +244,10 @@ public class ExamSelectController {
                 .build();
     }
 
-    @DeleteMapping("delete/{id}")
-    @ApiIgnore
-    @ApiOperation(notes = "xiong",value = "删除题库中的选择题目接口")
-    public WebResult<Integer> deleteExamSelect(@PathVariable @ApiParam(name="id",required=true) Integer id) {
+    @DeleteMapping("delete")
+    @Transactional
+    @ApiOperation(notes = "LBX",value = "删除题库中的选择题目接口")
+    public WebResult<Integer> deleteExamSelect(@RequestParam @ApiParam(name="id",required=true) Integer id) {
         return WebResult.<Integer>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)

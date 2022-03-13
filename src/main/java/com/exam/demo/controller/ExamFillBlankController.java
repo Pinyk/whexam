@@ -133,9 +133,10 @@ public class ExamFillBlankController {
                 .build();
     }
 
-    @DeleteMapping("delete/{id}")
-    @ApiOperation(notes = "wxn",value = "删除题库中的填空题接口")
-    public WebResult<Integer> deleteExamFillBlank(@PathVariable @ApiParam(name="id",required=true) Integer id) {
+    @DeleteMapping("delete")
+    @Transactional
+    @ApiOperation(notes = "LBX",value = "删除题库中的填空题接口")
+    public WebResult<Integer> deleteExamFillBlank(@RequestParam @ApiParam(name="id",required=true) Integer id) {
         return WebResult.<Integer>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)

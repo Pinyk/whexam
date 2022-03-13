@@ -139,6 +139,40 @@ public class ExamMaterialServiceImpl implements ExamMaterialService {
     }
 
     @Override
+    public Map<String, Object> deleteExamMaterial(Integer id) {
+
+        //删除exam_中的记录material
+        materialMapper.deleteById(id);
+        //根据中间表删除各个类型的题
+        LambdaQueryWrapper<MaterialProblem> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(MaterialProblem::getMaterialId, id);
+        List<MaterialProblem> materialProblems = materialProblemMapper.selectList(lambdaQueryWrapper);
+        if (!materialProblems.isEmpty()) {
+            for (MaterialProblem materialProblem : materialProblems) {
+                Integer problemType = materialProblem.getProblemType();
+                if (problemType == 1) {
+                    examSelectMapper.deleteById(materialProblem.getProblemId());
+                } else if (problemType == 2) {
+                    examFillBlankMapper.deleteById(materialProblem.getProblemId());
+                } else if (problemType == 3) {
+                    examJudgeMapper.deleteById(materialProblem.getProblemId());
+                } else {
+                    examSubjectMapper.deleteById(materialProblem.getProblemId());
+                }
+            }
+        }
+        //删除中间表的记录
+        LambdaQueryWrapper<MaterialProblem> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(MaterialProblem::getMaterialId, id);
+        materialProblemMapper.delete(queryWrapper);
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("deletedRecordId", id);
+
+        return jsonObject;
+    }
+
+    @Override
     public Map<String, Object> previewById(Integer id) {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("subjectId", id);

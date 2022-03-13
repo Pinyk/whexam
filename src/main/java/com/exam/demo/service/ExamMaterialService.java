@@ -38,4 +38,11 @@ public interface ExamMaterialService {
      * @return
      */
     Double getMaterialTotalScore(Integer id);
+
+    /**
+     * 材料题删除
+     * @param id
+     * @return
+     */
+    Map<String, Object> deleteExamMaterial(Integer id);
 }

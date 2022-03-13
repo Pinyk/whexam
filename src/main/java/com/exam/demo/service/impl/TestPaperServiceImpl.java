@@ -252,7 +252,7 @@ public class TestPaperServiceImpl implements TestPaperService {
         }
         testpaper.setDepartmentId(stringBuffer.toString());
         testpaper.setRepeat(jsonObject.getBoolean("repeat").toString());
-        //testpaper.setExtra(jsonObject.getString("extra"));
+        testpaper.setExtra(jsonObject.getString("extra"));
         testPaperMapper.insert(testpaper);
 
         //插入exam表
@@ -631,11 +631,18 @@ public class TestPaperServiceImpl implements TestPaperService {
         BeanUtils.copyProperties(testpaper, testpaperVo);
         testpaperVo.setStartTime(df.format(testpaper.getStartTime()));
         testpaperVo.setDeadTime(df.format(testpaper.getDeadTime()));
-        testpaperVo.setDepartment(departmentMapper.selectById(testpaper.getDepartmentId()).getName());
+
+        String[] s = testpaper.getDepartmentId().split(" ");
+        if (s.length != 0) {
+            LinkedList<String> list = new LinkedList<>();
+            for (String s1 : s) {
+                list.add(departmentMapper.selectById(s1).getName());
+            }
+            testpaperVo.setDepartment(list);
+        }
         testpaperVo.setSubject(subjectMapper.selectById(testpaper.getSubjectId()).getName());
         testpaperVo.setUserName(userMapper.selectById(testpaper.getUserId()).getName());
         return testpaperVo;
-
     }
 
     /**
@@ -666,7 +673,7 @@ public class TestPaperServiceImpl implements TestPaperService {
             }
             queryWrapper.like(StringUtils.isNotBlank(testPaperName),Testpaper::getName, testPaperName);
             if (departmentId != null) {
-                queryWrapper.eq(Testpaper::getDepartmentId, departmentId);
+                queryWrapper.like(Testpaper::getDepartmentId, departmentId.toString());
             }
             if (!StringUtils.isBlank(subject)) {
                 //根据学科名称查询id
@@ -679,12 +686,17 @@ public class TestPaperServiceImpl implements TestPaperService {
             }
             queryWrapper.last("and " + sql);
         }
+        if (departmentId != null) {
+            queryWrapper.like(Testpaper::getDepartmentId, departmentId.toString());
+        }
         Page<Testpaper> testpaperPage = testPaperMapper.selectPage(page, queryWrapper);
         //将查询对象转为交互返回对象
         LinkedList<TestpaperVo> testpaperVos = new LinkedList<>();
         //遍历查询结果，并将符合条件的存入交互对象中
-        for (Testpaper testpaper : testpaperPage.getRecords()) {
-            testpaperVos.add(copyTestpaperBean(new TestpaperVo(), testpaper));
+        if (!testpaperPage.getRecords().isEmpty()) {
+            for (Testpaper testpaper : testpaperPage.getRecords()) {
+                testpaperVos.add(copyTestpaperBean(new TestpaperVo(), testpaper));
+            }
         }
         HashMap<String, Object> map = new HashMap<>();
         map.put("total", testpaperPage.getTotal());

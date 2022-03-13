@@ -52,6 +52,6 @@ public class Testpaper {
     @TableField("`repeat`")
     private String repeat;
 
-//    @ApiModelProperty(value = "考试说明")
-//    private String extra;
+    @ApiModelProperty(value = "考试说明")
+    private String extra;
 }
