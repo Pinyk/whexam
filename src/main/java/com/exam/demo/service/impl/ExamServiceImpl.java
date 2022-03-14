@@ -105,7 +105,6 @@ public class ExamServiceImpl implements ExamService {
         map.put("examSubject", examMapper.findExamSubjectByTestPaperId(testPaperId));
         map.put("examFillBlank", examMapper.findExamFillBlankByTestPaperId(testPaperId));
 
-
         return null;
     }
 
