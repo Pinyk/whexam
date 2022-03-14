@@ -1,6 +1,8 @@
 package com.exam.demo.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.exam.demo.Utils.ExportTestPaperTools;
+import com.exam.demo.Utils.pdfUtils.DataKit;
 import com.exam.demo.entity.*;
 import com.exam.demo.otherEntity.RtTestpaper;
 import com.exam.demo.otherEntity.UserAnswer;
@@ -17,6 +19,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -179,5 +186,28 @@ public class ExamController {
                 .message(REQUEST_STATUS_SUCCESS)
                 .data(examService.exportUserAnswerByUIdAndTPId(testPaperId, userId))
                 .build();
+    }
+
+    @GetMapping("/download")
+    @ApiOperation(notes = "gzz", value = "测试下载pdf接口")
+    public void download(HttpServletResponse response) throws IOException {
+
+        List l = examService.exportUserAnswerByUIdAndTPId(1, 1);
+        ExportTestPaperTools exportTestPaperTools = new ExportTestPaperTools();
+        DataKit dataKit = new DataKit();
+        dataKit.setTest("123132113");
+        ByteArrayInputStream pdf = exportTestPaperTools.createPDF(dataKit);
+        BufferedInputStream br = new BufferedInputStream(pdf);
+        byte[] buf = new byte[1024];
+        int len = 0;
+        response.reset();
+        response.setContentType("application/x-msdownload");
+        response.setHeader("Content-Disposition", "attachment; filename=test.pdf");
+        OutputStream out = response.getOutputStream();
+        while ((len = br.read(buf)) > 0)
+            out.write(buf, 0, len);
+        br.close();
+        out.close();
+
     }
 }
