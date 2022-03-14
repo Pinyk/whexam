@@ -7,7 +7,7 @@ import lombok.Data;
 @ApiModel(value = "SelectionAnswer", description = "答案提交——选择题答案接收对象")
 public class SelectionAnswer {
 
-    private int id;
+    private Integer id;
 
     private String userAnswer;
 

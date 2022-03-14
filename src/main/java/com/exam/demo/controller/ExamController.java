@@ -18,6 +18,7 @@ import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedInputStream;
@@ -74,6 +75,7 @@ public class ExamController {
     }
 //======================================================================================================================
     @DeleteMapping("deleteProblem/{id}")
+    @ApiIgnore
     @ApiOperation(notes = "xiong",value = "删除试卷试题接口")
     public WebResult<Integer> deleteProblem(@PathVariable @ApiParam(name="id",required=true) Integer id) {
         return WebResult.<Integer>builder()

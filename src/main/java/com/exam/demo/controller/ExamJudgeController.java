@@ -85,9 +85,9 @@ public class ExamJudgeController {
             @ApiParam(value = "科目Id") @RequestParam(required = false) Integer subjectId,
             @ApiParam(value = "答案 对：0 错：1") @RequestParam(required = false) Integer answer,
             @ApiParam(value = "分数") @RequestParam(required = false) Double score,
-            @ApiParam(value = "上传图片") @RequestParam(required = false) MultipartFile image
+            @ApiParam(value = "上传图片") @RequestParam(required = false) MultipartFile file
             ) {
-        if (context == null && subjectId == null && answer == null && score == null && image == null) {
+        if (context == null && subjectId == null && answer == null && score == null && file == null) {
             return WebResult.<Map<String,Object>>builder()
                     .code(404)
                     .message(REQUEST_STATUS_ERROR)
@@ -96,7 +96,7 @@ public class ExamJudgeController {
         return WebResult.<Map<String,Object>>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
-                .data(examJudgeService.saveExamJudge(context, subjectId, answer, score, image, false))
+                .data(examJudgeService.saveExamJudge(context, subjectId, answer, score, file, false))
                 .build();
     }
 
@@ -108,9 +108,9 @@ public class ExamJudgeController {
             @ApiParam(value = "科目Id") @RequestParam(required = false) Integer subjectId,
             @ApiParam(value = "答案 对：0 错：1") @RequestParam(required = false) Integer answer,
             @ApiParam(value = "分数") @RequestParam(required = false) Double score,
-            @ApiParam(value = "上传图片") @RequestParam(required = false) MultipartFile image
+            @ApiParam(value = "上传图片") @RequestParam(required = false) MultipartFile file
     ) {
-        if (context == null && answer == null && score == null && image == null) {
+        if (context == null && answer == null && score == null && file == null) {
             return WebResult.<Map<String,Object>>builder()
                     .code(404)
                     .message(REQUEST_STATUS_ERROR)
@@ -119,7 +119,7 @@ public class ExamJudgeController {
         return WebResult.<Map<String,Object>>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
-                .data(examJudgeService.saveExamJudge(context, subjectId, answer, score, image, true))
+                .data(examJudgeService.saveExamJudge(context, subjectId, answer, score, file, true))
                 .build();
     }
 //======================================================================================================================

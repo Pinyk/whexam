@@ -30,14 +30,10 @@ public class UserAnswer {
     @ApiModelProperty(value = "判断题目")
     private List<JudgeAnswer> examJudge;
 
-
     @ApiModelProperty(value = "主观题目")
     private List<SubjectAnswer> examSubject;
 
-
     @ApiModelProperty(value = "材料题目")
     private List<MaterialAnswer> examMaterial;
-
-
 
 }

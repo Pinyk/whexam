@@ -86,10 +86,10 @@ public class ExamSubjectController {
             @ApiParam("科目Id") @RequestParam(required = false) Integer subjectId,
             @ApiParam("答案") @RequestParam(required = false) String answer,
             @ApiParam("分数") @RequestParam(required = false) Double score,
-            @ApiParam("上传图片") @RequestParam(required = false) MultipartFile image
+            @ApiParam("上传图片") @RequestParam(required = false) MultipartFile file
             ) {
         if (StringUtils.isBlank(context) && subjectId == null && StringUtils.isBlank(answer) && score == null
-                && image == null) {
+                && file == null) {
             return WebResult.<JSONObject>builder()
                     .code(404)
                     .message(REQUEST_STATUS_ERROR)
@@ -98,7 +98,7 @@ public class ExamSubjectController {
         return WebResult.<JSONObject>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
-                .data(examSubjectService.saveSubject(context, subjectId, answer, score, image, false))
+                .data(examSubjectService.saveSubject(context, subjectId, answer, score, file, false))
                 .build();
     }
 
@@ -110,10 +110,10 @@ public class ExamSubjectController {
             @ApiParam("科目Id") @RequestParam(required = false) Integer subjectId,
             @ApiParam("答案") @RequestParam(required = false) String answer,
             @ApiParam("分数") @RequestParam(required = false) Double score,
-            @ApiParam("上传图片") @RequestParam(required = false) MultipartFile image
+            @ApiParam("上传图片") @RequestParam(required = false) MultipartFile file
     ) {
         if (StringUtils.isBlank(context) && subjectId == null && StringUtils.isBlank(answer) && score == null
-                && image == null) {
+                && file == null) {
             return WebResult.<JSONObject>builder()
                     .code(404)
                     .message(REQUEST_STATUS_ERROR)
@@ -122,7 +122,7 @@ public class ExamSubjectController {
         return WebResult.<JSONObject>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
-                .data(examSubjectService.saveSubject(context, subjectId, answer, score, image, true))
+                .data(examSubjectService.saveSubject(context, subjectId, answer, score, file, true))
                 .build();
     }
 
