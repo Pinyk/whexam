@@ -7,9 +7,8 @@ import lombok.Data;
 @ApiModel(value = "MaterialAnswer")
 public class MaterialAnswer {
 
-    private int id;
+    private Integer id;
 
     private ProblemsParam question;
-
 
 }

@@ -133,7 +133,7 @@ public class ExamSelectController {
             @ApiParam("D选项") @RequestParam(required = false) String selectionD,
             @ApiParam("答案") @RequestParam(required = false) String answer,
             @ApiParam("分数") @RequestParam(required = false) Double score,
-            @ApiParam("上传图片") @RequestParam(required = false) MultipartFile image) {
+            @ApiParam("上传图片") @RequestParam(required = false) MultipartFile file) {
         if (StringUtils.isBlank(context) && subjectId == null &&StringUtils.isBlank(selectionA) && StringUtils.isBlank(selectionB) && StringUtils.isBlank(selectionC)
                 && StringUtils.isBlank(selectionD) && StringUtils.isBlank(answer) && score == null) {
             return WebResult.<JSONObject>builder()
@@ -145,7 +145,7 @@ public class ExamSelectController {
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
                 .data(examSelectService.saveSingleSelection(context, subjectId, selectionA, selectionB, selectionC,
-                        selectionD,answer, score, image, false))
+                        selectionD,answer, score, file, false))
                 .build();
     }
 
@@ -161,7 +161,7 @@ public class ExamSelectController {
             @ApiParam("D选项") @RequestParam(required = false) String selectionD,
             @ApiParam("答案") @RequestParam(required = false) String answer,
             @ApiParam("分数") @RequestParam(required = false) Double score,
-            @ApiParam("上传图片") @RequestParam(required = false) MultipartFile image) {
+            @ApiParam("上传图片") @RequestParam(required = false) MultipartFile file) {
         if (StringUtils.isBlank(context) && subjectId == null &&StringUtils.isBlank(selectionA) && StringUtils.isBlank(selectionB) && StringUtils.isBlank(selectionC)
                 && StringUtils.isBlank(selectionD) && StringUtils.isBlank(answer) && score == null) {
             return WebResult.<JSONObject>builder()
@@ -173,7 +173,7 @@ public class ExamSelectController {
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
                 .data(examSelectService.saveSingleSelection(context, subjectId, selectionA, selectionB, selectionC,
-                        selectionD,answer, score, image, true))
+                        selectionD,answer, score, file, true))
                 .build();
     }
 
@@ -189,7 +189,7 @@ public class ExamSelectController {
             @ApiParam("D选项") @RequestParam(required = false) String selectionD,
             @ApiParam("答案") @RequestParam(required = false) String answer,
             @ApiParam("分数") @RequestParam(required = false) Double score,
-            @ApiParam("上传图片") @RequestParam(required = false) MultipartFile image) {
+            @ApiParam("上传图片") @RequestParam(required = false) MultipartFile file) {
         if (StringUtils.isBlank(context) && subjectId == null &&StringUtils.isBlank(selectionA) && StringUtils.isBlank(selectionB) && StringUtils.isBlank(selectionC)
                 && StringUtils.isBlank(selectionD) && StringUtils.isBlank(answer) && score == null) {
             return WebResult.<JSONObject>builder()
@@ -201,7 +201,7 @@ public class ExamSelectController {
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
                 .data(examSelectService.saveMultipleSelection(context, subjectId, selectionA, selectionB, selectionC,
-                        selectionD,answer, score, image, false))
+                        selectionD,answer, score, file, false))
                 .build();
     }
 
@@ -217,7 +217,7 @@ public class ExamSelectController {
             @ApiParam("D选项") @RequestParam(required = false) String selectionD,
             @ApiParam("答案") @RequestParam(required = false) String answer,
             @ApiParam("分数") @RequestParam(required = false) Double score,
-            @ApiParam("上传图片") @RequestParam(required = false) MultipartFile image) {
+            @ApiParam("上传图片") @RequestParam(required = false) MultipartFile file) {
         if (StringUtils.isBlank(context) && subjectId == null &&StringUtils.isBlank(selectionA) && StringUtils.isBlank(selectionB) && StringUtils.isBlank(selectionC)
                 && StringUtils.isBlank(selectionD) && StringUtils.isBlank(answer) && score == null) {
             return WebResult.<JSONObject>builder()
@@ -229,7 +229,7 @@ public class ExamSelectController {
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
                 .data(examSelectService.saveMultipleSelection(context, subjectId, selectionA, selectionB, selectionC,
-                        selectionD,answer, score, image, true))
+                        selectionD,answer, score, file, true))
                 .build();
     }
 //======================================================================================================================
@@ -244,10 +244,10 @@ public class ExamSelectController {
                 .build();
     }
 
-    @DeleteMapping("delete/{id}")
-    @ApiIgnore
-    @ApiOperation(notes = "xiong",value = "删除题库中的选择题目接口")
-    public WebResult<Integer> deleteExamSelect(@PathVariable @ApiParam(name="id",required=true) Integer id) {
+    @DeleteMapping("delete")
+    @Transactional
+    @ApiOperation(notes = "LBX",value = "删除题库中的选择题目接口")
+    public WebResult<Integer> deleteExamSelect(@RequestParam @ApiParam(name="id",required=true) Integer id) {
         return WebResult.<Integer>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)

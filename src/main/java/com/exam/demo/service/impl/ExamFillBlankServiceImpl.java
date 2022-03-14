@@ -172,6 +172,8 @@ public class ExamFillBlankServiceImpl implements ExamFillBlankService {
      */
     @Override
     public Integer deleteExamFillBlank(Integer id) {
-        return examFillBlankMapper.deleteById(id);
+        LambdaQueryWrapper<ExamFillBlank> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(ExamFillBlank::getId,id).eq(ExamFillBlank::getMaterialQuestion,0);
+        return examFillBlankMapper.delete(lambdaQueryWrapper);
     }
 }

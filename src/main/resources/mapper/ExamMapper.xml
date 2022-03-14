@@ -102,5 +102,30 @@
         select * from testpaper
         where testpaper.id = #{testPaperId}
     </select>
+    <!--List<ExamAndUserAnswer> findUserExamAnswerByUIdAndTPId(@Param("testPaperId") Integer testPaperId, @Param("userID") Integer userID);-->
+
+    <select id="findUserExamAnswerByUIdAndTPId" parameterType="Integer" resultMap="eaua">
+        select tp.id as id,tp.name as name,tp.totalscore as totalscore,tp.passscore as passscore,tp.time as times,tp.subject_id as subject,tp.department_id as department,tp.start_time as starttime,tp.dead_time as endtime,tp.repeat as isrepeat,u.name as username,u.department_id as ud,u.position as up,u.nums as un
+        from testpaper tp, `user` u
+        where tp.id=#{testPaperId} and u.id=#{userID}
+    </select>
+
+    <resultMap id="eaua" type="com.exam.demo.otherEntity.ExamAndUserAnswer">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="totalScore" column="totalscore"/>
+        <result property="passScore" column="passscore"/>
+        <result property="time" column="times"/>
+        <result property="subject" column="subject"/>
+        <result property="department" column="department"/>
+        <result property="startTime" column="starttime"/>
+        <result property="endTime" column="endtime"/>
+        <result property="repeat" column="isrepeat"/>
+        <result property="username" column="username"/>
+        <result property="userDepartment" column="ud"/>
+        <result property="userPosition" column="up"/>
+        <result property="userNum" column="un"/>
+    </resultMap>
+
 
 </mapper>

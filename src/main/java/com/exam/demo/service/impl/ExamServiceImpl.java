@@ -1,12 +1,12 @@
 package com.exam.demo.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.exam.demo.entity.*;
 import com.exam.demo.mapper.*;
-import com.exam.demo.otherEntity.SelectQuestionVo;
-import com.exam.demo.otherEntity.UserAnswer;
+import com.exam.demo.otherEntity.*;
 import com.exam.demo.params.*;
 import com.exam.demo.results.vo.TestpaperVo;
 import com.exam.demo.service.*;
@@ -14,6 +14,9 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
@@ -58,6 +61,17 @@ public class ExamServiceImpl implements ExamService {
     @Autowired
     private ExamFillBlankMapper examFillBlankMapper;
 
+    @Autowired
+    private ExamSelectMapper examSelectMapper;
+
+    @Autowired
+    private ExamJudgeMapper examJudgeMapper;
+
+    @Autowired
+    private ExamSubjectMapper examSubjectMapper;
+
+    @Autowired
+    private ExamMaterialService examMaterialService;
 
     /**
      * 对选择题内容进行处理，并写入selectQuestion
@@ -426,62 +440,7 @@ public class ExamServiceImpl implements ExamService {
         return examMapper.insert(exam);
     }
 
-    /**
-     * 随机组建试卷
-     * 需要：1.科目类型；2.判断、选择、主观各几道；
-     * @return
-     */
-    @Override
-    public Integer randomComponentPaper(Integer testPaperId, Integer subjectId, Integer judgeCount, Integer singleCount, Integer multipleCount, Integer subjectCount) {
-        int count = 0;
-        Random random = new Random();
 
-        List<ExamJudge> examJudges = examJudgeService.findBySubjectId(subjectId);
-        List<ExamSelect> singleSelections = examSelectService.findBySubjectId(subjectId, 1);
-        List<ExamSelect> multipleSelections = examSelectService.findBySubjectId(subjectId, 2);
-        List<ExamSubject> examSubjects = examSubjectService.findBySubjectId(subjectId);
-
-        while(count++ < judgeCount) {
-            ExamJudge examJudge = examJudges.get(random.nextInt(examJudges.size()));
-            Exam exam = new Exam();
-            exam.setTestpaperId(testPaperId);
-            exam.setType(1);
-            exam.setProblemId(examJudge.getId());
-            exam.setScore(examJudge.getScore());
-            examMapper.insert(exam);
-        }
-        count = 0;
-        while(count++ < singleCount) {
-            ExamSelect examSelect = singleSelections.get(random.nextInt(singleSelections.size()));
-            Exam exam = new Exam();
-            exam.setTestpaperId(testPaperId);
-            exam.setType(1);
-            exam.setProblemId(examSelect.getId());
-            exam.setScore(examSelect.getScore());
-            examMapper.insert(exam);
-        }
-        count = 0;
-        while(count++ < multipleCount) {
-            ExamSelect examSelect = multipleSelections.get(random.nextInt(multipleSelections.size()));
-            Exam exam = new Exam();
-            exam.setTestpaperId(testPaperId);
-            exam.setType(1);
-            exam.setProblemId(examSelect.getId());
-            exam.setScore(examSelect.getScore());
-            examMapper.insert(exam);
-        }
-        count = 0;
-        while(count++ < subjectCount) {
-            ExamSubject examSubject = examSubjects.get(random.nextInt(examSubjects.size()));
-            Exam exam = new Exam();
-            exam.setTestpaperId(testPaperId);
-            exam.setType(3);
-            exam.setProblemId(examSubject.getId());
-            exam.setScore(examSubject.getScore());
-            examMapper.insert(exam);
-        }
-        return 1;
-    }
 
     /**
      * 删除试卷试题
@@ -537,13 +496,24 @@ public class ExamServiceImpl implements ExamService {
         List<Testpaper> testpapers = testPaperMapper.selectList(wrapper);
         //将查询对象转为交互返回对象
         LinkedList<TestpaperVo> testpaperVos = new LinkedList<>();
-        for (Testpaper testpaper : testpapers) {
-            TestpaperVo testpaperVo = new TestpaperVo();
-            BeanUtils.copyProperties(testpaper, testpaperVo);
-            testpaperVo.setDepartment(departmentName);
-            testpaperVo.setSubject(subject);
-            testpaperVos.add(testpaperVo);
+        if (!testpapers.isEmpty()){
+            for (Testpaper testpaper : testpapers) {
+                TestpaperVo testpaperVo = new TestpaperVo();
+                BeanUtils.copyProperties(testpaper, testpaperVo);
+
+                String[] s = testpaper.getDepartmentId().split(" ");
+                if (s.length != 0) {
+                    LinkedList<String> list = new LinkedList<>();
+                    for (String s1 : s) {
+                        list.add(departmentMapper.selectById(s1).getName());
+                    }
+                    testpaperVo.setDepartment(list);
+                }
+                testpaperVo.setSubject(subject);
+                testpaperVos.add(testpaperVo);
+            }
         }
+
         return testpaperVos;
     }
 
@@ -562,38 +532,115 @@ public class ExamServiceImpl implements ExamService {
         return scoreMapper.updateScoreByUserIdAndTestPaperId(sc);
     }
 
+
+
     /**
      * 根据用户ID和试卷ID查询考试明细接口
      * @param testPaperId
      * @param userId
      * @return
      */
-//    @Override
-//    public Map<String, List<Object>> findScoreDetailByUIdAndTPId(Integer testPaperId, Integer userId) {
-//        Map<String, List<Object>> result = findByTestPaperId(testPaperId);
-//
-//        QueryWrapper<Scoredata> queryWrapper = new QueryWrapper<>();
-//        queryWrapper.eq("testpaper_id",testPaperId);
-//        queryWrapper.eq("user_id",userId);
-//        result.put("userAnswerDetail", Collections.singletonList(scoreDataMapper.selectList(queryWrapper)));
-//        return result;
-//    }
     @Override
     public List<Map<String, Object>> findScoreDetailByUIdAndTPId(Integer testPaperId, Integer userId) {
-        //Map<String, List<Object>>
-        List<Map<String, Object>> result = testPaperService.findTestPaperById(testPaperId);
-        if (result == null){
-            return null;
+        List<Map<String,Object>> result = new ArrayList<>();
+        Map<String,Object> map = new LinkedHashMap<>();
+        map.put("singleSelections", change2(scoreDataMapper.findSingleSelectionAnswerByTidAndUid(testPaperId, userId)));
+        map.put("multipleSelections", change2(scoreDataMapper.findMultipleSelectionAnswerByTidAndUid(testPaperId, userId)));
+        map.put("examFillBlank", scoreDataMapper.findExamFillBlankAnswerByTidAndUid(testPaperId, userId));
+        List<UserOtherAnswer> judgeAnswers = scoreDataMapper.findExamJudgeAnswerByTidAndUid(testPaperId, userId);
+        if (!judgeAnswers.isEmpty() || judgeAnswers.size() != 0){
+            for(UserOtherAnswer otherAnswer: judgeAnswers){
+                if (otherAnswer.getAnswer().equals("0")){
+                    otherAnswer.setAnswer("false");
+                }else if (otherAnswer.getAnswer().equals("1")){
+                    otherAnswer.setAnswer("true");
+                }
+            }
         }
-        Map<String,Object> map = new HashMap<>();
-        map.put("examJudgeAnswers", scoreDataMapper.findExamJudgeAnswerByTidAndUid(testPaperId, userId));
-        map.put("singleSelectionAnswers", scoreDataMapper.findSingleSelectionAnswerByTidAndUid(testPaperId, userId));
-        map.put("multipleSelectionAnswers", scoreDataMapper.findMultipleSelectionAnswerByTidAndUid(testPaperId, userId));
-        map.put("examSubjectAnswers", scoreDataMapper.findExamSubjectAnswerByTidAndUid(testPaperId, userId));
-        map.put("examFillBlankAnswers", scoreDataMapper.findExamFillBlankAnswerByTidAndUid(testPaperId, userId));
+        map.put("examJudge", judgeAnswers);
 
+        map.put("examSubject", scoreDataMapper.findExamSubjectAnswerByTidAndUid(testPaperId, userId));
+        List<ExamMaterial> examMaterials  = examMapper.findExamMaterialByTestPaperId(testPaperId);
+        List<Map<String,Object>> list = new ArrayList<>();
+        if (examMaterials.size()!=0 || !examMaterials.isEmpty()) {
+            for (ExamMaterial examMaterial : examMaterials) {
+                Map<String, Object> map1 = new LinkedHashMap<>();
+                map1.put("id", examMaterial.getId());
+                map1.put("context", examMaterial.getContext());
+                Map<String, Object> map2 = new HashMap<>();
+                map2.put("singleSelections", change2(scoreDataMapper.findSingleSelectionAnswerByMaterialId(testPaperId, userId, examMaterial.getId())));
+                map2.put("multipleSelections", change2(scoreDataMapper.findMutipleSelectionAnswerByMaterialId(testPaperId, userId, examMaterial.getId())));
+                map2.put("examFillBlank", scoreDataMapper.findExamFillBlankAnswerByMaterialId(testPaperId, userId, examMaterial.getId()));
+                map2.put("examJudge", scoreDataMapper.findExamJudgeAnswerByMaterialId(testPaperId, userId, examMaterial.getId()));
+                map2.put("examSubject", scoreDataMapper.findExamSubjectAnswerByMaterialId(testPaperId, userId, examMaterial.getId()));
+                map1.put("question", map2);
+                list.add(map1);
+            }
+        }
+        map.put("examMaterial",list);
         result.add(map);
 
         return result;
+    }
+
+    @Override
+    public List<Map<String, Object>> exportUserAnswerByUIdAndTPId(Integer testPaperId, Integer userId) {
+        List<Map<String,Object>> data = findScoreDetailByUIdAndTPId(testPaperId,userId);
+
+        List<Map<String,Object>> result = new ArrayList<>();
+        Map<String,Object> map = new LinkedHashMap<>();
+
+        List<ExamAndUserAnswer> examAndUserAnswers= examMapper.findUserExamAnswerByUIdAndTPId(testPaperId,userId);
+        ExamAndUserAnswer examAndUserAnswer = examAndUserAnswers.get(0);
+        map.put("name",examAndUserAnswer.getName());
+        map.put("totalScore",examAndUserAnswer.getTotalScore());
+        double passscore = examAndUserAnswer.getPassScore();
+        map.put("passScore",passscore);
+        map.put("time",examAndUserAnswer.getTime());
+        map.put("subject",subjectMapper.selectById(examAndUserAnswer.getSubject()).getName());
+        map.put("department",departmentMapper.selectById(examAndUserAnswer.getDepartment()).getName());
+        map.put("startTime",examAndUserAnswer.getStartTime());
+        map.put("endTime",examAndUserAnswer.getEndTime());
+        map.put("repeat",examAndUserAnswer.getRepeat());
+        double userscore = scoreMapper.findByTestPaperIdAndUserId(testPaperId,userId).get(0).getScorenum();
+
+        map.put("userScore",userscore);
+        String ispass = userscore >= passscore ? "true":"false";
+        map.put("isPass",ispass);
+        map.put("username",userMapper.selectById(userId).getName());
+        map.put("userDepartment",departmentMapper.selectById(examAndUserAnswer.getDepartment()).getName());
+        map.put("userPosition",userMapper.selectById(userId).getPosition());
+        map.put("userNums",userMapper.selectById(userId).getNums());
+        map.putAll(data.get(0));
+        result.add(map);
+//        result.add(data.get(0));
+        return result;
+
+
+    }
+
+    /**
+     * 用户导出选择题的格式
+     * @param examSelects
+     * @return
+     */
+    public List<Object> change2(List<UserSelectionAnswer> examSelects) {
+
+        List<Object> selectionQuestions = new ArrayList<>();
+        for(Object object : examSelects) {
+            UserSelectionAnswer examSelect = (UserSelectionAnswer) object;
+            UserSelectQuestionVo selectQuestionVo = new UserSelectQuestionVo();
+            selectQuestionVo.setId(examSelect.getId());
+            selectQuestionVo.setContext(examSelect.getContext());
+            selectQuestionVo.setSelections(Arrays.asList(examSelect.getSelections().split(";")));
+            selectQuestionVo.setAnswer(examSelect.getAnswer());
+
+            selectQuestionVo.setScore(examSelect.getScore());
+            selectQuestionVo.setUserAnswer(examSelect.getUserAnswer());
+            selectQuestionVo.setUserScore(examSelect.getUserScore());
+            selectQuestionVo.setImgUrl(examSelect.getImgUrl());
+            selectionQuestions.add(selectQuestionVo);
+        }
+        return selectionQuestions;
     }
 }

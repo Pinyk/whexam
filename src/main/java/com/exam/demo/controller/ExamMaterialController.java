@@ -29,7 +29,7 @@ public class ExamMaterialController {
     ExamMaterialService examMaterialService;
 
     @PostMapping("searchMaterial")
-    @ApiOperation(value = "LBX", notes = "材料题的组合查询")
+    @ApiOperation(value = "材料题的组合查询", notes = "LBX")
     public WebResult<PageVo<ExamMaterialVo>> searchMaterial(
             @RequestBody JSONObject jsonObject) {
         if (jsonObject == null) {
@@ -48,7 +48,7 @@ public class ExamMaterialController {
     }
 
     @GetMapping("previewById")
-    @ApiOperation(value = "LBX", notes = "材料题详情预览")
+    @ApiOperation(value = "材料题详情预览", notes = "LBX")
     public WebResult<Map<String, Object>> previewById(@ApiParam("材料题id") @RequestParam Integer id) {
         if (id == null) {
             return WebResult.<Map<String, Object>>builder()
@@ -81,4 +81,21 @@ public class ExamMaterialController {
                 .build();
     }
 
+    @DeleteMapping("delete")
+    @Transactional
+    @ApiOperation(notes = "LBX", value = "删除材料题")
+    public WebResult<Map<String, Object>> deleteExamMaterial(@RequestParam @ApiParam(name = "删除材料的Id",
+            required = true) Integer id) {
+        if (id == null) {
+            return WebResult.<Map<String, Object>>builder()
+                    .code(404)
+                    .message(REQUEST_STATUS_ERROR)
+                    .build();
+        }
+        return WebResult.<Map<String, Object>>builder()
+                .code(200)
+                .message(REQUEST_STATUS_SUCCESS)
+                .data(examMaterialService.deleteExamMaterial(id))
+                .build();
+    }
 }

@@ -5,99 +5,126 @@
 <mapper namespace="com.exam.demo.mapper.ScoreDataMapper">
 
 <!--    List<Object> findExamJudgeAnswerByTidAndUid(Integer testPaperId, Integer userID);-->
-    <select id="findExamJudgeAnswerByTidAndUid" parameterType="Integer" resultType="ScoreData">
-        select * from scoredata where testpaper_id = #{testPaperId} and user_id = #{userID} and `type` = 1;
+    <select id="findExamJudgeAnswerByTidAndUid" parameterType="Integer" resultMap="uoa">
+         select ej.id as id,ej.context as context,ej.answer as answer,ej.score as score,sd.answer as useranswer,sd.score as userscore,ej.img_url as imgurl
+         from scoredata sd, exam_judge ej
+         where sd.testpaper_id = #{testPaperId} and sd.user_id = #{userID}
+                                                      and sd.type = 1 and sd.problem_id = ej.id and ej.material_question = 0;
     </select>
-
-
 <!--    List<Object> findSingleSelectionAnswerByTidAndUid(Integer testPaperId, Integer userID);-->
-    <select id="findSingleSelectionAnswerByTidAndUid" parameterType="Integer" resultType="ScoreData">
-        select * from scoredata sd, exam_select es where sd.testpaper_id = #{testPaperId} and sd.user_id = #{userID}
-        and sd.type = 2 and sd.problem_id = es.id and es.type = 1 and ;
+    <select id="findSingleSelectionAnswerByTidAndUid" parameterType="Integer" resultMap="usa">
+        select es.id as id,es.context as context,es.selection as selection,es.answer as answer,es.score as score,sd.answer as useranswer,sd.score as userscore,es.img_url as imgurl
+        from scoredata sd, exam_select es where sd.testpaper_id = #{testPaperId} and sd.user_id = #{userID}
+        and sd.type = 2 and sd.problem_id = es.id and es.type = 1 and es.material_question = 0;
     </select>
 
 <!--    List<Object> findMultipleSelectionAnswerByTidAndUid(Integer testPaperId, Integer userID);-->
-    <select id="findMultipleSelectionAnswerByTidAndUid" parameterType="Integer" resultType="ScoreData">
-        select * from scoredata sd, exam_select es where sd.testpaper_id = #{testPaperId} and sd.user_id = #{userID}
-        and sd.type = 2 and sd.problem_id = es.id and es.type = 2;
+    <select id="findMultipleSelectionAnswerByTidAndUid" parameterType="Integer" resultMap="usa">
+        select es.id as id,es.context as context,es.selection as selection,es.answer as answer,es.score as score,sd.answer as useranswer,sd.score as userscore,es.img_url as imgurl
+        from scoredata sd, exam_select es where sd.testpaper_id = #{testPaperId} and sd.user_id = #{userID}
+        and sd.type = 2 and sd.problem_id = es.id and es.type = 2 and es.material_question = 0;
     </select>
 
 <!--    List<Object> findExamSubjectAnswerByTidAndUid(Integer testPaperId, Integer userID);-->
-    <select id="findExamSubjectAnswerByTidAndUid" parameterType="Integer" resultType="ScoreData">
-        select * from scoredata where testpaper_id = #{testPaperId} and user_id = #{userID} and `type` = 3;
+    <select id="findExamSubjectAnswerByTidAndUid" parameterType="Integer" resultMap="uoa">
+         select es.id as id,es.context as context,es.answer as answer,es.score as score,sd.answer as useranswer,sd.score as userscore,es.img_url as imgurl
+         from scoredata sd, exam_subject es where sd.testpaper_id = #{testPaperId} and sd.user_id = #{userID}
+        and sd.type = 3 and sd.problem_id = es.id and es.material_question = 0;
     </select>
 
 <!--    List<Object> findExamFillBlankAnswerByTidAndUid(Integer testPaperId, Integer userID);-->
-    <select id="findExamFillBlankAnswerByTidAndUid" parameterType="Integer" resultType="ScoreData">
-        select * from scoredata where testpaper_id = #{testPaperId} and user_id = #{userID} and `type` = 4;
+    <select id="findExamFillBlankAnswerByTidAndUid" parameterType="Integer" resultMap="uoa">
+        select efb.id as id,efb.context as context,efb.answer as answer,efb.score as score,sd.answer as useranswer,sd.score as userscore,efb.img_url as imgurl
+        from scoredata sd, exam_fb efb
+        where sd.testpaper_id = #{testPaperId} and sd.user_id = #{userID}
+        and sd.type = 4 and sd.problem_id = efb.id and efb.material_question = 0;
     </select>
 
+    <!--    List<Object> findExamJudgeAnswerByTidAndUid(Integer testPaperId, Integer userID);-->
+    <select id="findExamJudgeAnswerByMaterialId" parameterType="Integer" resultMap="uoa">
+         select ej.id as id,ej.context as context,ej.answer as answer,ej.score as score,sd.answer as useranswer,sd.score as userscore,ej.img_url as imgurl
+         from scoredata sd
+         left join material_problem mp on sd.problem_id = mp.problem_id and sd.type = mp.problem_type
+         right join exam_judge ej on sd.problem_id = ej.id
+         where sd.type = 1 and sd.testpaper_id = #{testPaperId} and sd.user_id = #{userID}
+         and mp.material_id = #{emId} and ej.material_question = 1 ;
+    </select>
+    <!--    List<Object> findSingleSelectionAnswerByTidAndUid(Integer testPaperId, Integer userID);-->
+    <select id="findSingleSelectionAnswerByMaterialId" parameterType="Integer" resultMap="usa">
+        select es.id as id,es.context as context,es.selection as selection,es.answer as answer,es.score as score,sd.answer as useranswer,sd.score as userscore,es.img_url as imgurl
+        from scoredata sd
+        left join material_problem mp on sd.problem_id = mp.problem_id and sd.type = mp.problem_type
+        right join exam_select es on sd.problem_id = es.id
+        where sd.type = 2 and es.type = 1 and sd.testpaper_id = #{testPaperId} and sd.user_id = #{userID}
+        and mp.material_id = #{emId} and es.material_question = 1 ;
+
+    </select>
+
+    <!--    List<Object> findMultipleSelectionAnswerByTidAndUid(Integer testPaperId, Integer userID);-->
+    <select id="findMutipleSelectionAnswerByMaterialId" parameterType="Integer" resultMap="usa">
+        select es.id as id,es.context as context,es.selection as selection,es.answer as answer,es.score as score,sd.answer as useranswer,sd.score as userscore,es.img_url as imgurl
+        from scoredata sd
+        left join material_problem mp on sd.problem_id = mp.problem_id and sd.type = mp.problem_type
+        right join exam_select es on sd.problem_id = es.id
+        where sd.type = 2 and es.type = 2 and sd.testpaper_id = #{testPaperId} and sd.user_id = #{userID}
+        and mp.material_id = #{emId} and es.material_question = 1 ;
+
+
+    </select>
+
+    <!--    List<Object> findExamSubjectAnswerByTidAndUid(Integer testPaperId, Integer userID);-->
+    <select id="findExamSubjectAnswerByMaterialId" parameterType="Integer" resultMap="uoa">
+        select es.id as id,es.context as context,es.answer as answer,es.score as score,sd.answer as useranswer,sd.score as userscore,es.img_url as imgurl
+        from scoredata sd
+        left join material_problem mp on sd.problem_id = mp.problem_id and sd.type = mp.problem_type
+        right join exam_subject es on sd.problem_id = es.id
+        where sd.type = 3 and sd.testpaper_id = #{testPaperId} and sd.user_id = #{userID}
+        and mp.material_id = #{emId} and es.material_question = 1 ;
+
+
+    </select>
+
+    <!--    List<Object> findExamFillBlankAnswerByTidAndUid(Integer testPaperId, Integer userID);-->
+    <select id="findExamFillBlankAnswerByMaterialId" parameterType="Integer" resultMap="uoa">
+        select efb.id as id,efb.context as context,efb.answer as answer,efb.score as score,sd.answer as useranswer,sd.score as userscore,efb.img_url as imgurl
+        from scoredata sd
+        left join material_problem mp on sd.problem_id = mp.problem_id and sd.type = mp.problem_type
+        right join exam_fb efb on sd.problem_id = efb.id
+        where sd.type = 4 and sd.testpaper_id = #{testPaperId} and sd.user_id = #{userID}
+        and mp.material_id = #{emId} and efb.material_question = 1 ;
+    </select>
+
+
+    <resultMap id="uoa" type="com.exam.demo.otherEntity.UserOtherAnswer">
+        <id property="id" column="id"/>
+        <result property="context" column="context"/>
+        <result property="answer" column="answer"/>
+        <result property="score" column="score"/>
+        <result property="userAnswer" column="useranswer"/>
+        <result property="userScore" column="userscore"/>
+        <result property="imgUrl" column="imgurl"/>
+    </resultMap>
+    <resultMap id="usa" type="com.exam.demo.otherEntity.UserSelectionAnswer">
+        <id property="id" column="id"/>
+        <result property="context" column="context"/>
+        <result property="selections" column="selection"/>
+        <result property="answer" column="answer"/>
+        <result property="score" column="score"/>
+        <result property="userAnswer" column="useranswer"/>
+        <result property="userScore" column="userscore"/>
+        <result property="imgUrl" column="imgurl"/>
+    </resultMap>
     <!--Integer updateScoreDataByUserIdAndTestPaperId(Scoredata scoredata);-->
 
     <update id="updateScoreDataByUserIdAndTestPaperId" parameterType="com.exam.demo.entity.Scoredata">
         update scoredata set answer = #{answer},score = #{score}
         where user_id = #{userId} and testpaper_id = #{testpaperId} and problem_id = #{problemId} and `type` = #{type}
-        <!--<set>-->
-        <!--<if test="answer != null">answer = #{answer},</if>-->
-        <!--<if test="score != null">score = #{score}</if>-->
-        <!--</set>-->
     </update>
     <!--Integer insertScoreData(Scoredata scoredata);-->
-
-
-
-
     <insert id="insertScoreData">
         insert into scoredata(`testpaper_id`, `user_id`, `type`, `problem_id`, `answer`, `score`)
         values
         (#{testpaperId},#{userId},#{type},#{problemId},#{answer},#{score})
-        <!--insert into scoredata-->
-        <!--<trim prefix="(" suffix=")" suffixOverrides=",">-->
-            <!--<if test="id != null">-->
-                <!--id,-->
-            <!--</if>-->
-            <!--<if test="testpaper_id != null">-->
-                <!--testpaper_id,-->
-            <!--</if>-->
-            <!--<if test="user_id != null">-->
-                <!--user_id,-->
-            <!--</if>-->
-            <!--<if test="'type' != null">-->
-                <!--'type',-->
-            <!--</if>-->
-            <!--<if test="problem_id != null">-->
-                <!--problem_id,-->
-            <!--</if>-->
-            <!--<if test="answer != null">-->
-                <!--answer,-->
-            <!--</if>-->
-            <!--<if test="score != null">-->
-                <!--score,-->
-            <!--</if>-->
-        <!--</trim>-->
-        <!--<trim prefix="values (" suffix=")" suffixOverrides=",">-->
-            <!--<if test="id != null">-->
-                <!--#{id},-->
-            <!--</if>-->
-            <!--<if test="testpaperId != null">-->
-                <!--#{testpaperId},-->
-            <!--</if>-->
-            <!--<if test="userId != null">-->
-                <!--#{userId},-->
-            <!--</if>-->
-            <!--<if test="type != null">-->
-                <!--#{type},-->
-            <!--</if>-->
-            <!--<if test="problemId != null">-->
-                <!--#{problemId},-->
-            <!--</if>-->
-            <!--<if test="answer != null">-->
-                <!--#{answer},-->
-            <!--</if>-->
-            <!--<if test="score != null">-->
-                <!--#{score},-->
-            <!--</if>-->
-        <!--</trim>-->
     </insert>
 
 

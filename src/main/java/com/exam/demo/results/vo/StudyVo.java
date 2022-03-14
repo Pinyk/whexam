@@ -10,9 +10,8 @@ import java.io.Serializable;
 @ApiModel(value = "学习资料", description = "组合查询时，学习资料统一返回对象")
 public class StudyVo implements Serializable {
 
-//    @ApiModelProperty(value = "资料主键")
-//    @TableId(type = IdType.AUTO)
-//    private Integer id;
+    @ApiModelProperty(value = "资料主键")
+    private Integer id;
 
     @ApiModelProperty(value = "资料名字")
     private String name;
@@ -31,4 +30,7 @@ public class StudyVo implements Serializable {
 
     @ApiModelProperty(value = "备注")
     private String beizhu;
+
+    @ApiModelProperty(value = "url")
+    private String url;
 }

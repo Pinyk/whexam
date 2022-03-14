@@ -1,31 +1,19 @@
 package com.exam.demo.service.impl;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.exam.demo.Utils.FileCommit;
 import com.exam.demo.entity.*;
 import com.exam.demo.mapper.*;
-import com.exam.demo.otherEntity.SelectQuestionVo;
-import com.exam.demo.params.submit.MaterialSubmitParam;
-import com.exam.demo.params.submit.SelectSubmitParam;
-import com.exam.demo.params.submit.materialqueation.MaterialFillBlank;
-import com.exam.demo.params.submit.materialqueation.MaterialJudge;
-import com.exam.demo.params.submit.materialqueation.MaterialSelection;
-import com.exam.demo.params.submit.materialqueation.MaterialSubject;
 import com.exam.demo.results.vo.*;
 import com.exam.demo.service.*;
-import com.google.gson.JsonObject;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -101,7 +89,7 @@ public class ExamMaterialServiceImpl implements ExamMaterialService {
      * 根据ID查找材料题总分
      * @return
      */
-    private Double getMaterialTotalScore(Integer id) {
+    public Double getMaterialTotalScore(Integer id) {
         double total = 0.0;
         //在中间表中查出包含题目的Id
         LambdaQueryWrapper<MaterialProblem> lambdaQueryWrapper = new LambdaQueryWrapper<>();
@@ -139,6 +127,38 @@ public class ExamMaterialServiceImpl implements ExamMaterialService {
     }
 
     @Override
+    public Map<String, Object> deleteExamMaterial(Integer id) {
+
+        //根据中间表删除各个类型的题
+        LambdaQueryWrapper<MaterialProblem> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(MaterialProblem::getMaterialId, id);
+        List<MaterialProblem> materialProblems = materialProblemMapper.selectList(lambdaQueryWrapper);
+        if (!materialProblems.isEmpty()) {
+            for (MaterialProblem materialProblem : materialProblems) {
+                Integer problemType = materialProblem.getProblemType();
+                if (problemType == 1) {
+                    examSelectMapper.deleteById(materialProblem.getProblemId());
+                } else if (problemType == 2) {
+                    examFillBlankMapper.deleteById(materialProblem.getProblemId());
+                } else if (problemType == 3) {
+                    examJudgeMapper.deleteById(materialProblem.getProblemId());
+                } else {
+                    examSubjectMapper.deleteById(materialProblem.getProblemId());
+                }
+            }
+        }
+        //删除中间表的记录
+        LambdaQueryWrapper<MaterialProblem> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(MaterialProblem::getMaterialId, id);
+        materialProblemMapper.delete(queryWrapper);
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("deletedRecordTotal", materialMapper.deleteById(id));
+
+        return jsonObject;
+    }
+
+    @Override
     public Map<String, Object> previewById(Integer id) {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("subjectId", id);
@@ -161,7 +181,7 @@ public class ExamMaterialServiceImpl implements ExamMaterialService {
                 if (problemType == 1) {
                     LambdaQueryWrapper<ExamSelect> queryWrapper = new LambdaQueryWrapper<>();
                     queryWrapper.select(ExamSelect::getContext,ExamSelect::getSelection,ExamSelect::getScore,
-                            ExamSelect::getImgUrl,ExamSelect::getType).eq(ExamSelect::getId,problemId);
+                            ExamSelect::getImgUrl,ExamSelect::getType,ExamSelect::getAnswer).eq(ExamSelect::getId,problemId);
                     ExamSelect examSelect = examSelectMapper.selectOne(queryWrapper);
                     JSONObject jsonObject1 = new JSONObject();
                     jsonObject1.put("id", problemId);
@@ -170,6 +190,7 @@ public class ExamMaterialServiceImpl implements ExamMaterialService {
                     jsonObject1.put("selectionB", examSelect.getSelection().split(";")[1]);
                     jsonObject1.put("selectionC", examSelect.getSelection().split(";")[2]);
                     jsonObject1.put("selectionD", examSelect.getSelection().split(";")[3]);
+                    jsonObject1.put("answer", examSelect.getAnswer());
                     jsonObject1.put("score", examSelect.getScore());
                     if (StringUtils.isNotBlank(examSelect.getImgUrl())) {
                         jsonObject1.put("imgUrl", examSelect.getImgUrl());
@@ -182,11 +203,12 @@ public class ExamMaterialServiceImpl implements ExamMaterialService {
                 } else if (problemType == 2) {
                     LambdaQueryWrapper<ExamFillBlank> queryWrapper = new LambdaQueryWrapper<>();
                     queryWrapper.select(ExamFillBlank::getContext,ExamFillBlank::getScore,
-                            ExamFillBlank::getImgUrl).eq(ExamFillBlank::getId,problemId);
+                            ExamFillBlank::getImgUrl,ExamFillBlank::getAnswer).eq(ExamFillBlank::getId,problemId);
                     ExamFillBlank examFillBlank = examFillBlankMapper.selectOne(queryWrapper);
                     JSONObject jsonObject1 = new JSONObject();
                     jsonObject1.put("id", problemId);
                     jsonObject1.put("context", examFillBlank.getContext());
+                    jsonObject1.put("answer", examFillBlank.getAnswer());
                     jsonObject1.put("score", examFillBlank.getScore());
                     if (StringUtils.isNotBlank(examFillBlank.getImgUrl())) {
                         jsonObject1.put("imgUrl", examFillBlank.getImgUrl());
@@ -194,12 +216,17 @@ public class ExamMaterialServiceImpl implements ExamMaterialService {
                     examFillBlanks.add(jsonObject1);
                 } else if (problemType == 3) {
                     LambdaQueryWrapper<ExamJudge> queryWrapper = new LambdaQueryWrapper<>();
-                    queryWrapper.select(ExamJudge::getContext, ExamJudge::getScore, ExamJudge::getImgUrl)
+                    queryWrapper.select(ExamJudge::getContext, ExamJudge::getScore, ExamJudge::getImgUrl, ExamJudge::getAnswer)
                             .eq(ExamJudge::getId,problemId);
                     ExamJudge examJudge = examJudgeMapper.selectOne(queryWrapper);
                     JSONObject jsonObject1 = new JSONObject();
                     jsonObject1.put("id", problemId);
                     jsonObject1.put("context", examJudge.getContext());
+                    if (examJudge.getAnswer() == 0) {
+                        jsonObject1.put("answer", "错误");
+                    } else {
+                        jsonObject1.put("answer", "正确");
+                    }
                     jsonObject1.put("score", examJudge.getScore());
                     if (StringUtils.isNotBlank(examJudge.getImgUrl())) {
                         jsonObject1.put("imgUrl", examJudge.getImgUrl());
@@ -207,12 +234,13 @@ public class ExamMaterialServiceImpl implements ExamMaterialService {
                     examJudges.add(jsonObject1);
                 } else {
                     LambdaQueryWrapper<ExamSubject> queryWrapper = new LambdaQueryWrapper<>();
-                    queryWrapper.select(ExamSubject::getContext,ExamSubject::getScore,ExamSubject::getImgUrl)
+                    queryWrapper.select(ExamSubject::getContext,ExamSubject::getScore,ExamSubject::getImgUrl,ExamSubject::getAnswer)
                             .eq(ExamSubject::getId, problemId);
                     ExamSubject examSubject = examSubjectMapper.selectOne(queryWrapper);
                     JSONObject jsonObject1 = new JSONObject();
                     jsonObject1.put("id", problemId);
                     jsonObject1.put("context", examSubject.getContext());
+                    jsonObject1.put("answer", examSubject.getAnswer());
                     jsonObject1.put("score", examSubject.getScore());
                     if (StringUtils.isNotBlank(examSubject.getImgUrl())) {
                         jsonObject1.put("imgUrl", examSubject.getImgUrl());

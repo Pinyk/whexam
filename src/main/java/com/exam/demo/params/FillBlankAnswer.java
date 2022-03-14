@@ -7,7 +7,7 @@ import lombok.Data;
 @ApiModel(value = "FillBlankAnswer", description = "答案提交——填空题答案接收对象")
 public class FillBlankAnswer {
 
-    private int id;
+    private Integer id;
 
     private String userAnswer;
 

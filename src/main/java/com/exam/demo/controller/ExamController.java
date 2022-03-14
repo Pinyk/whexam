@@ -1,6 +1,8 @@
 package com.exam.demo.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.exam.demo.Utils.ExportTestPaperTools;
+import com.exam.demo.Utils.pdfUtils.DataKit;
 import com.exam.demo.entity.*;
 import com.exam.demo.otherEntity.RtTestpaper;
 import com.exam.demo.otherEntity.UserAnswer;
@@ -14,8 +16,15 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -64,23 +73,9 @@ public class ExamController {
                 .data(examService.addProblem(exam))
                 .build();
     }
-
-    @PostMapping("componentTestPaper")
-    @ApiOperation(notes = "LBX",value = "组建试卷试题接口")
-    public WebResult<Integer> componentTestPaper(@RequestParam @ApiParam(name="testPaperId",required=true) Integer testPaperId,
-                                        @RequestParam @ApiParam(name="subjectId",required=true) Integer subjectId,
-                                        @RequestParam @ApiParam(name="judgeCount",required=true) Integer judgeCount,
-                                        @RequestParam @ApiParam(name="singleCount",required=true) Integer singleCount,
-                                        @RequestParam @ApiParam(name="multipleCount",required=true) Integer multipleCount,
-                                        @RequestParam @ApiParam(name="subjectCount",required=true) Integer subjectCount) {
-        return WebResult.<Integer>builder()
-                .code(200)
-                .message(REQUEST_STATUS_SUCCESS)
-                .data(examService.randomComponentPaper(testPaperId, subjectId, judgeCount, singleCount, multipleCount, subjectCount))
-                .build();
-    }
-
+//======================================================================================================================
     @DeleteMapping("deleteProblem/{id}")
+    @ApiIgnore
     @ApiOperation(notes = "xiong",value = "删除试卷试题接口")
     public WebResult<Integer> deleteProblem(@PathVariable @ApiParam(name="id",required=true) Integer id) {
         return WebResult.<Integer>builder()
@@ -151,10 +146,10 @@ public class ExamController {
 
     @GetMapping("findTestPaperDetail")
     @ApiOperation(notes = "LBX", value = "组合查询试卷（试卷ID，试卷名字，试卷所属部门，科目）")
-    public WebResult<List<TestpaperVo>> combinedQueryTestPaper(@RequestParam(required = false) @ApiParam(name = "试卷id", required = true) Integer testPaperId,
-                                                               @RequestParam(required = false) @ApiParam(name = "试卷名称", required = true) String testPaperName,
-                                                               @RequestParam(required = false) @ApiParam(name = "试卷所属部门", required = true) String departmentName,
-                                                               @RequestParam(required = false) @ApiParam(name = "科目", required = true) String subject) {
+    public WebResult<List<TestpaperVo>> combinedQueryTestPaper(@RequestParam(required = false) @ApiParam(name = "试卷id") int testPaperId,
+                                                               @RequestParam(required = false) @ApiParam(name = "试卷名称") String testPaperName,
+                                                               @RequestParam(required = false) @ApiParam(name = "试卷所属部门") String departmentName,
+                                                               @RequestParam(required = false) @ApiParam(name = "科目") String subject) {
         return WebResult.<List<TestpaperVo>>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
@@ -183,5 +178,38 @@ public class ExamController {
                 .message(REQUEST_STATUS_SUCCESS)
                 .data(examService.findScoreDetailByUIdAndTPId(testPaperId, userId))
                 .build();
+    }
+    @GetMapping("exportUserAnswerByUIdAndTPId")
+    @ApiOperation(notes = "YXY",value = "导出用户答卷情况接口")
+    public WebResult<List<Map<String,Object>>> exportUserAnswerByUIdAndTPId(@RequestParam @ApiParam(name="testPaperId",required=true) Integer testPaperId,
+                                                                            @RequestParam @ApiParam(name="userId",required=true) Integer userId) {
+        return WebResult.<List<Map<String, Object>>>builder()
+                .code(200)
+                .message(REQUEST_STATUS_SUCCESS)
+                .data(examService.exportUserAnswerByUIdAndTPId(testPaperId, userId))
+                .build();
+    }
+
+    @GetMapping("/download")
+    @ApiOperation(notes = "gzz", value = "测试下载pdf接口")
+    public void download(HttpServletResponse response) throws IOException {
+
+        List l = examService.exportUserAnswerByUIdAndTPId(1, 1);
+        ExportTestPaperTools exportTestPaperTools = new ExportTestPaperTools();
+        DataKit dataKit = new DataKit();
+        dataKit.setTest("123132113");
+        ByteArrayInputStream pdf = exportTestPaperTools.createPDF(dataKit);
+        BufferedInputStream br = new BufferedInputStream(pdf);
+        byte[] buf = new byte[1024];
+        int len = 0;
+        response.reset();
+        response.setContentType("application/x-msdownload");
+        response.setHeader("Content-Disposition", "attachment; filename=test.pdf");
+        OutputStream out = response.getOutputStream();
+        while ((len = br.read(buf)) > 0)
+            out.write(buf, 0, len);
+        br.close();
+        out.close();
+
     }
 }

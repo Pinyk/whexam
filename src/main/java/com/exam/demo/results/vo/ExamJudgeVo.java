@@ -16,10 +16,16 @@ public class ExamJudgeVo implements Serializable{
     @ApiModelProperty(value = "题目内容")
     private String context;
 
+    @ApiModelProperty(value = "答案")
+    private String answer;
+
     @ApiModelProperty(value = "所属科目")
     private String subject;
 
     @ApiModelProperty(value = "分数")
     private Double score;
+
+    @ApiModelProperty(value = "图片url")
+    private String imgUrl;
 
 }

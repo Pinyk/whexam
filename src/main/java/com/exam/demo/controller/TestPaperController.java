@@ -1,5 +1,6 @@
 package com.exam.demo.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.exam.demo.entity.Testpaper;
 import com.exam.demo.otherEntity.RtTestpaper;
 import com.exam.demo.results.vo.TestpaperVo2;
@@ -10,6 +11,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
@@ -17,11 +19,12 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
 
+import static com.exam.demo.results.WebResult.REQUEST_STATUS_ERROR;
 import static com.exam.demo.results.WebResult.REQUEST_STATUS_SUCCESS;
 
 @RestController
 @RequestMapping("/testPaper")
-@Api(value="/testPaper",tags={"试卷卷头操作接口"})
+@Api(value="/testPaper",tags={"试卷及卷头操作接口"})
 public class TestPaperController {
 
     @Autowired
@@ -68,59 +71,39 @@ public class TestPaperController {
                 .build();
     }
 
-//==================================================组件试卷==============================================================
-
-    @PostMapping("assembingTestPaper")
-    @ApiOperation(notes = "LBX", value = "组件试卷")
-    public WebResult<Map<String, Object>> assembingTestPaper() {
-        return null;
-    }
-
-    @GetMapping("searchTestQuestion")
-    @ApiOperation(notes = "LBX", value = "组件试卷时，组合查询题库中的题")
-    public WebResult<Map<String, Object>> searchTestQuestion() {
-        return null;
-    }
-
-//======================================================================================================================
-    @PostMapping("addTestPaper")
-    @ApiOperation(notes = "xiong",value = "添加试卷头信息接口")
-    public WebResult<Integer> addTestPaper(@RequestParam @ApiParam(name="subjectId",required=true) Integer subjectId,
-                                           @RequestParam @ApiParam(name="name",required=true) String name,
-                                           @RequestParam @ApiParam(name="totalscore",required=true) Double totalscore,
-                                           @RequestParam @ApiParam(name="passscore",required=true) Double passscore,
-                                           @RequestParam @ApiParam(name="startTime",required=true) String startTime,
-                                           @RequestParam @ApiParam(name="deadTime",required=true) String deadTime,
-                                           @RequestParam @ApiParam(name="time",required=true) Integer time,
-                                           @RequestParam @ApiParam(name="userId",required=true) Integer userId,
-                                           @RequestParam @ApiParam(name="departmentId",required=true) Integer departmentId,
-                                           @RequestParam @ApiParam(name="repeat",required=true) String repeat) {
-        Testpaper testpaper = new Testpaper();
-        testpaper.setSubjectId(subjectId);
-        testpaper.setName(name);
-        testpaper.setTotalscore(totalscore);
-        testpaper.setPassscore(passscore);
-        testpaper.setTime(time);
-        testpaper.setUserId(userId);
-        testpaper.setDepartmentId(departmentId);
-        testpaper.setRepeat(repeat);
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        try {
-            testpaper.setStartTime(dateFormat.parse(startTime));
-        } catch (Exception e) {
-            e.printStackTrace();
+//=========================================组建试卷试题接口=================================================================
+    @PostMapping("componentTestPaper")
+    @Transactional
+    @ApiOperation(notes = "LBX",value = "组建试卷试题接口")
+    public WebResult<Map<String, Object>> componentTestPaper(@RequestBody JSONObject jsonObject) {
+        if (jsonObject == null) {
+            return WebResult.<Map<String, Object>>builder()
+                    .code(404)
+                    .message(REQUEST_STATUS_ERROR)
+                    .build();
         }
-
-        try {
-            testpaper.setDeadTime(dateFormat.parse(deadTime));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return WebResult.<Integer>builder()
+        return WebResult.<Map<String, Object>>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
-                .data(testPaperService.addTestPaper(testpaper))
+                .data(testPaperService.componentTestPaper(jsonObject))
+                .build();
+    }
+//=========================================删除试卷=======================================================================
+    @DeleteMapping("deleteTestPaper")
+    @Transactional
+    @ApiOperation(notes = "LBX", value = "删除试卷及试卷题目详情")
+    public WebResult<Map<String,Object>> deleteTestPaper(@RequestParam @ApiParam(name = "id",value = "试卷Id",
+            required = true) Integer id) {
+        if (id == null) {
+            return WebResult.<Map<String, Object>>builder()
+                    .code(404)
+                    .message(REQUEST_STATUS_ERROR)
+                    .build();
+        }
+        return WebResult.<Map<String, Object>>builder()
+                .code(200)
+                .message(REQUEST_STATUS_SUCCESS)
+                .data(testPaperService.deleteTestPaper(id))
                 .build();
     }
 }

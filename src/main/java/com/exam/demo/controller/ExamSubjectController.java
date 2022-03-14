@@ -86,10 +86,10 @@ public class ExamSubjectController {
             @ApiParam("科目Id") @RequestParam(required = false) Integer subjectId,
             @ApiParam("答案") @RequestParam(required = false) String answer,
             @ApiParam("分数") @RequestParam(required = false) Double score,
-            @ApiParam("上传图片") @RequestParam(required = false) MultipartFile image
+            @ApiParam("上传图片") @RequestParam(required = false) MultipartFile file
             ) {
         if (StringUtils.isBlank(context) && subjectId == null && StringUtils.isBlank(answer) && score == null
-                && image == null) {
+                && file == null) {
             return WebResult.<JSONObject>builder()
                     .code(404)
                     .message(REQUEST_STATUS_ERROR)
@@ -98,7 +98,7 @@ public class ExamSubjectController {
         return WebResult.<JSONObject>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
-                .data(examSubjectService.saveSubject(context, subjectId, answer, score, image, false))
+                .data(examSubjectService.saveSubject(context, subjectId, answer, score, file, false))
                 .build();
     }
 
@@ -110,10 +110,10 @@ public class ExamSubjectController {
             @ApiParam("科目Id") @RequestParam(required = false) Integer subjectId,
             @ApiParam("答案") @RequestParam(required = false) String answer,
             @ApiParam("分数") @RequestParam(required = false) Double score,
-            @ApiParam("上传图片") @RequestParam(required = false) MultipartFile image
+            @ApiParam("上传图片") @RequestParam(required = false) MultipartFile file
     ) {
         if (StringUtils.isBlank(context) && subjectId == null && StringUtils.isBlank(answer) && score == null
-                && image == null) {
+                && file == null) {
             return WebResult.<JSONObject>builder()
                     .code(404)
                     .message(REQUEST_STATUS_ERROR)
@@ -122,71 +122,12 @@ public class ExamSubjectController {
         return WebResult.<JSONObject>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
-                .data(examSubjectService.saveSubject(context, subjectId, answer, score, image, true))
+                .data(examSubjectService.saveSubject(context, subjectId, answer, score, file, true))
                 .build();
     }
-//========================================================================================================================
-//    @PostMapping("save")
-//    @ApiOperation(notes = "xiong",value = "向题库添加主观题目接口")
-//    public WebResult<Integer> saveExamSubject(@RequestBody @ApiParam(name="examSubject",required=true,value = "id传入null") ExamSubject examSubject) {
-//        return WebResult.<Integer>builder()
-//                .code(200)
-//                .message(REQUEST_STATUS_SUCCESS)
-//                .data(examSubjectService.saveExamSubject(examSubject))
-//                .build();
-//    }
-//@PostMapping("save")
-//@ApiOperation(notes = "xiong",value = "向题库添加主观题目接口")
-//public WebResult<Integer> saveExamSubject(@RequestParam @ApiParam(name="context",required=true) String context,
-//                                          @RequestParam @ApiParam(name="answer",required=true) String answer,
-//                                          @RequestParam @ApiParam(name="subjectId",required=true) Integer subjectId,
-//                                          @RequestParam @ApiParam(name="score",required=true) Double score,
-//                                          @RequestParam("file") MultipartFile multipartFile) {
-//    if(multipartFile.isEmpty()) {
-//        return WebResult.<Integer>builder()
-//                .code(404)
-//                .message(REQUEST_STATUS_ERROR)
-//                .data(-1)
-//                .build();
-//    }
-//    //文件名=当前时间到毫秒+原来的文件名
-//    String fileName = System.currentTimeMillis() + multipartFile.getOriginalFilename();
-//    //文件路径
-//    String filePath = System.getProperty("user.dir") + System.getProperty("file.separator") + "img";
-//    //如果文件路径不存在，新增该路径
-//    File file1 = new File(filePath);
-//    if(!file1.exists()){
-//        file1.mkdir();
-//    }
-//    //实际的文件地址
-//    File dest = new File(filePath + System.getProperty("file.separator") + fileName);
-//    //存储到数据库里的相对文件地址
-//    String storeUrlPath = "/img/" + fileName;
-//    try {
-//        multipartFile.transferTo(dest);
-//        // 添加到数据库
-//        ExamSubject examSubject = new ExamSubject();
-//        examSubject.setContext(context);
-//        examSubject.setAnswer(answer);
-//        examSubject.setDifficulty(1);
-//        examSubject.setSubjectId(subjectId);
-//        examSubject.setScore(score);
-//        examSubject.setImgUrl(storeUrlPath);
-//        return WebResult.<Integer>builder()
-//                .code(200)
-//                .message(REQUEST_STATUS_SUCCESS)
-//                .data(examSubjectService.saveExamSubject(examSubject))//添加到数据库
-//                .build();
-//    } catch (Exception e) {
-//        return WebResult.<Integer>builder()
-//                .code(404)
-//                .message(REQUEST_STATUS_ERROR)
-//                .data(-1)
-//                .build();
-//    }
-//}
 
     @PostMapping("update")
+    @ApiIgnore
     @ApiOperation(notes = "xiong",value = "修改题库的主观题目接口")
     public WebResult<Integer> updateExamSubject(@RequestBody @ApiParam(name="examSubject",required=true,value = "id传入null") ExamSubject examSubject) {
         return WebResult.<Integer>builder()
@@ -196,9 +137,10 @@ public class ExamSubjectController {
                 .build();
     }
 
-    @DeleteMapping("delete/{id}")
-    @ApiOperation(notes = "xiong",value = "删除题库中的主观题目接口")
-    public WebResult<Integer> deleteExamSubject(@PathVariable @ApiParam(name="id",required=true) Integer id) {
+    @DeleteMapping("delete")
+    @Transactional
+    @ApiOperation(notes = "LBX",value = "删除题库中的主观题目接口")
+    public WebResult<Integer> deleteExamSubject(@RequestParam @ApiParam(name="id",required=true) Integer id) {
         return WebResult.<Integer>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)

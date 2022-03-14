@@ -2,6 +2,8 @@ package com.exam.demo.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.exam.demo.entity.*;
+import com.exam.demo.otherEntity.ExamAndUserAnswer;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -122,4 +124,6 @@ public interface ExamMapper extends BaseMapper<Exam> {
      */
 //    List<Object> findExamFillBlankByExamMaterialId(Integer emId);
 
+
+    List<ExamAndUserAnswer> findUserExamAnswerByUIdAndTPId(@Param("testPaperId") Integer testPaperId, @Param("userID") Integer userID);
 }

@@ -104,6 +104,11 @@ public class ExamJudgeServiceImpl implements ExamJudgeService {
     private ExamJudgeVo copy(ExamJudgeVo examJudgeVo, ExamJudge examJudge) {
         BeanUtils.copyProperties(examJudge,examJudgeVo);
         examJudgeVo.setSubject(subjectMapper.selectById(examJudge.getSubjectId()).getName());
+        if (examJudge.getAnswer() == 0) {
+            examJudgeVo.setAnswer("错误");
+        } else {
+            examJudgeVo.setAnswer("正确");
+        }
         return examJudgeVo;
     }
 //===============================================新增填空题===============================================================
@@ -155,6 +160,8 @@ public class ExamJudgeServiceImpl implements ExamJudgeService {
 
     @Override
     public Integer deleteExamJudge(Integer id) {
-        return examJudgeMapper.deleteById(id);
+        LambdaQueryWrapper<ExamJudge> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(ExamJudge::getMaterialQuestion, 0).eq(ExamJudge::getId, id);
+        return examJudgeMapper.delete(lambdaQueryWrapper);
     }
 }
