@@ -8,6 +8,7 @@ import com.exam.demo.entity.Information;
 import com.exam.demo.entity.Study;
 import com.exam.demo.entity.User;
 import com.exam.demo.mapper.*;
+import com.exam.demo.results.WebResult;
 import com.exam.demo.results.vo.InformationAllVo;
 import com.exam.demo.results.vo.InformationInVo;
 import com.exam.demo.results.vo.InformationVo;
@@ -17,6 +18,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -113,46 +116,38 @@ public class InformationServiceImpl implements InformationService {
     }
 
     @Override
-    public PageVo<InformationAllVo> searchAll(Integer userId, Integer currentPage, Integer pageSize) {
-        LambdaQueryWrapper<Information> queryWrapper = new LambdaQueryWrapper<>();
-        Page<Information> page = new Page<>(currentPage,pageSize);
-//        queryWrapper
-//                .select(Information::getDepartmentId)
-//                .eq(Information::getUserId,userId);
-        LambdaQueryWrapper<User> userWrapper = Wrappers.lambdaQuery(User.class);
-        userWrapper
-                .select(User::getName,User::getNums,User::getIdentity,User::getTime)
-                .eq(User::getId,userId);
-        List<User> users = userMapper.selectList(userWrapper);
-        if (!users.isEmpty()){
-            LinkedList<Integer> userIds = new LinkedList<>();
-            for (User user : users){
-                userIds.add(user.getId());
+    public InformationAllVo getStudyDurationByUserId(Integer userId) {
+        LambdaQueryWrapper<Information> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(Information::getUserId, userId);
+
+        InformationAllVo informationAllVo = new InformationAllVo();
+        User user = userMapper.selectById(userId);
+        if (user != null) {
+            informationAllVo.setUsername(user.getName());
+            informationAllVo.setDepartment(departmentMapper.selectById(user.getDepartmentId()).getName());
+            informationAllVo.setNums(user.getNums());
+            informationAllVo.setIdentity(user.getIdentity());
+        }
+        Double totalTime = 0.0;
+        List<Information> informationList = informationMapper.selectList(lambdaQueryWrapper);
+        if (!informationList.isEmpty()) {
+            List<LinkedHashMap<String, Object>> value = new LinkedList<>();
+            for (Information information : informationList) {
+                LinkedHashMap<String, Object> map = new LinkedHashMap<>();
+                map.put("subject", subjectMapper.selectById(information.getSubjectId()).getName());
+                map.put("name", studyMapper.selectById(information.getDataId()).getName());
+                map.put("beizhu", studyMapper.selectById(information.getDataId()).getBeizhu());
+                map.put("time", studyMapper.selectById(information.getDataId()).getTime());
+                map.put("studyTime", information.getStudyTime());
+                totalTime += information.getStudyTime();
+                map.put("process", information.getProcess());
+                value.add(map);
             }
-            queryWrapper.in(Information::getUserId, userIds);
+            informationAllVo.setTotalTime(totalTime);
+            informationAllVo.setValue(value);
         }
-        List<Information> informations = informationMapper.selectList(queryWrapper);
-        LinkedList<Integer> userIds = new LinkedList<>();
-        for (Information info : informations){
-            userIds.add(info.getSubjectId());
-            userIds.add(info.getTypeId());
-            userIds.add(info.getDataId());
-            userIds.add(info.getDepartmentId());
-        }
-        queryWrapper.eq(Information::getUserId,userIds);
-        LinkedList<InformationAllVo> informationAllVos = new LinkedList<>();
-        Page<Information> informationPage = informationMapper.selectPage(page,queryWrapper);
-        List<Information> informationList = informationPage.getRecords();
-        for (Information in : informationList){
-            InformationAllVo informationAllVo = copy1(in);
-            informationAllVos.add(informationAllVo);
-        }
-        return PageVo.<InformationAllVo>builder()
-                .values(informationAllVos)
-                .page(currentPage)
-                .size(pageSize)
-                .total(informationPage.getTotal())
-                .build();
+
+        return informationAllVo;
     }
 
     @Override
@@ -232,7 +227,7 @@ public class InformationServiceImpl implements InformationService {
         }
         informationInVo.setStudyTime(studyTime);
         informationInVo.setProcess(process);
-        informationAllVo.setInformationInVo(informationInVo);
+//        informationAllVo.setInformationInVo(informationInVo);
         return informationAllVo;
     }
 }

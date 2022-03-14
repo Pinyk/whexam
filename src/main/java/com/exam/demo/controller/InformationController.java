@@ -53,15 +53,14 @@ public class InformationController {
                 .build();
     }
 
-    @PostMapping("searchAll")
-    @ApiOperation(notes = "wxn",value = "组合查询")
-    public WebResult<PageVo<InformationAllVo>> searchAll(@ApiParam(name="前端查询条件 InformationInParam 查询条件实体类")
-                                                         @RequestBody InformationInParam informationInParam){
-        return WebResult.<PageVo<InformationAllVo>>builder()
+    @GetMapping("getStudyDurationByUserId")
+    @ApiOperation(notes = "wxn",value = "根据用户Id导出学习时长")
+    public WebResult<InformationAllVo> getStudyDurationByUserId(@ApiParam(name="前端查询条件 InformationInParam 查询条件实体类")
+                                                         @RequestParam Integer userId){
+        return WebResult.<InformationAllVo>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
-                .data(informationService.searchAll(informationInParam.getUserId(),
-                        informationInParam.getCurrentPage(),informationInParam.getPageSize()))
+                .data(informationService.getStudyDurationByUserId(userId))
                 .build();
     }
     @PostMapping("add")

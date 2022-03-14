@@ -4,12 +4,13 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 @Data
 @ApiModel(value = "学习资料", description = "组合查询时，学习资料统一返回对象")
 public class InformationAllVo {
-
-    @ApiModelProperty(value = "用户主键")
-    private int id;
 
     @ApiModelProperty(value = "用户名")
     private String username;
@@ -27,5 +28,5 @@ public class InformationAllVo {
     private double totalTime;
 
     @ApiModelProperty(value = "详情")
-    private InformationInVo informationInVo;
+    private List<LinkedHashMap<String, Object>> value;
 }
