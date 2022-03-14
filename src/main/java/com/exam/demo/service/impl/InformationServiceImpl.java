@@ -9,10 +9,7 @@ import com.exam.demo.entity.Study;
 import com.exam.demo.entity.User;
 import com.exam.demo.mapper.*;
 import com.exam.demo.results.WebResult;
-import com.exam.demo.results.vo.InformationAllVo;
-import com.exam.demo.results.vo.InformationInVo;
-import com.exam.demo.results.vo.InformationVo;
-import com.exam.demo.results.vo.PageVo;
+import com.exam.demo.results.vo.*;
 import com.exam.demo.service.InformationService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -157,9 +154,22 @@ public class InformationServiceImpl implements InformationService {
     }
 
     @Override
-    public double findTime(Integer dataId) {
-        User user = userMapper.selectById(dataId);
-        return user.getTime();
+    public InfoAddVo find(Integer dataId) {
+        Study study = studyMapper.selectById(dataId);
+        int departmentId = study.getDepartmentid();
+        int subjectId = study.getSubjectid();
+        int typeId = study.getTypeid();
+        String time = study.getTime();
+//        System.out.println(departmentId+"========="+subjectId+"==========="+typeId+"======="+time);
+        return new InfoAddVo(departmentId,subjectId,typeId,time);
+    }
+
+    @Override
+    public double findTime(Integer userId) {
+        LambdaQueryWrapper<Information> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(Information::getUserId, userId);
+        InformationAllVo informationAllVo = new InformationAllVo();
+        return informationAllVo.getTotalTime();
     }
 
     private InformationVo copy(InformationVo informationVo,Information information){

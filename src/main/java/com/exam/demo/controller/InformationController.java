@@ -4,10 +4,7 @@ import com.exam.demo.entity.Information;
 import com.exam.demo.params.InformationInParam;
 import com.exam.demo.params.InformationParam;
 import com.exam.demo.results.WebResult;
-import com.exam.demo.results.vo.InformationAllVo;
-import com.exam.demo.results.vo.InformationInVo;
-import com.exam.demo.results.vo.InformationVo;
-import com.exam.demo.results.vo.PageVo;
+import com.exam.demo.results.vo.*;
 import com.exam.demo.service.InformationService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -63,28 +60,34 @@ public class InformationController {
                 .data(informationService.getStudyDurationByUserId(userId))
                 .build();
     }
+
     @PostMapping("add")
     @ApiOperation(notes = "wxn",value = "更新课程信息接口")
     public WebResult<Integer> insert(@RequestParam @ApiParam(name = "userId") Integer userId,
                                      @RequestParam @ApiParam(name = "dataId") Integer dataId,
                                      @RequestParam @ApiParam(name = "studyTime") double studyTime){
         Information information = new Information();
+        InfoAddVo infoAddVo = informationService.find(dataId);
         information.setUserId(userId);
+        information.setDepartmentId(infoAddVo.getDepartmentId());
+        information.setSubjectId(infoAddVo.getSubjectId());
+        information.setTypeId(infoAddVo.getTypeId());
         information.setDataId(dataId);
+        double totalTime = informationService.findTime(userId);
+        totalTime = totalTime * 60 + studyTime;
+        totalTime = totalTime / 60;
+        information.setTotalTime(totalTime);
         double studyT = studyTime/60;
         information.setStudyTime(studyT);
-//        double totalTime = informationService.findTotalTime(dataId);
-//        totalTime = totalTime * 60 + studyTime;
-//        information.setTotalTime(totalTime);
-        double time = informationService.findTime(dataId);
+        String time = infoAddVo.getTime();
+        double time1 = Double.parseDouble(time);
         int process;
-        if (studyT>=time){
+        if (studyT >= time1){
             process = 100;
         }else {
-            process = (int) (studyTime/time);
+            process = (int) (studyT / time1);
         }
         information.setProcess(process);
-
         return WebResult.<Integer>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)

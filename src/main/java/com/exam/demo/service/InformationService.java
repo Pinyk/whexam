@@ -1,10 +1,7 @@
 package com.exam.demo.service;
 
 import com.exam.demo.entity.Information;
-import com.exam.demo.results.vo.InformationAllVo;
-import com.exam.demo.results.vo.InformationInVo;
-import com.exam.demo.results.vo.InformationVo;
-import com.exam.demo.results.vo.PageVo;
+import com.exam.demo.results.vo.*;
 
 /**
  * @Author: wxn
@@ -25,5 +22,7 @@ public interface InformationService {
 
     int insert(Information information);
 
-    double findTime(Integer dataId);
+    InfoAddVo find(Integer dataId);
+
+    double findTime(Integer userId);
 }
