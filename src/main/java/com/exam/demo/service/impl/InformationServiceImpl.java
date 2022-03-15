@@ -10,6 +10,7 @@ import com.exam.demo.entity.User;
 import com.exam.demo.mapper.*;
 import com.exam.demo.results.vo.*;
 import com.exam.demo.service.InformationService;
+import io.swagger.models.auth.In;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -201,12 +202,6 @@ public class InformationServiceImpl implements InformationService {
     }
 
     @Override
-    public int update(Integer userId, Integer dataId,Integer totalTime,Integer studyTime) {
-
-        return informationMapper.update(userId,dataId,totalTime,studyTime);
-    }
-
-    @Override
     public InfoAddVo find(Integer dataId) {
         Study study = studyMapper.selectById(dataId);
         int departmentId = study.getDepartmentid();
@@ -349,5 +344,30 @@ public class InformationServiceImpl implements InformationService {
         informationInVo.setProcess(process);
 //        informationAllVo.setInformationInVo(informationInVo);
         return informationAllVo;
+    }
+
+    @Override
+    public Integer addNewStudyRecord(Integer userId, Integer dataId, Integer studyTime) {
+
+        //判断是否存在该条学习记录
+        LambdaQueryWrapper<Information> lambdaQueryWrapper = Wrappers.lambdaQuery(Information.class);
+        lambdaQueryWrapper.eq(Information::getUserId,userId).eq(Information::getDataId,dataId);
+        Information information = informationMapper.selectOne(lambdaQueryWrapper);
+        Information newInformationRecord = new Information();
+        if (information != null) { //存在  更新study_time逻辑
+            int s = Integer.parseInt(information.getStudyTime());
+            s = s + studyTime;
+            newInformationRecord.setStudyTime(String.valueOf(s));
+            informationMapper.update(newInformationRecord, lambdaQueryWrapper);
+        } else { //不存在 插入逻辑
+            newInformationRecord.setUserId(userId);
+            newInformationRecord.setDepartmentId(userMapper.selectById(userId).getDepartmentId());
+            newInformationRecord.setSubjectId(studyMapper.selectById(dataId).getSubjectid());
+            newInformationRecord.setTypeId(studyMapper.selectById(dataId).getTypeid());
+            newInformationRecord.setDataId(dataId);
+            newInformationRecord.setStudyTime(studyTime.toString());
+            informationMapper.insert(newInformationRecord);
+        }
+        return 1;
     }
 }

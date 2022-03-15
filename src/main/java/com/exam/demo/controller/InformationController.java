@@ -10,6 +10,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import static com.exam.demo.results.WebResult.REQUEST_STATUS_SUCCESS;
@@ -62,39 +63,52 @@ public class InformationController {
                 .build();
     }
 
-    @PostMapping("add")
+    @PostMapping("addNewStudyRecord")
+    @Transactional
     @ApiOperation(notes = "wxn",value = "更新课程信息接口")
     public WebResult<Integer> add(@RequestParam @ApiParam(name = "userId") Integer userId,
                                   @RequestParam @ApiParam(name = "dataId") Integer dataId,
-                                  @RequestParam @ApiParam(name = "studyTime") int studyTime){
-        Information information = new Information();
-        InfoAddVo infoAddVo = informationService.find(dataId);
-        String time = informationService.time(userId);//总时长
-        int totalTime = 0;
-        if (time != null){
-            totalTime = Integer.parseInt(time);
-        }
-        totalTime = totalTime + studyTime;
-        String s = String.valueOf(studyTime);
-        int i;
-        InformationAllVo info = informationService.findTime(userId, dataId);
-        if (info != null){
-
-            i = informationService.update(userId,dataId,totalTime,studyTime);
-        }else{
-            information.setTotalTime(String.valueOf(totalTime));
-            information.setUserId(userId);
-            information.setDepartmentId(infoAddVo.getDepartmentId());
-            information.setSubjectId(infoAddVo.getSubjectId());
-            information.setTypeId(infoAddVo.getTypeId());
-            information.setDataId(dataId);
-            information.setStudyTime(s);
-            i = informationService.insert(information);
-        }
+                                  @RequestParam @ApiParam(name = "studyTime") Integer studyTime) {
         return WebResult.<Integer>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
-                .data(i)
+                .data(informationService.addNewStudyRecord(userId,dataId,studyTime))
                 .build();
     }
+
+//    @PostMapping("add")
+//    @ApiOperation(notes = "wxn",value = "更新课程信息接口")
+//    public WebResult<Integer> add(@RequestParam @ApiParam(name = "userId") Integer userId,
+//                                  @RequestParam @ApiParam(name = "dataId") Integer dataId,
+//                                  @RequestParam @ApiParam(name = "studyTime") int studyTime){
+//        Information information = new Information();
+//        InfoAddVo infoAddVo = informationService.find(dataId);
+//        String time = informationService.time(userId);//总时长
+//        int totalTime = 0;
+//        if (time != null){
+//            totalTime = Integer.parseInt(time);
+//        }
+//        totalTime = totalTime + studyTime;
+//        String s = String.valueOf(studyTime);
+//        int i;
+//        InformationAllVo info = informationService.findTime(userId, dataId);
+//        if (info != null){
+//
+//            i = informationService.update(userId,dataId,totalTime,studyTime);
+//        }else{
+//            information.setTotalTime(String.valueOf(totalTime));
+//            information.setUserId(userId);
+//            information.setDepartmentId(infoAddVo.getDepartmentId());
+//            information.setSubjectId(infoAddVo.getSubjectId());
+//            information.setTypeId(infoAddVo.getTypeId());
+//            information.setDataId(dataId);
+//            information.setStudyTime(s);
+//            i = informationService.insert(information);
+//        }
+//        return WebResult.<Integer>builder()
+//                .code(200)
+//                .message(REQUEST_STATUS_SUCCESS)
+//                .data(i)
+//                .build();
+//    }
 }

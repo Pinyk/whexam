@@ -3,8 +3,8 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.exam.demo.mapper.InformationMapper">
-    <update id="update">
-        UPDATE information SET total_time=#{totalTime},study_time=#{studyTime}
-        WHERE user_id=#{userId}   AND data_id=#{dataId}
-    </update>
+<!--    <update id="update">-->
+<!--        UPDATE information SET total_time=#{totalTime},study_time=#{studyTime}-->
+<!--        WHERE user_id=#{userId}   AND data_id=#{dataId}-->
+<!--    </update>-->
 </mapper>
