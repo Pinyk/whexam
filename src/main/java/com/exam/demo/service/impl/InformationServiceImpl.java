@@ -198,6 +198,12 @@ public class InformationServiceImpl implements InformationService {
     }
 
     @Override
+    public int update(Integer userId, Integer dataId,Integer totalTime,Integer studyTime) {
+
+        return informationMapper.update(userId,dataId,totalTime,studyTime);
+    }
+
+    @Override
     public InfoAddVo find(Integer dataId) {
         Study study = studyMapper.selectById(dataId);
         int departmentId = study.getDepartmentid();
@@ -222,7 +228,10 @@ public class InformationServiceImpl implements InformationService {
                 LinkedHashMap<String, Object> map = new LinkedHashMap<>();
                 String studyTime = information.getStudyTime();
                 map.put("studyTime", studyTime);
-                int iST = Integer.parseInt(information.getStudyTime());
+                int iST = 0;
+                if (studyTime != null){
+                    iST = Integer.parseInt(studyTime);
+                }
                 totalTime += iST;
                 map.put("process", information.getProcess());
                 value.add(map);
@@ -232,6 +241,23 @@ public class InformationServiceImpl implements InformationService {
             informationAllVo.setValue(value);
         }
         return informationAllVo;
+    }
+
+    @Override
+    public String time(Integer userId) {
+        LambdaQueryWrapper<Information> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(Information::getUserId, userId);
+        int totalTime = 0;
+        String totalTime1 = null;
+        List<Information> informationList = informationMapper.selectList(lambdaQueryWrapper);
+        if (!informationList.isEmpty()) {
+            for (Information information : informationList) {
+                int iST = Integer.parseInt(information.getStudyTime());
+                totalTime += iST;
+            }
+            totalTime1 = String.valueOf(totalTime);
+        }
+        return totalTime1;
     }
 
     private InformationVo copy(InformationVo informationVo,Information information){

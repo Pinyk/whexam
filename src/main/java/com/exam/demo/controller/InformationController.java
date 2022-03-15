@@ -64,39 +64,37 @@ public class InformationController {
 
     @PostMapping("add")
     @ApiOperation(notes = "wxn",value = "更新课程信息接口")
-    public WebResult<Integer> insert(@RequestParam @ApiParam(name = "userId") Integer userId,
-                                     @RequestParam @ApiParam(name = "dataId") Integer dataId,
-                                     @RequestParam @ApiParam(name = "studyTime") String studyTime){
+    public WebResult<Integer> add(@RequestParam @ApiParam(name = "userId") Integer userId,
+                                  @RequestParam @ApiParam(name = "dataId") Integer dataId,
+                                  @RequestParam @ApiParam(name = "studyTime") int studyTime){
         Information information = new Information();
-        InformationAllVo info = informationService.findTime(userId, dataId);
         InfoAddVo infoAddVo = informationService.find(dataId);
+        String time = informationService.time(userId);//总时长
+        int totalTime = 0;
+        if (time != null){
+            totalTime = Integer.parseInt(time);
+        }
+        totalTime = totalTime + studyTime;
+        String s = String.valueOf(studyTime);
+        int i;
+        InformationAllVo info = informationService.findTime(userId, dataId);
         if (info != null){
-            String totalTime = info.getTotalTime();
-            information.setTotalTime(totalTime);
-            information.setStudyTime(studyTime);
+
+            i = informationService.update(userId,dataId,totalTime,studyTime);
         }else{
-            information.setTotalTime(studyTime);
-            information.setStudyTime(studyTime);
+            information.setTotalTime(String.valueOf(totalTime));
             information.setUserId(userId);
             information.setDepartmentId(infoAddVo.getDepartmentId());
             information.setSubjectId(infoAddVo.getSubjectId());
             information.setTypeId(infoAddVo.getTypeId());
             information.setDataId(dataId);
+            information.setStudyTime(s);
+            i = informationService.insert(information);
         }
-        String time = infoAddVo.getTime();
-        int time1 = Integer.parseInt(time);
-        int iST = Integer.parseInt(studyTime);
-        int process;
-        if (iST/60 >= time1){
-            process = 100;
-        }else {
-            process = iST / time1;
-        }
-        information.setProcess(process);
         return WebResult.<Integer>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
-                .data(informationService.insert(information))
+                .data(i)
                 .build();
     }
 }

@@ -10,4 +10,6 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface InformationMapper extends BaseMapper<Information> {
+
+    int update(Integer userId,Integer dataId,Integer totalTime,Integer studyTime);
 }

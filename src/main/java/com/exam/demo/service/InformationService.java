@@ -22,7 +22,11 @@ public interface InformationService {
 
     int insert(Information information);
 
+    int update(Integer userId,Integer dataId,Integer totalTime,Integer studyTime);
+
     InfoAddVo find(Integer dataId);
 
     InformationAllVo findTime(Integer userId,Integer dataId);
+
+    String time(Integer userId);
 }
