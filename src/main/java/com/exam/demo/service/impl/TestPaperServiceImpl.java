@@ -81,6 +81,7 @@ public class TestPaperServiceImpl implements TestPaperService {
         QueryWrapper<Testpaper> QueryWrapper = new QueryWrapper<>();
 
         QueryWrapper.lambda()
+                .like(Testpaper::getDepartmentId,userMapper.selectById(userId).getDepartmentId())
                 .ge(Testpaper::getDeadTime,new Timestamp(new Date().getTime()))
                 .le(Testpaper::getStartTime,new Timestamp(new Date().getTime()));
         List<Testpaper> testpapers1 = testPaperMapper.selectList(QueryWrapper);
@@ -122,8 +123,9 @@ public class TestPaperServiceImpl implements TestPaperService {
     public List<Map<String, Object>> findHistorialTestPaperHead(Integer userId) {
         List<Map<String,Object>> testpapers = new ArrayList<>();
 
-        QueryWrapper<Testpaper> queryWrapper = new QueryWrapper<>();
-        queryWrapper.lt("dead_time", new Timestamp(new Date().getTime()));
+        LambdaQueryWrapper<Testpaper> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.lt(Testpaper::getDeadTime, new Timestamp(new Date().getTime()))
+                .like(Testpaper::getDepartmentId,userMapper.selectById(userId).getDepartmentId());
 
         for (Testpaper testpaper: testPaperMapper.selectList(queryWrapper)){
             Map<String,Object> map = new LinkedHashMap<>();
@@ -223,7 +225,7 @@ public class TestPaperServiceImpl implements TestPaperService {
     public Map<String, Object> componentTestPaper(JSONObject jsonObject) {
 
         Testpaper testpaper = new Testpaper();
-        //查询testpaper表
+        //插入testpaper表
         testpaper.setSubjectId(jsonObject.getInteger("subjectId"));
         testpaper.setName(jsonObject.getString("name"));
         testpaper.setTotalscore(jsonObject.getDouble("totalScore"));
@@ -262,7 +264,7 @@ public class TestPaperServiceImpl implements TestPaperService {
         insertIntoExam("sub", jsonObject, 4, testpaper);
         insertIntoExam("material", jsonObject, 5, testpaper);
 
-        JSONObject jsonObject1 = new JSONObject();
+        JSONObject jsonObject1 = new JSONObject(new LinkedHashMap<>());
         jsonObject1.put("newRecordId", testpaper.getId());
         return jsonObject1;
 

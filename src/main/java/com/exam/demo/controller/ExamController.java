@@ -54,13 +54,13 @@ public class ExamController {
     }
 
     @PostMapping("submitTest")
-    @ApiOperation(notes = "xiong",value = "试卷提交接口")
-    public WebResult<Integer> submitTest(@RequestBody @ApiParam(name="userAnswer",required=true) UserAnswer userAnswer) {
-        return WebResult.<Integer>builder()
+    @Transactional
+    @ApiOperation(notes = "LBX",value = "试卷提交接口")
+    public WebResult<Map<String, Object>> submitTest(@RequestBody JSONObject jsonObject) {
+        return WebResult.<Map<String, Object>>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
-                .data(1)
-                .data(examService.submitTest(userAnswer.getTestPaperId(), userAnswer.getUserId(), userAnswer))
+                .data(examService.submitTest(jsonObject))
                 .build();
     }
 

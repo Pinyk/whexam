@@ -22,7 +22,7 @@ public interface ExamService {
      * 提交试卷，将用户作答保留到数据库，并为客观题目评分
      * @return
      */
-    Integer submitTest(Integer testPaperId, Integer userId, UserAnswer userAnswer);
+    Map<String, Object> submitTest(JSONObject jsonObject);
 
     /**
      * 添加试卷试题

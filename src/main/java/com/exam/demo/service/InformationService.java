@@ -29,4 +29,13 @@ public interface InformationService {
     InformationAllVo findTime(Integer userId,Integer dataId);
 
     String time(Integer userId);
+
+    /**
+     * 更新课程信息接口
+     * @param userId
+     * @param dataId
+     * @param studyTime
+     * @return
+     */
+    Integer addNewStudyRecord(Integer userId, Integer dataId, Integer studyTime);
 }

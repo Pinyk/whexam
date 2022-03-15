@@ -53,7 +53,7 @@ public class TestPaperController {
 //=============================================查询卷头==============================================================
     @PostMapping("findCurrentTestPaperHead")
     @ApiOperation(notes = "YXY", value = "查询进行中考试试卷的卷头")
-    public WebResult<List<Map<String, Object>>> findCurrentTestPaperHead(Integer userId) {
+    public WebResult<List<Map<String, Object>>> findCurrentTestPaperHead(@RequestParam Integer userId) {
         return WebResult.<List<Map<String, Object>>>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
@@ -63,7 +63,7 @@ public class TestPaperController {
 
     @PostMapping("findHistorialTestPaperHead")
     @ApiOperation(notes = "YXY", value = "查询历史考试试卷的卷头")
-    public WebResult<List<Map<String, Object>>> findHistorialTestPaperHead(Integer userId) {
+    public WebResult<List<Map<String, Object>>> findHistorialTestPaperHead(@RequestParam Integer userId) {
         return WebResult.<List<Map<String, Object>>>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)

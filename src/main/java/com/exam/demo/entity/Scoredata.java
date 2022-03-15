@@ -1,6 +1,8 @@
 package com.exam.demo.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -10,23 +12,24 @@ import lombok.Data;
 public class Scoredata {
 
     @ApiModelProperty(value = "试题分数主键")
-    private int id;
+    @TableId(type = IdType.AUTO)
+    private Integer id;
 
     @ApiModelProperty(value = "试卷ID")
-    private int testpaperId;
+    private Integer testpaperId;
 
     @ApiModelProperty(value = "用户ID")
-    private int userId;
+    private Integer userId;
 
     @ApiModelProperty(value = "题目类型")
-    private int type;
+    private Integer type;
 
     @ApiModelProperty(value = "题目ID")
-    private int problemId;
+    private Integer problemId;
 
     @ApiModelProperty(value = "用户答案")
     private String answer;
 
     @ApiModelProperty(value = "用户得分")
-    private double score;
+    private Double score;
 }
