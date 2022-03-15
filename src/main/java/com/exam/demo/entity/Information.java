@@ -24,7 +24,7 @@ public class Information {
     private Integer departmentId;
 
     @ApiModelProperty(value = "用户学习时长")
-    private int totalTime;
+    private String totalTime;
 
     @ApiModelProperty(value = "资料名编号")
     private Integer subjectId;
@@ -36,7 +36,7 @@ public class Information {
     private Integer dataId;
 
     @ApiModelProperty(value = "用户学时")
-    private int studyTime;
+    private String studyTime;
 
     @ApiModelProperty(value = "资料学时占比")
     private int process;

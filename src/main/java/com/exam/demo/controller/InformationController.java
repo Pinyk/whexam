@@ -66,12 +66,12 @@ public class InformationController {
     @ApiOperation(notes = "wxn",value = "更新课程信息接口")
     public WebResult<Integer> insert(@RequestParam @ApiParam(name = "userId") Integer userId,
                                      @RequestParam @ApiParam(name = "dataId") Integer dataId,
-                                     @RequestParam @ApiParam(name = "studyTime") int studyTime){
+                                     @RequestParam @ApiParam(name = "studyTime") String studyTime){
         Information information = new Information();
         InformationAllVo info = informationService.findTime(userId, dataId);
         InfoAddVo infoAddVo = informationService.find(dataId);
         if (info != null){
-            int totalTime = info.getTotalTime();
+            String totalTime = info.getTotalTime();
             information.setTotalTime(totalTime);
             information.setStudyTime(studyTime);
         }else{
@@ -85,11 +85,12 @@ public class InformationController {
         }
         String time = infoAddVo.getTime();
         int time1 = Integer.parseInt(time);
+        int iST = Integer.parseInt(studyTime);
         int process;
-        if (studyTime/60 >= time1){
+        if (iST/60 >= time1){
             process = 100;
         }else {
-            process = studyTime / time1;
+            process = iST / time1;
         }
         information.setProcess(process);
         return WebResult.<Integer>builder()

@@ -24,6 +24,6 @@ public class InformationVo {
     private String identity;
 
     @ApiModelProperty(value = "用户学习时长")
-    private int totalTime;
+    private String totalTime;
 
 }

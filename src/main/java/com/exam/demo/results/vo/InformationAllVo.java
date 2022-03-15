@@ -6,7 +6,6 @@ import lombok.Data;
 
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 @Data
 @ApiModel(value = "学习资料", description = "组合查询时，学习资料统一返回对象")
@@ -25,7 +24,7 @@ public class InformationAllVo {
     private String identity;
 
     @ApiModelProperty(value = "用户学习时长")
-    private int totalTime;
+    private String totalTime;
 
     @ApiModelProperty(value = "详情")
     private List<LinkedHashMap<String, Object>> value;
