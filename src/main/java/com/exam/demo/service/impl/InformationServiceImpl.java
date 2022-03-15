@@ -260,28 +260,7 @@ public class InformationServiceImpl implements InformationService {
         return totalTime1;
     }
 
-    @Override
-    public Integer addNewStudyRecord(Integer userId, Integer dataId, Integer studyTime) {
 
-        //判断是否存在该条学习记录
-        LambdaQueryWrapper<Information> lambdaQueryWrapper = Wrappers.lambdaQuery(Information.class);
-        lambdaQueryWrapper.eq(Information::getUserId,userId).eq(Information::getDataId,dataId);
-        Information information = informationMapper.selectOne(lambdaQueryWrapper);
-        Information newInformationRecord = new Information();
-        if (information != null) { //存在  更新study_time逻辑
-            newInformationRecord.setStudyTime(information.getStudyTime() + studyTime);
-            informationMapper.update(newInformationRecord, lambdaQueryWrapper);
-        } else { //不存在 插入逻辑
-            newInformationRecord.setUserId(userId);
-            newInformationRecord.setDepartmentId(userMapper.selectById(userId).getDepartmentId());
-            newInformationRecord.setSubjectId(studyMapper.selectById(dataId).getSubjectid());
-            newInformationRecord.setTypeId(studyMapper.selectById(dataId).getTypeid());
-            newInformationRecord.setDataId(dataId);
-            newInformationRecord.setStudyTime(studyTime.toString());
-            informationMapper.insert(newInformationRecord);
-        }
-        return 1;
-    }
 
     private InformationVo copy(InformationVo informationVo,Information information){
         BeanUtils.copyProperties(information,informationVo);

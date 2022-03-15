@@ -155,9 +155,16 @@ public class ExamServiceImpl implements ExamService {
                     Scoredata scoredata = new Scoredata();
                     String userAnswer = ((JSONObject) multipleSelection).getString("userAnswer");
                     if (!userAnswer.isEmpty()) {
+                        //处理用户的多选题答案
                         char[] chars = userAnswer.toCharArray();
                         Arrays.sort(chars);
-                        if (new String(chars).equals(examSelect.getAnswer())) {
+                        //处理题库中的多选题答案
+                        String[] split = examSelect.getAnswer().split(",");
+                        StringBuffer stringBuffer = new StringBuffer();
+                        for (String s : split) {
+                            stringBuffer.append(s);
+                        }
+                        if (new String(chars).equals(stringBuffer.toString())) {
                             totalScore += examSelect.getScore();
                             scoredata.setScore(examSelect.getScore());
                         } else {
@@ -285,9 +292,16 @@ public class ExamServiceImpl implements ExamService {
                     Scoredata scoredata = new Scoredata();
                     String userAnswer = ((JSONObject) multipleSelection).getString("userAnswer");
                     if (!userAnswer.isEmpty()) {
+                        //处理用户的多选题答案
                         char[] chars = userAnswer.toCharArray();
                         Arrays.sort(chars);
-                        if (new String(chars).equals(examSelect.getAnswer())) {
+                        //处理题库中的多选题答案
+                        String[] split = examSelect.getAnswer().split(",");
+                        StringBuffer stringBuffer = new StringBuffer();
+                        for (String s : split) {
+                            stringBuffer.append(s);
+                        }
+                        if (new String(chars).equals(stringBuffer.toString())) {
                             totalScore += examSelect.getScore();
                             scoredata.setScore(examSelect.getScore());
                             scoredata.setAnswer(userAnswer);
@@ -390,327 +404,6 @@ public class ExamServiceImpl implements ExamService {
         jsonObject1.put("totalScore", totalScore);
         return jsonObject1;
     }
-
-    /**
-     * 提交试卷，将用户作答保留到数据库，并为客观题目评分
-     * @return
-     */
-    //@Override
-//    public Integer submitTest1(Integer testPaperId, Integer userId) {
-//        //该试卷是否可以重复作答
-//        String isRepeat = examMapper.findExamIsRepeatByTestPaperId(testPaperId).getRepeat();
-//
-//        List<JudgeAnswer> examJudges = userAnswer.getExamJudge();
-//        List<SelectionAnswer> examSelects1 = userAnswer.getSingleSelections();
-//        List<SelectionAnswer> examSelects2 = userAnswer.getMultipleSelections();
-//        List<SubjectAnswer> examSubjects = userAnswer.getExamSubject();
-//        List<FillBlankAnswer> examFillBlanks = userAnswer.getExamFillBlank();
-//        List<MaterialAnswer> examMaterials = userAnswer.getExamMaterial();
-//        // 遍历每道题目用户的作答情况，同时对客观题目，找出标准答案（类型，题号 找到标准答案），与用户答案对比，给分，保存到数据
-//        // 将用户考试记录插入数据库
-//
-//        double scorenum = 0.0;
-//
-//        if (!examJudges.isEmpty() || examJudges.size() != 0){
-//            // 判断题
-//            for(JudgeAnswer examJudge : examJudges) {
-//                String answer = examJudgeService.findById(examJudge.getId()).getAnswer() == 0 ? "false": "true";
-//                Scoredata scoreData = new Scoredata();
-//                scoreData.setTestpaperId(testPaperId);
-//                scoreData.setUserId(userId);
-//                scoreData.setType(1);
-//                scoreData.setProblemId(examJudge.getId());
-//                //false存0，true存1
-//                scoreData.setAnswer(examJudge.getUserAnswer());
-//
-//                if (examJudge.getUserAnswer().equals(answer)){
-//                    double score = examJudgeService.findById(examJudge.getId()).getScore();
-//                    scoreData.setScore(score);
-//                    scorenum+=score;
-//                }else{
-//                    scoreData.setScore(0);
-//                }
-//                //可重复考试且已经提交过
-////                int size = scoreMapper.findIsSubmitByUserIdAndTestPaperId(userId,testPaperId).size();
-//                if (isRepeat.equals("true") && scoreMapper.findIsSubmitByUserIdAndTestPaperId(userId,testPaperId).size() >= 1){
-//                    scoreDataMapper.updateScoreDataByUserIdAndTestPaperId(scoreData);
-//                }else{
-//                    scoreDataMapper.insertScoreData(scoreData);
-//                }
-//
-//            }
-//        }
-//        if (!examSelects1.isEmpty() || examSelects1.size() != 0){
-//            // 单选
-//            for(SelectionAnswer examSelect : examSelects1) {
-//
-//                String answer = examSelectService.findById(examSelect.getId()).getAnswer();
-//
-//                Scoredata scoreData = new Scoredata();
-//                scoreData.setTestpaperId(testPaperId);
-//                scoreData.setUserId(userId);
-//                scoreData.setType(2);
-//                scoreData.setProblemId(examSelect.getId());
-//                scoreData.setAnswer(examSelect.getUserAnswer());
-//
-//                if(examSelect.getUserAnswer().equals(answer)) {
-//                    double score = examSelectService.findById(examSelect.getId()).getScore();
-//                    scoreData.setScore(score);
-//                    scorenum+=score;
-//                } else {
-//                    scoreData.setScore(0);
-//                }
-//                //可重复考试且已经提交过
-//                if (isRepeat.equals("true") && scoreMapper.findIsSubmitByUserIdAndTestPaperId(userId,testPaperId).size() >= 1){
-//                    scoreDataMapper.updateScoreDataByUserIdAndTestPaperId(scoreData);
-//                }else{
-//                    scoreDataMapper.insertScoreData(scoreData);
-//                }
-//
-//            }
-//        }
-//
-//        if (!examSelects2.isEmpty() || examSelects2.size() != 0){
-//            // 多选
-//            for(SelectionAnswer examSelect : examSelects2) {
-//
-//                String answer = examSelectService.findById(examSelect.getId()).getAnswer();
-//
-//                Scoredata scoreData = new Scoredata();
-//                scoreData.setTestpaperId(testPaperId);
-//                scoreData.setUserId(userId);
-//                scoreData.setType(2);
-//                scoreData.setProblemId(examSelect.getId());
-//                scoreData.setAnswer(examSelect.getUserAnswer());
-//
-//                if(examSelect.getUserAnswer().equals(answer)) {
-//                    double score = examSelectService.findById(examSelect.getId()).getScore();
-//                    scoreData.setScore(score);
-//                    scorenum+=score;
-//                } else {
-//                    scoreData.setScore(0);
-//                }
-//                //可重复考试且已经提交过
-//                if (isRepeat.equals("true") && scoreMapper.findIsSubmitByUserIdAndTestPaperId(userId,testPaperId).size() >= 1){
-//                    scoreDataMapper.updateScoreDataByUserIdAndTestPaperId(scoreData);
-//                }else {
-//                    scoreDataMapper.insertScoreData(scoreData);
-//                }
-//            }
-//        }
-//
-//        if (!examSubjects.isEmpty() || examSubjects.size() != 0){
-//            // 主观题:直接给满分
-//            for(SubjectAnswer examSubject : examSubjects) {
-//                Scoredata scoreData = new Scoredata();
-//                scoreData.setTestpaperId(testPaperId);
-//                scoreData.setUserId(userId);
-//                scoreData.setType(3);
-//                scoreData.setProblemId(examSubject.getId());
-//                scoreData.setAnswer(examSubject.getUserAnswer());
-//
-//                double score = examSubjectService.findById(examSubject.getId()).getScore();
-//                scoreData.setScore(score);
-//                scorenum+=score;
-//                //可重复考试且已经提交过
-//                if (isRepeat.equals("true") && scoreMapper.findIsSubmitByUserIdAndTestPaperId(userId,testPaperId).size() >= 1){
-//                    scoreDataMapper.updateScoreDataByUserIdAndTestPaperId(scoreData);
-//                }else{
-//                    scoreDataMapper.insertScoreData(scoreData);
-//                }
-//            }
-//        }
-//        //相似度匹配   给一个空字符串
-//        if (!examFillBlanks.isEmpty() || examFillBlanks.size() != 0){
-//            // 填空题
-//            for(FillBlankAnswer examFillBlank : examFillBlanks) {
-//                String answer = examFillBlankMapper.selectById(examFillBlank.getId()).getAnswer();
-//                Scoredata scoreData = new Scoredata();
-//                scoreData.setTestpaperId(testPaperId);
-//                scoreData.setUserId(userId);
-//                scoreData.setType(4);
-//                scoreData.setProblemId(examFillBlank.getId());
-//                scoreData.setAnswer(examFillBlank.getUserAnswer());
-//                if(examFillBlank.getUserAnswer().equals(answer)) {
-//                    double score = examFillBlankService.findById(examFillBlank.getId()).getScore();
-//                    scoreData.setScore(score);
-//                    scorenum+=score;
-//                } else {
-//                    scoreData.setScore(0);
-//                }
-//                //可重复考试且已经提交过
-//                if (isRepeat.equals("true") && scoreMapper.findIsSubmitByUserIdAndTestPaperId(userId,testPaperId).size() >= 1){
-//                    scoreDataMapper.updateScoreDataByUserIdAndTestPaperId(scoreData);
-//                }else {
-//                    scoreDataMapper.insertScoreData(scoreData);
-//                }
-//            }
-//        }
-//
-//        if (!examMaterials.isEmpty() || examMaterials.size() != 0){
-//            //材料题
-//            for (MaterialAnswer examMaterial: examMaterials){
-//                //材料题中的单选题题目
-//                List<SelectionAnswer> materialSingleSelects = examMaterial.getQuestion().getSingleSelections();
-//                //材料题中的多选题目
-//                List<SelectionAnswer> materialMultipleSelects = examMaterial.getQuestion().getMultipleSelections();
-//                //材料题中的填空题目
-//                List<FillBlankAnswer> materialFillBlanks = examMaterial.getQuestion().getExamFillBlank();
-//                //材料题中的判断题
-//                List<JudgeAnswer> materialJudges = examMaterial.getQuestion().getExamJudge();
-//                //材料题中的主观题
-//                List<SubjectAnswer> materialSubjects = examMaterial.getQuestion().getExamSubject();
-//
-//                //单选题
-//                if (!materialSingleSelects.isEmpty() || materialSingleSelects.size() != 0){
-//                    for(SelectionAnswer examSelect : materialSingleSelects) {
-//                        //正确答案
-//                        String answer = examSelectService.findById(examSelect.getId()).getAnswer();
-//                        Scoredata scoreData = new Scoredata();
-//                        scoreData.setTestpaperId(testPaperId);
-//                        scoreData.setUserId(userId);
-//                        scoreData.setType(2);
-//                        scoreData.setProblemId(examSelect.getId());
-//                        scoreData.setAnswer(examSelect.getUserAnswer());
-//                        if(examSelect.getUserAnswer().equals(answer)) {
-//                            double score = examSelectService.findById(examSelect.getId()).getScore();
-//                            scoreData.setScore(score);
-//                            scorenum+=score;
-//                        } else {
-//                            scoreData.setScore(0);
-//                        }
-//                        //可重复考试且已经提交过
-//                        if (isRepeat.equals("true") && scoreMapper.findIsSubmitByUserIdAndTestPaperId(userId,testPaperId).size() >= 1){
-//                            scoreDataMapper.updateScoreDataByUserIdAndTestPaperId(scoreData);
-//                        }else{
-//                            scoreDataMapper.insertScoreData(scoreData);
-//                        }
-//                    }
-//                }
-//
-//                //多选题目
-//                if (!materialMultipleSelects.isEmpty() || materialMultipleSelects.size() != 0){
-//                    for(SelectionAnswer examSelect : materialMultipleSelects) {
-//                        String answer = examSelectService.findById(examSelect.getId()).getAnswer();
-//
-//                        Scoredata scoreData = new Scoredata();
-//                        scoreData.setTestpaperId(testPaperId);
-//                        scoreData.setUserId(userId);
-//                        scoreData.setType(2);
-//                        scoreData.setProblemId(examSelect.getId());
-//                        scoreData.setAnswer(examSelect.getUserAnswer());
-//                        if(examSelect.getUserAnswer().equals(answer)) {
-//                            double score = examSelectService.findById(examSelect.getId()).getScore();
-//                            scoreData.setScore(score);
-//                            scorenum+=score;
-//                        } else {
-//                            scoreData.setScore(0);
-//                        }
-//                        //可重复考试且已经提交过
-//                        if (isRepeat.equals("true") && scoreMapper.findIsSubmitByUserIdAndTestPaperId(userId,testPaperId).size() >= 1){
-//                            scoreDataMapper.updateScoreDataByUserIdAndTestPaperId(scoreData);
-//                        }else {
-//                            scoreDataMapper.insertScoreData(scoreData);
-//                        }
-//                    }
-//                }
-//
-//                //判断题
-//                if (!materialJudges.isEmpty() || materialJudges.size() != 0){
-//
-//                    for (JudgeAnswer examJudge : materialJudges){
-//                        //false存0，true存1
-//                        String answer = examJudgeService.findById(examJudge.getId()).getAnswer() == 0 ? "false": "true";
-//                        Scoredata scoreData = new Scoredata();
-//                        scoreData.setTestpaperId(testPaperId);
-//                        scoreData.setUserId(userId);
-//                        scoreData.setType(1);
-//                        scoreData.setProblemId(examJudge.getId());
-//                        //在scoreData表中判断题答案存为false
-//                        scoreData.setAnswer(examJudge.getUserAnswer());
-//
-//                        if (examJudge.getUserAnswer().equals(answer)){
-//                            double score = examJudgeService.findById(examJudge.getId()).getScore();
-//                            scoreData.setScore(score);
-//                            scorenum+=score;
-//                        }else{
-//                            scoreData.setScore(0);
-//                        }
-//                        //可重复考试且已经提交过
-//                        if (isRepeat.equals("true") && scoreMapper.findIsSubmitByUserIdAndTestPaperId(userId,testPaperId).size() >= 1){
-//                            scoreDataMapper.updateScoreDataByUserIdAndTestPaperId(scoreData);
-//                        }else {
-//                            scoreDataMapper.insertScoreData(scoreData);
-//                        }
-//                    }
-//
-//                }
-//
-//                // 主观题：直接给满分
-//                if (!materialSubjects.isEmpty() || materialSubjects.size() != 0){
-//                    for(SubjectAnswer examSubject : materialSubjects) {
-//                        Scoredata scoreData = new Scoredata();
-//                        scoreData.setTestpaperId(testPaperId);
-//                        scoreData.setUserId(userId);
-//                        scoreData.setType(3);
-//                        scoreData.setProblemId(examSubject.getId());
-//                        scoreData.setAnswer(examSubject.getUserAnswer());
-//                        double score1 = examSubjectService.findById(examSubject.getId()).getScore();
-//                        scoreData.setScore(score1);
-//                        scorenum+=score1;
-//                        //可重复考试且已经提交过
-//                        if (isRepeat.equals("true") && scoreMapper.findIsSubmitByUserIdAndTestPaperId(userId,testPaperId).size() >= 1){
-//                            scoreDataMapper.updateScoreDataByUserIdAndTestPaperId(scoreData);
-//                        }else {
-//                            scoreDataMapper.insertScoreData(scoreData);
-//                        }
-//
-//                    }
-//                }
-//
-//                // 填空题
-//                if (!materialFillBlanks.isEmpty() || materialFillBlanks.size() != 0){
-//                    for(FillBlankAnswer examFillBlank : materialFillBlanks) {
-//                        String answer = examFillBlankMapper.selectById(examFillBlank.getId()).getAnswer();
-//                        Scoredata scoreData = new Scoredata();
-//                        scoreData.setTestpaperId(testPaperId);
-//                        scoreData.setUserId(userId);
-//                        scoreData.setType(4);
-//                        scoreData.setProblemId(examFillBlank.getId());
-//                        scoreData.setAnswer(examFillBlank.getUserAnswer());
-//                        if(examFillBlank.getUserAnswer().equals(answer)) {
-//                            double score = examFillBlankService.findById(examFillBlank.getId()).getScore();
-//                            scoreData.setScore(score);
-//                            scorenum+=score;
-//                        } else {
-//                            scoreData.setScore(0);
-//                        }
-//                        //可重复考试且已经提交过
-//                        if (isRepeat.equals("true") && scoreMapper.findIsSubmitByUserIdAndTestPaperId(userId,testPaperId).size() >= 1){
-//                            scoreDataMapper.updateScoreDataByUserIdAndTestPaperId(scoreData);
-//                        }else {
-//                            scoreDataMapper.insertScoreData(scoreData);
-//                        }
-//                    }
-//                }
-//
-//
-//            }
-//
-//        }
-//        Score score = new Score();
-//        score.setTestpaperId(testPaperId);
-//        score.setUserId(userId);
-//        score.setScorenum(scorenum);
-//        score.setStatus("已批阅");
-//        //可重复考试且已经提交过
-//        if (isRepeat.equals("true") && scoreMapper.findIsSubmitByUserIdAndTestPaperId(userId,testPaperId).size() >= 1){
-//            scoreMapper.updateScoreByUserIdAndTestPaperId(score);
-//        }else{
-//            scoreMapper.insert(score);
-//        }
-//        return 1;
-//    }
 
     /**
      * 添加试卷试题
