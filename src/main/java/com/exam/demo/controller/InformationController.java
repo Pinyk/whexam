@@ -63,6 +63,19 @@ public class InformationController {
                 .build();
     }
 
+    @PostMapping("addNewStudyRecord")
+    @Transactional
+    @ApiOperation(notes = "wxn",value = "更新课程信息接口")
+    public WebResult<Integer> add(@RequestParam @ApiParam(name = "userId") Integer userId,
+                                  @RequestParam @ApiParam(name = "dataId") Integer dataId,
+                                  @RequestParam @ApiParam(name = "studyTime") Integer studyTime) {
+        return WebResult.<Integer>builder()
+                .code(200)
+                .message(REQUEST_STATUS_SUCCESS)
+                .data(informationService.addNewStudyRecord(userId,dataId,studyTime))
+                .build();
+    }
+
 //    @PostMapping("add")
 //    @ApiOperation(notes = "wxn",value = "更新课程信息接口")
 //    public WebResult<Integer> add(@RequestParam @ApiParam(name = "userId") Integer userId,
@@ -98,17 +111,4 @@ public class InformationController {
 //                .data(i)
 //                .build();
 //    }
-
-    @PostMapping("addNewStudyRecord")
-    @Transactional
-    @ApiOperation(notes = "wxn",value = "更新课程信息接口")
-    public WebResult<Integer> add(@RequestParam @ApiParam(name = "userId") Integer userId,
-                                  @RequestParam @ApiParam(name = "dataId") Integer dataId,
-                                  @RequestParam @ApiParam(name = "studyTime") Integer studyTime) {
-        return WebResult.<Integer>builder()
-                .code(200)
-                .message(REQUEST_STATUS_SUCCESS)
-                .data(informationService.addNewStudyRecord(userId,dataId,studyTime))
-                .build();
-    }
 }

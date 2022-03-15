@@ -22,7 +22,7 @@ public interface InformationService {
 
     int insert(Information information);
 
-    int update(Integer userId,Integer dataId,Integer totalTime,Integer studyTime);
+//    int update(Integer userId,Integer dataId,Integer totalTime,Integer studyTime);
 
     InfoAddVo find(Integer dataId);
 
@@ -30,12 +30,5 @@ public interface InformationService {
 
     String time(Integer userId);
 
-    /**
-     * 更新课程信息接口
-     * @param userId
-     * @param dataId
-     * @param studyTime
-     * @return
-     */
     Integer addNewStudyRecord(Integer userId, Integer dataId, Integer studyTime);
 }

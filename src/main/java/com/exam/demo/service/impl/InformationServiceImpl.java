@@ -11,6 +11,7 @@ import com.exam.demo.entity.User;
 import com.exam.demo.mapper.*;
 import com.exam.demo.results.vo.*;
 import com.exam.demo.service.InformationService;
+import io.swagger.models.auth.In;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -181,8 +182,11 @@ public class InformationServiceImpl implements InformationService {
                     totalTime1 = fZ+"分钟";
                 }
                 int time = Integer.parseInt(studyMapper.selectById(information.getDataId()).getTime());
-                int time1 = (int) (time * 0.6);
-                int process = iST / time1;
+//                int time1 = (int) (time * 0.6);
+                int process = iST * 100 / time;
+                if (process >= 100){
+                    process = 100;
+                }
                 map.put("process", process);
                 value.add(map);
             }
@@ -197,12 +201,6 @@ public class InformationServiceImpl implements InformationService {
     public int insert(Information information) {
 
         return informationMapper.insert(information);
-    }
-
-    @Override
-    public int update(Integer userId, Integer dataId,Integer totalTime,Integer studyTime) {
-
-        return informationMapper.update(userId,dataId,totalTime,studyTime);
     }
 
     @Override
@@ -326,8 +324,11 @@ public class InformationServiceImpl implements InformationService {
         }
 //        int process = studyTime / (time * 60) * 100;
         informationInVo.setStudyTime(studyTime1);
-        int time1 = (int) (time * 0.6);
-        int process = iST / time1;
+//        int time1 = (int) (time * 0.6);
+        int process = iST * 100 / time;
+        if (process >= 100){
+            process = 100;
+        }
 //        System.out.println(studyTime+"======="+time+"======"+process);
 
         informationInVo.setProcess(process);
@@ -368,5 +369,30 @@ public class InformationServiceImpl implements InformationService {
         informationInVo.setProcess(process);
 //        informationAllVo.setInformationInVo(informationInVo);
         return informationAllVo;
+    }
+
+    @Override
+    public Integer addNewStudyRecord(Integer userId, Integer dataId, Integer studyTime) {
+
+        //判断是否存在该条学习记录
+        LambdaQueryWrapper<Information> lambdaQueryWrapper = Wrappers.lambdaQuery(Information.class);
+        lambdaQueryWrapper.eq(Information::getUserId,userId).eq(Information::getDataId,dataId);
+        Information information = informationMapper.selectOne(lambdaQueryWrapper);
+        Information newInformationRecord = new Information();
+        if (information != null) { //存在  更新study_time逻辑
+            int s = Integer.parseInt(information.getStudyTime());
+            s = s + studyTime;
+            newInformationRecord.setStudyTime(String.valueOf(s));
+            informationMapper.update(newInformationRecord, lambdaQueryWrapper);
+        } else { //不存在 插入逻辑
+            newInformationRecord.setUserId(userId);
+            newInformationRecord.setDepartmentId(userMapper.selectById(userId).getDepartmentId());
+            newInformationRecord.setSubjectId(studyMapper.selectById(dataId).getSubjectid());
+            newInformationRecord.setTypeId(studyMapper.selectById(dataId).getTypeid());
+            newInformationRecord.setDataId(dataId);
+            newInformationRecord.setStudyTime(studyTime.toString());
+            informationMapper.insert(newInformationRecord);
+        }
+        return 1;
     }
 }
