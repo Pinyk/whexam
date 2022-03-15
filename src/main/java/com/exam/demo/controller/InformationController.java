@@ -30,6 +30,7 @@ public class InformationController {
     @ApiOperation(notes = "wxn",value = "组合查询")
     public WebResult<PageVo<InformationVo>> search(@ApiParam(name="前端查询条件 InformationParam 查询条件实体类")
                                                    @RequestBody InformationParam informationParam){
+
         return WebResult.<PageVo<InformationVo>>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
@@ -65,27 +66,30 @@ public class InformationController {
     @ApiOperation(notes = "wxn",value = "更新课程信息接口")
     public WebResult<Integer> insert(@RequestParam @ApiParam(name = "userId") Integer userId,
                                      @RequestParam @ApiParam(name = "dataId") Integer dataId,
-                                     @RequestParam @ApiParam(name = "studyTime") double studyTime){
+                                     @RequestParam @ApiParam(name = "studyTime") int studyTime){
         Information information = new Information();
+        InformationAllVo info = informationService.findTime(userId, dataId);
         InfoAddVo infoAddVo = informationService.find(dataId);
-        information.setUserId(userId);
-        information.setDepartmentId(infoAddVo.getDepartmentId());
-        information.setSubjectId(infoAddVo.getSubjectId());
-        information.setTypeId(infoAddVo.getTypeId());
-        information.setDataId(dataId);
-        double totalTime = informationService.findTime(userId);
-        totalTime = totalTime * 60 + studyTime;
-        totalTime = totalTime / 60;
-        information.setTotalTime(totalTime);
-        double studyT = studyTime/60;
-        information.setStudyTime(studyT);
+        if (info != null){
+            int totalTime = info.getTotalTime();
+            information.setTotalTime(totalTime);
+            information.setStudyTime(studyTime);
+        }else{
+            information.setTotalTime(studyTime);
+            information.setStudyTime(studyTime);
+            information.setUserId(userId);
+            information.setDepartmentId(infoAddVo.getDepartmentId());
+            information.setSubjectId(infoAddVo.getSubjectId());
+            information.setTypeId(infoAddVo.getTypeId());
+            information.setDataId(dataId);
+        }
         String time = infoAddVo.getTime();
-        double time1 = Double.parseDouble(time);
+        int time1 = Integer.parseInt(time);
         int process;
-        if (studyT >= time1){
+        if (studyTime/60 >= time1){
             process = 100;
         }else {
-            process = (int) (studyT / time1);
+            process = studyTime / time1;
         }
         information.setProcess(process);
         return WebResult.<Integer>builder()

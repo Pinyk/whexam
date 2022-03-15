@@ -9,7 +9,7 @@ import lombok.Data;
 public class InformationVo {
 
     @ApiModelProperty(value = "用户主键")
-    private int id;
+    private int userId;
 
     @ApiModelProperty(value = "用户名")
     private String username;
@@ -24,6 +24,6 @@ public class InformationVo {
     private String identity;
 
     @ApiModelProperty(value = "用户学习时长")
-    private double totalTime;
+    private int totalTime;
 
 }

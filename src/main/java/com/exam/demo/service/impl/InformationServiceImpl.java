@@ -8,14 +8,12 @@ import com.exam.demo.entity.Information;
 import com.exam.demo.entity.Study;
 import com.exam.demo.entity.User;
 import com.exam.demo.mapper.*;
-import com.exam.demo.results.WebResult;
 import com.exam.demo.results.vo.*;
 import com.exam.demo.service.InformationService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -57,6 +55,7 @@ public class InformationServiceImpl implements InformationService {
             if (!users.isEmpty()){
                 LinkedList<Integer> userIds = new LinkedList<>();
                 for (User user : users){
+//                    System.out.println("=============="+user.getId());
                     userIds.add(user.getId());
                 }
                 informationWrapper.in(Information::getUserId, userIds);
@@ -69,8 +68,17 @@ public class InformationServiceImpl implements InformationService {
         informationVo.setUsername(username);
         informationVo.setDepartment(department);
         informationVo.setNums(nums);
+        int totalTime = 0;
+        if (!informationList.isEmpty()){
+            for (Information info : informationList){
+                LinkedHashMap<String, Object> map = new LinkedHashMap<>();
+                map.put("studyTime", info.getStudyTime());
+                totalTime += info.getStudyTime();
+            }
+        }
         for (Information info : informationList){
-            InformationVo informationVo1 = copy(informationVo,info);
+            InformationVo informationVo1  = copy(informationVo,info);
+            informationVo1.setTotalTime(totalTime);
             informationVos.add(informationVo1);
         }
         return PageVo.<InformationVo>builder()
@@ -125,7 +133,7 @@ public class InformationServiceImpl implements InformationService {
             informationAllVo.setNums(user.getNums());
             informationAllVo.setIdentity(user.getIdentity());
         }
-        Double totalTime = 0.0;
+        int totalTime = 0;
         List<Information> informationList = informationMapper.selectList(lambdaQueryWrapper);
         if (!informationList.isEmpty()) {
             List<LinkedHashMap<String, Object>> value = new LinkedList<>();
@@ -137,7 +145,11 @@ public class InformationServiceImpl implements InformationService {
                 map.put("time", studyMapper.selectById(information.getDataId()).getTime());
                 map.put("studyTime", information.getStudyTime());
                 totalTime += information.getStudyTime();
-                map.put("process", information.getProcess());
+                int studyTime = information.getStudyTime();
+                int time = Integer.parseInt(studyMapper.selectById(information.getDataId()).getTime());
+                int time1 = (int) (time * 0.6);
+                int process = studyTime / time1;
+                map.put("process", process);
                 value.add(map);
             }
             informationAllVo.setTotalTime(totalTime);
@@ -165,11 +177,27 @@ public class InformationServiceImpl implements InformationService {
     }
 
     @Override
-    public double findTime(Integer userId) {
+    public InformationAllVo findTime(Integer userId,Integer dataId) {
         LambdaQueryWrapper<Information> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        lambdaQueryWrapper.eq(Information::getUserId, userId);
+        lambdaQueryWrapper.eq(Information::getUserId, userId)
+                          .eq(Information::getDataId,dataId);
+        int totalTime = 0;
         InformationAllVo informationAllVo = new InformationAllVo();
-        return informationAllVo.getTotalTime();
+        List<Information> informationList = informationMapper.selectList(lambdaQueryWrapper);
+        if (!informationList.isEmpty()) {
+            List<LinkedHashMap<String, Object>> value = new LinkedList<>();
+            for (Information information : informationList) {
+                LinkedHashMap<String, Object> map = new LinkedHashMap<>();
+                int studyTime = information.getStudyTime();
+                totalTime = information.getTotalTime() + studyTime;
+                map.put("studyTime", studyTime);
+                map.put("process", information.getProcess());
+                value.add(map);
+            }
+            informationAllVo.setTotalTime(totalTime);
+            informationAllVo.setValue(value);
+        }
+        return informationAllVo;
     }
 
     private InformationVo copy(InformationVo informationVo,Information information){
@@ -178,7 +206,7 @@ public class InformationServiceImpl implements InformationService {
         if (userId != 0){
             information.setUserId(userId);
             informationVo.setIdentity(userMapper.selectById(userId).getIdentity());
-            informationVo.setTotalTime(userMapper.selectById(userId).getTime());
+            informationVo.setTotalTime((int) userMapper.selectById(userId).getTime());
         }
         return informationVo;
     }
@@ -189,8 +217,8 @@ public class InformationServiceImpl implements InformationService {
         Integer subjectId = information.getSubjectId();
         Integer typeId = information.getTypeId();
         Integer dataId = information.getDataId();
-        double studyTime = information.getStudyTime();
-        int process = information.getProcess();
+        int studyTime = information.getStudyTime();
+        int time = Integer.parseInt(studyMapper.selectById(dataId).getTime());
         if (subjectId != 0){
             informationInVo.setSubject(subjectMapper.selectById(subjectId).getName());
         }
@@ -200,7 +228,12 @@ public class InformationServiceImpl implements InformationService {
         if (dataId != 0){
             informationInVo.setTime(studyMapper.selectById(dataId).getTime());
         }
+//        int process = studyTime / (time * 60) * 100;
         informationInVo.setStudyTime(studyTime);
+        int time1 = (int) (time * 0.6);
+        int process = studyTime / time1;
+//        System.out.println(studyTime+"======="+time+"======"+process);
+
         informationInVo.setProcess(process);
         return informationInVo;
     }
@@ -213,8 +246,8 @@ public class InformationServiceImpl implements InformationService {
         Integer typeId = information.getTypeId();
         Integer dataId = information.getDataId();
         Integer departmentId = information.getDepartmentId();
-        double totalTime = information.getTotalTime();
-        double studyTime = information.getStudyTime();
+        int totalTime = information.getTotalTime();
+        int studyTime = information.getStudyTime();
         int process = information.getProcess();
         if (userId != 0){
             informationAllVo.setUsername(userMapper.selectById(userId).getName());

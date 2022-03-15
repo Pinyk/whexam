@@ -24,5 +24,5 @@ public interface InformationService {
 
     InfoAddVo find(Integer dataId);
 
-    double findTime(Integer userId);
+    InformationAllVo findTime(Integer userId,Integer dataId);
 }

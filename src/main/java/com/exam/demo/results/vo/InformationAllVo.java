@@ -25,7 +25,7 @@ public class InformationAllVo {
     private String identity;
 
     @ApiModelProperty(value = "用户学习时长")
-    private double totalTime;
+    private int totalTime;
 
     @ApiModelProperty(value = "详情")
     private List<LinkedHashMap<String, Object>> value;

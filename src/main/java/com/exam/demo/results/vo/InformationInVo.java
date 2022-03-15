@@ -18,7 +18,7 @@ public class InformationInVo {
     private String time;
 
     @ApiModelProperty(value = "用户学时")
-    private double studyTime;
+    private int studyTime;
 
     @ApiModelProperty(value = "资料学时占比")
     private int process;
