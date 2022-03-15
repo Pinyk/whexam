@@ -9,7 +9,7 @@
 
         select ej.id, ej.context,ej.answer, ej.subject_id, ej.difficulty, ej.score, ej.img_url ,ej.material_question
         from exam e, exam_judge ej
-        where e.problem_id = ej.id and e.type = 1 and ej.material_question = 0
+        where e.problem_id = ej.id and e.type = 3 and ej.material_question = 0
         and e.testpaper_id = #{testPaperId}
     </select>
 
@@ -25,7 +25,7 @@
     <select id="findSingleSelectionByTestPaperId" parameterType="Integer" resultType="ExamSelect">
         select es.id, es.context, es.selection, es.answer, es.subject_id, es.difficulty,es.score, es.type, es.img_url,es.material_question
         from exam e, exam_select es
-        where e.problem_id = es.id and e.type = 2 and es.material_question = 0
+        where e.problem_id = es.id and e.type = 1 and es.material_question = 0
         and es.type = 1 and e.testpaper_id = #{testPaperId}
     </select>
 
@@ -33,7 +33,7 @@
     <select id="findMultipleSelectionByTestPaperId" parameterType="Integer" resultType="ExamSelect">
         select es.id, es.context, es.selection, es.answer, es.subject_id, es.difficulty,es.score, es.type, es.img_url,es.material_question
         from exam e, exam_select es
-        where e.problem_id = es.id and e.type = 2 and es.material_question = 0
+        where e.problem_id = es.id and e.type = 1 and es.material_question = 0
         and es.type = 2 and e.testpaper_id = #{testPaperId}
     </select>
 
@@ -41,7 +41,7 @@
     <select id="findExamSubjectByTestPaperId" parameterType="Integer" resultType="ExamSubject">
         select es.id, es.context, es.answer,es.subject_id,es.difficulty,es.score, es.img_url,es.material_question
         from exam e, exam_subject es
-        where e.problem_id = es.id and e.type = 3 and es.material_question = 0
+        where e.problem_id = es.id and e.type = 4 and es.material_question = 0
         and e.testpaper_id = #{testPaperId}
     </select>
 
@@ -49,7 +49,7 @@
     <select id="findExamFillBlankByTestPaperId" parameterType="Integer" resultType="ExamFillBlank">
         select efb.id,efb.context, efb.answer,efb.subject_id,efb.difficulty,efb.score, efb.img_url,efb.material_question
         from exam e, exam_fb efb
-        where e.problem_id = efb.id and e.type = 4 and efb.material_question = 0
+        where e.problem_id = efb.id and e.type = 2 and efb.material_question = 0
         and e.testpaper_id = #{testPaperId}
     </select>
     <!--List<List<Object>> findExamMaterialByTestPaperId(Integer testPaperId);-->
@@ -65,7 +65,7 @@
     <select id="findSingleSelectionByExamMaterialId" parameterType="Integer" resultType="ExamSelect">
         select es.id, es.context, es.selection, es.answer, es.subject_id, es.difficulty,es.score, es.type, es.img_url,es.material_question
         from material_problem mp, exam_select es
-        where mp.problem_type = 2 and es.type = 1 and mp.problem_id = es.id
+        where mp.problem_type = 1 and es.type = 1 and mp.problem_id = es.id
         and mp.material_id = #{emId}
     </select>
 
@@ -73,28 +73,28 @@
     <select id="findMultipulSelectionByExamMaterialId" parameterType="Integer" resultType="ExamSelect">
         select es.id, es.context, es.selection, es.answer, es.subject_id, es.difficulty,es.score, es.type, es.img_url,es.material_question
         from material_problem mp, exam_select es
-        where mp.problem_type = 2 and es.type = 2 and mp.problem_id = es.id
+        where mp.problem_type = 1 and es.type = 2 and mp.problem_id = es.id
         and mp.material_id = #{emId}
     </select>
     <!--List<Object> findExamJudgeByExamMaterialId(Integer emId);-->
     <select id="findExamJudgeByExamMaterialId" parameterType="Integer" resultType="ExamJudge">
         select ej.id, ej.context,ej.answer, ej.subject_id, ej.difficulty, ej.score, ej.img_url ,ej.material_question
         from material_problem mp, exam_judge ej
-        where mp.problem_type = 1 and mp.problem_id = ej.id
+        where mp.problem_type = 3 and mp.problem_id = ej.id
         and mp.material_id = #{emId}
     </select>
     <!--List<Object> findExamSubjectByExamMaterialId(Integer emId);-->
     <select id="findExamSubjectByExamMaterialId" parameterType="Integer" resultType="ExamSubject">
         select es.id, es.context, es.answer,es.subject_id,es.difficulty,es.score, es.img_url,es.material_question
         from material_problem mp, exam_subject es
-        where mp.problem_type = 3 and mp.problem_id = es.id
+        where mp.problem_type = 4 and mp.problem_id = es.id
         and mp.material_id = #{emId}
     </select>
     <!--List<Object> findExamFillBlankByExamMaterialId(Integer emId);-->
     <select id="findExamFillBlankByExamMaterialId" parameterType="Integer" resultType="ExamFillBlank">
         select efb.id,efb.context, efb.answer,efb.subject_id,efb.difficulty,efb.score, efb.img_url,efb.material_question
         from material_problem mp, exam_fb efb
-        where mp.problem_type = 4 and mp.material_id = efb.id
+        where mp.problem_type = 2 and mp.material_id = efb.id
         and mp.material_id = #{emId}
     </select>
     <!--TestPaper findExamIsRepeatByTestPaperId(Integer testPaperId);-->

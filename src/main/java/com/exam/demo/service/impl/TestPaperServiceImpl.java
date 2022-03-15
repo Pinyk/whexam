@@ -190,7 +190,6 @@ public class TestPaperServiceImpl implements TestPaperService {
         List<Map<String,Object>> testpapers = new ArrayList<>();
 
         Map<String,Object> map = new LinkedHashMap<>();
-
         map.put("singleSelections", change(examMapper.findSingleSelectionByTestPaperId(testPaperId)));
         map.put("multipleSelections", change(examMapper.findMultipleSelectionByTestPaperId(testPaperId)));
         map.put("examFillBlank", examMapper.findExamFillBlankByTestPaperId(testPaperId));
