@@ -179,8 +179,11 @@ public class InformationServiceImpl implements InformationService {
                     totalTime1 = fZ+"分钟";
                 }
                 int time = Integer.parseInt(studyMapper.selectById(information.getDataId()).getTime());
-                int time1 = (int) (time * 0.6);
-                int process = iST / time1;
+//                int time1 = (int) (time * 0.6);
+                int process = iST * 100 / time;
+                if (process >= 100){
+                    process = 100;
+                }
                 map.put("process", process);
                 value.add(map);
             }
@@ -301,8 +304,11 @@ public class InformationServiceImpl implements InformationService {
         }
 //        int process = studyTime / (time * 60) * 100;
         informationInVo.setStudyTime(studyTime1);
-        int time1 = (int) (time * 0.6);
-        int process = iST / time1;
+//        int time1 = (int) (time * 0.6);
+        int process = iST * 100 / time;
+        if (process >= 100){
+            process = 100;
+        }
 //        System.out.println(studyTime+"======="+time+"======"+process);
 
         informationInVo.setProcess(process);
