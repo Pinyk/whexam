@@ -2,11 +2,8 @@ package com.exam.demo.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.exam.demo.entity.Datatype;
 import com.exam.demo.entity.Study;
-import com.exam.demo.entity.Subject;
 import com.exam.demo.mapper.DatatypeMapper;
 import com.exam.demo.mapper.StudyMapper;
 import com.exam.demo.mapper.SubjectMapper;
@@ -107,13 +104,13 @@ public class StudyServiceImpl implements StudyService {
      * 根据条件查询资料
      * @param name 名称
      * @param beizhu 备注
-     * @param subject 科目
+     * @param subjectId 科目
      * @param currentPage
      * @param pageSize
      * @return
      */
     @Override
-    public PageVo<StudyVo> search(String name, String beizhu, String subject, String type,Integer currentPage, Integer pageSize) {
+    public PageVo<StudyVo> search(String name, String beizhu, Integer subjectId, Integer typeId,Integer currentPage, Integer pageSize) {
         Page<Study> page = new Page<>(currentPage, pageSize);
         LambdaQueryWrapper<Study> wrapperStudy = new LambdaQueryWrapper<>();
         if(!StringUtils.isBlank(name)){
@@ -122,53 +119,12 @@ public class StudyServiceImpl implements StudyService {
         if(!StringUtils.isBlank(beizhu)){
             wrapperStudy.eq(Study::getBeizhu,beizhu);
         }
-        if (!StringUtils.isBlank(subject)) {
-            LambdaQueryWrapper<Subject> subjectWrapper = Wrappers.lambdaQuery(Subject.class);
-            subjectWrapper
-                    .select(Subject::getId)
-                    .like(Subject::getName,subject);
-            List<Subject> subjects = subjectMapper.selectList(subjectWrapper);
-            if (!subjects.isEmpty()) {
-                LinkedList<Integer> subjectIds = new LinkedList<>();
-                for (Subject sub : subjects) {
-                    subjectIds.add(sub.getId());
-                }
-                wrapperStudy.in(Study::getSubjectid, subjectIds);
-            }
-        }
-        if (!StringUtils.isBlank(type)){
-            LambdaQueryWrapper<Datatype> typeWrapper = Wrappers.lambdaQuery(Datatype.class);
-            typeWrapper
-                    .select(Datatype::getId)
-                    .like(Datatype::getName,type);
-            List<Datatype> types = dataTypeMapper.selectList(typeWrapper);
-            if (!types.isEmpty()){
-                LinkedList<Integer> typeIds = new LinkedList<>();
-                for (Datatype dat : types){
-                    typeIds.add(dat.getId());
-                }
-                wrapperStudy.in(Study::getDatatypeid,typeIds);
-            }
-        }
-//        if (!StringUtils.isBlank(type)){
-//            LambdaQueryWrapper<SubjectType> subjectTypeWrapper = Wrappers.lambdaQuery(SubjectType.class);
-//            subjectTypeWrapper
-//                    .select(SubjectType::getId)
-//                    .like(SubjectType::getName,type);
-//            List<SubjectType> subjectTypes = subjectTypeMapper.selectList(subjectTypeWrapper);
-//            if (!subjectTypes.isEmpty()){
-//                LinkedList<Integer> subjectTypeIds = new LinkedList<>();
-//                for (SubjectType sub :subjectTypes){
-//                    subjectTypeIds.add(sub.getId());
-//                }
-//                wrapperStudy.in(Study::getSubjectid,subjectTypeIds);
-//            }
-//        }
+        wrapperStudy.eq(Study::getTypeid,typeId);
+        wrapperStudy.eq(Study::getSubjectid,subjectId);
         LinkedList<StudyVo> studyVos = new LinkedList<>();
         Page<Study> studyPage = studyMapperr.selectPage(page,wrapperStudy);
         List<Study> studyList = studyPage.getRecords();
         StudyVo studyVo = new StudyVo();
-        studyVo.setType(type);
         for (Study s : studyList){
             StudyVo studyVo1 = copy(studyVo,s);
             studyVos.add(studyVo1);
@@ -184,15 +140,16 @@ public class StudyServiceImpl implements StudyService {
         BeanUtils.copyProperties(study,studyVo1);
         int subjectId = study.getSubjectid();
         int dataTypeId = study.getDatatypeid();
+        int typeId = study.getTypeid();
         if (subjectId != 0) {
             studyVo1.setSubject(subjectMapper.selectById(subjectId).getName());
         }
         if (dataTypeId != 0){
             studyVo1.setDatatype(dataTypeMapper.selectById(dataTypeId).getName());
         }
-//        if (typeId != 0){
-//            studyVo.setSubject(subjectTypeMapper.selectById(typeId).getName());
-//        }
+        if (typeId != 0){
+            studyVo1.setSubject_type(subjectTypeMapper.selectById(typeId).getName());
+        }
         return studyVo1;
     }
 }

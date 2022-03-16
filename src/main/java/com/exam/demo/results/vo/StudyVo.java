@@ -20,7 +20,7 @@ public class StudyVo implements Serializable {
     private String subject;
 
     @ApiModelProperty(value = "科目类型")
-    private String type;
+    private String subject_type;
 
     @ApiModelProperty(value = "资料学时")
     private String time;

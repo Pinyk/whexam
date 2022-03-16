@@ -14,11 +14,11 @@ public class StudyParam {
     @ApiModelProperty(value = "备注",dataType = "String")
     private String beizhu;
 
-    @ApiModelProperty(value = "所属科目",dataType = "String")
-    private String subject;
+    @ApiModelProperty(value = "所属科目")
+    private Integer subjectId;
 
     @ApiModelProperty(value = "科目类型")
-    private String type;
+    private Integer typeId;
 
     @ApiModelProperty(value="当前页码")
     private Integer currentPage;

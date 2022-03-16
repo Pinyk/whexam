@@ -26,6 +26,6 @@ public interface StudyService {
 
     Study findById(int id);
 
-    PageVo<StudyVo> search(String name,String beizhu,String subject,String type,Integer currentPage, Integer pageSize);
+    PageVo<StudyVo> search(String name,String beizhu,Integer subjectId, Integer typeId,Integer currentPage, Integer pageSize);
 
 }

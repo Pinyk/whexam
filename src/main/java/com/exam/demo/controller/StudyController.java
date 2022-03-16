@@ -54,8 +54,8 @@ public class StudyController {
         return WebResult.<PageVo<StudyVo>>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
-                .data(studyService.search(studyParam.getName(),studyParam.getBeizhu(),studyParam.getSubject(),
-                        studyParam.getType(),studyParam.getCurrentPage(),studyParam.getPageSize()))
+                .data(studyService.search(studyParam.getName(),studyParam.getBeizhu(),studyParam.getSubjectId(),
+                        studyParam.getTypeId(),studyParam.getCurrentPage(),studyParam.getPageSize()))
                 .build();
     }
 
