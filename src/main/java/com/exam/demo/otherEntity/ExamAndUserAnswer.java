@@ -3,6 +3,7 @@ package com.exam.demo.otherEntity;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
 
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -16,15 +17,15 @@ public class ExamAndUserAnswer {
 
     private double passScore;
 
-    private double time; //考试时间min
+    private Integer time; //考试时间min
 
     private Integer subject; //id
 
-    private Integer department;
+    private String department;
 
-    private String startTime;
+    private Date startTime;
 
-    private String endTime;
+    private Date endTime;
 
     private String repeat;  //boolean or String
 

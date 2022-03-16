@@ -3,6 +3,7 @@ package com.exam.demo.entity;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import io.swagger.models.auth.In;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,7 +19,7 @@ import lombok.NoArgsConstructor;
 public class Information {
 
     @ApiModelProperty(value = "用户")
-    private int userId;
+    private Integer userId;
 
     @ApiModelProperty(value = "用户所属部门")
     private Integer departmentId;
@@ -39,5 +40,5 @@ public class Information {
     private String studyTime;
 
     @ApiModelProperty(value = "资料学时占比")
-    private int process;
+    private Integer process;
 }

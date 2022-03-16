@@ -13,6 +13,7 @@ import com.exam.demo.otherEntity.*;
 import com.exam.demo.params.*;
 import com.exam.demo.results.vo.TestpaperVo;
 import com.exam.demo.service.*;
+import info.debatty.java.stringsimilarity.Jaccard;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.PropertyMatches;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -115,9 +116,10 @@ public class ExamServiceImpl implements ExamService {
         return null;
     }
 
+
     @Override
     public Map<String, Object> submitTest(JSONObject jsonObject) {
-        Double totalScore = 0.0;
+        double totalScore = 0.0;
 
         LambdaQueryWrapper<Score> lambdaQueryWrapper = Wrappers.lambdaQuery(Score.class);
         lambdaQueryWrapper
@@ -125,137 +127,25 @@ public class ExamServiceImpl implements ExamService {
                 .eq(Score::getUserId,jsonObject.getInteger("userId"));
         Score score = scoreMapper.selectOne(lambdaQueryWrapper);
         //score为null说明执行插入逻辑
+        Integer testPaperId = jsonObject.getInteger("testPaperId");
+        Integer userId = jsonObject.getInteger("userId");
         if (score == null) {
             //选择题
             //单选题
-            JSONArray singleSelections = jsonObject.getJSONArray("singleSelections");
-            if (!singleSelections.isEmpty()) {
-                for (Object singleSelection : singleSelections) {
-                    ExamSelect examSelect = examSelectMapper.selectById(((JSONObject) singleSelection).getInteger("id"));
-                    Scoredata scoredata = new Scoredata();
-                    if (examSelect.getAnswer().equals(((JSONObject) singleSelection).getString("userAnswer"))) {
-                        totalScore += examSelect.getScore();
-                        scoredata.setScore(examSelect.getScore());
-                    } else {
-                        scoredata.setScore(0.0);
-                    }
-                    scoredata.setTestpaperId(jsonObject.getInteger("testPaperId"));
-                    scoredata.setUserId(jsonObject.getInteger("userId"));
-                    scoredata.setType(1);
-                    scoredata.setProblemId(((JSONObject) singleSelection).getInteger("id"));
-                    scoredata.setAnswer(((JSONObject) singleSelection).getString("userAnswer"));
-                    scoreDataMapper.insert(scoredata);
-                }
-            }
+            totalScore = submitTestOfSingleSelections(jsonObject, totalScore, true, false, testPaperId, userId);
             //多选题
-            JSONArray multipleSelections = jsonObject.getJSONArray("multipleSelections");
-            if (!multipleSelections.isEmpty()) {
-                for (Object multipleSelection : multipleSelections) {
-                    ExamSelect examSelect = examSelectMapper.selectById(((JSONObject) multipleSelection).getInteger("id"));
-                    Scoredata scoredata = new Scoredata();
-                    String userAnswer = ((JSONObject) multipleSelection).getString("userAnswer");
-                    if (!userAnswer.isEmpty()) {
-                        //处理用户的多选题答案
-                        char[] chars = userAnswer.toCharArray();
-                        Arrays.sort(chars);
-                        //处理题库中的多选题答案
-                        String[] split = examSelect.getAnswer().split(",");
-                        StringBuffer stringBuffer = new StringBuffer();
-                        for (String s : split) {
-                            stringBuffer.append(s);
-                        }
-                        if (new String(chars).equals(stringBuffer.toString())) {
-                            totalScore += examSelect.getScore();
-                            scoredata.setScore(examSelect.getScore());
-                        } else {
-                            scoredata.setScore(0.0);
-                        }
-                        scoredata.setTestpaperId(jsonObject.getInteger("testPaperId"));
-                        scoredata.setUserId(jsonObject.getInteger("userId"));
-                        scoredata.setType(1);
-                        scoredata.setProblemId(((JSONObject) multipleSelection).getInteger("id"));
-                        scoredata.setAnswer(((JSONObject) multipleSelection).getString("userAnswer"));
-                        scoreDataMapper.insert(scoredata);
-                    }
-                }
-            }
+            totalScore = submitTestOfMultipleSelections(jsonObject,totalScore,true,false, testPaperId, userId);
             //填空题
             //未做多空和空串
-            JSONArray examFillBlanks = jsonObject.getJSONArray("examFillBlank");
-            if (!examFillBlanks.isEmpty()) {
-                for (Object examFillBlank : examFillBlanks) {
-                    ExamFillBlank fillBlank = examFillBlankMapper.selectById(((JSONObject) examFillBlank).getInteger("id"));
-                    Scoredata scoredata = new Scoredata();
-                    String userAnswer = ((JSONObject) examFillBlank).getString("userAnswer");
-                    if (userAnswer.equals(fillBlank.getAnswer())) {
-                        totalScore += fillBlank.getScore();
-                        scoredata.setScore(fillBlank.getScore());
-                    } else {
-                        scoredata.setScore(0.0);
-                    }
-                    scoredata.setTestpaperId(jsonObject.getInteger("testPaperId"));
-                    scoredata.setUserId(jsonObject.getInteger("userId"));
-                    scoredata.setType(2);
-                    scoredata.setProblemId(((JSONObject) examFillBlank).getInteger("id"));
-                    scoredata.setAnswer(((JSONObject) examFillBlank).getString("userAnswer"));
-                    scoreDataMapper.insert(scoredata);
-                }
-            }
+            totalScore = submitTestOfExamFillBlanks(jsonObject,totalScore,true,false, testPaperId, userId);
             //判断题
             //前端传0 1
-            JSONArray examJudges = jsonObject.getJSONArray("examJudge");
-            if (!examJudges.isEmpty()) {
-                for (Object examJudge : examJudges) {
-                    ExamJudge judge = examJudgeMapper.selectById(((JSONObject) examJudge).getInteger("id"));
-                    Scoredata scoredata = new Scoredata();
-                    Integer userAnswer = ((JSONObject) examJudge).getInteger("userAnswer");
-                    if (userAnswer.equals(judge.getAnswer())) {
-                        totalScore += judge.getScore();
-                        scoredata.setScore(judge.getScore());
-                    } else {
-                        scoredata.setScore(0.0);
-                    }
-                    scoredata.setTestpaperId(jsonObject.getInteger("testPaperId"));
-                    scoredata.setUserId(jsonObject.getInteger("userId"));
-                    scoredata.setType(3);
-                    scoredata.setProblemId(((JSONObject) examJudge).getInteger("id"));
-                    scoredata.setAnswer(((JSONObject) examJudge).getString("userAnswer"));
-                    scoreDataMapper.insert(scoredata);
-                }
-            }
+            totalScore = submitTestOfExamJudges(jsonObject,totalScore,true,false, testPaperId, userId);
             //主观题
-            JSONArray examSubjects = jsonObject.getJSONArray("examSubject");
-            if (!examSubjects.isEmpty()) {
-                for (Object examSubject : examSubjects) {
-                    ExamSubject subject = examSubjectMapper.selectById(((JSONObject) examSubject).getInteger("id"));
-                    Scoredata scoredata = new Scoredata();
-                    totalScore += subject.getScore();
-                    scoredata.setScore(subject.getScore());
-                    scoredata.setTestpaperId(jsonObject.getInteger("testPaperId"));
-                    scoredata.setUserId(jsonObject.getInteger("userId"));
-                    scoredata.setType(4);
-                    scoredata.setProblemId(((JSONObject) examSubject).getInteger("id"));
-                    scoredata.setAnswer(((JSONObject) examSubject).getString("userAnswer"));
-                    scoreDataMapper.insert(scoredata);
-                }
-            }
+            totalScore = submitTestOfExamSubjects(jsonObject,totalScore,true,false, testPaperId, userId);
             //材料题
-            JSONArray examMaterials = jsonObject.getJSONArray("examMaterial");
-            if (!examMaterials.isEmpty()) {
-                for (Object examMaterial : examMaterials) {
-                    ExamMaterial material = examMaterialMapper.selectById(((JSONObject) examMaterial).getInteger("id"));
-                    Scoredata scoredata = new Scoredata();
-                    Double materialTotalScore = examMaterialService.getMaterialTotalScore(material.getId());
-                    scoredata.setScore(materialTotalScore);
-                    totalScore += materialTotalScore;
-                    scoredata.setTestpaperId(jsonObject.getInteger("testPaperId"));
-                    scoredata.setUserId(jsonObject.getInteger("userId"));
-                    scoredata.setType(5);
-                    scoredata.setProblemId(((JSONObject) examMaterial).getInteger("id"));
-                    scoredata.setAnswer(((JSONObject) examMaterial).getString("userAnswer"));
-                    scoreDataMapper.insert(scoredata);
-                }
-            }
+            totalScore = submitTestOfExamMaterials(jsonObject,totalScore,true,false, testPaperId, userId);
+            System.out.println(totalScore);
             Score scoreRecord = new Score();
             scoreRecord.setTestpaperId(jsonObject.getInteger("testPaperId"));
             scoreRecord.setUserId(jsonObject.getInteger("userId"));
@@ -265,144 +155,263 @@ public class ExamServiceImpl implements ExamService {
         } else { //执行更新逻辑
             //选择题
             //单选题
-            JSONArray singleSelections = jsonObject.getJSONArray("singleSelections");
-            if (!singleSelections.isEmpty()) {
-                for (Object singleSelection : singleSelections) {
-                    ExamSelect examSelect = examSelectMapper.selectById(((JSONObject) singleSelection).getInteger("id"));
-                    Scoredata scoredata = new Scoredata();
-                    if (examSelect.getAnswer().equals(((JSONObject) singleSelection).getString("userAnswer"))) {
-                        totalScore += examSelect.getScore();
-                        scoredata.setScore(examSelect.getScore());
-                    } else {
-                        scoredata.setScore(0.0);
-                    }
-                    scoredata.setAnswer(((JSONObject) singleSelection).getString("userAnswer"));
-                    LambdaQueryWrapper<Scoredata> queryWrapper = new LambdaQueryWrapper<>();
-                    queryWrapper.eq(Scoredata::getTestpaperId,jsonObject.getInteger("testPaperId"))
-                            .eq(Scoredata::getUserId, jsonObject.getInteger("userId"))
-                            .eq(Scoredata::getProblemId,((JSONObject) singleSelection).getInteger("id"));
-                    scoreDataMapper.update(scoredata,queryWrapper);
-                }
-            }
+            totalScore = submitTestOfSingleSelections(jsonObject,totalScore,false,true, testPaperId, userId);
             //多选题
-            JSONArray multipleSelections = jsonObject.getJSONArray("multipleSelections");
-            if (!multipleSelections.isEmpty()) {
-                for (Object multipleSelection : multipleSelections) {
-                    ExamSelect examSelect = examSelectMapper.selectById(((JSONObject) multipleSelection).getInteger("id"));
-                    Scoredata scoredata = new Scoredata();
-                    String userAnswer = ((JSONObject) multipleSelection).getString("userAnswer");
-                    if (!userAnswer.isEmpty()) {
-                        //处理用户的多选题答案
-                        char[] chars = userAnswer.toCharArray();
-                        Arrays.sort(chars);
-                        //处理题库中的多选题答案
-                        String[] split = examSelect.getAnswer().split(",");
-                        StringBuffer stringBuffer = new StringBuffer();
-                        for (String s : split) {
-                            stringBuffer.append(s);
-                        }
-                        if (new String(chars).equals(stringBuffer.toString())) {
-                            totalScore += examSelect.getScore();
-                            scoredata.setScore(examSelect.getScore());
-                            scoredata.setAnswer(userAnswer);
-                        } else {
-                            scoredata.setScore(0.0);
-                            scoredata.setAnswer(userAnswer);
-                        }
-                        LambdaQueryWrapper<Scoredata> queryWrapper = new LambdaQueryWrapper<>();
-                        queryWrapper.eq(Scoredata::getTestpaperId,jsonObject.getInteger("testPaperId"))
-                                .eq(Scoredata::getUserId, jsonObject.getInteger("userId"))
-                                .eq(Scoredata::getProblemId,((JSONObject) multipleSelection).getInteger("id"));
-                        scoreDataMapper.update(scoredata,queryWrapper);
-                    }
-                }
-            }
+            totalScore = submitTestOfMultipleSelections(jsonObject,totalScore,false,true, testPaperId, userId);
             //填空题
             //未做多空和空串
-            JSONArray examFillBlanks = jsonObject.getJSONArray("examFillBlank");
-            if (!examFillBlanks.isEmpty()) {
-                for (Object examFillBlank : examFillBlanks) {
-                    ExamFillBlank fillBlank = examFillBlankMapper.selectById(((JSONObject) examFillBlank).getInteger("id"));
-                    Scoredata scoredata = new Scoredata();
-                    String userAnswer = ((JSONObject) examFillBlank).getString("userAnswer");
-                    if (userAnswer.equals(fillBlank.getAnswer())) {
-                        totalScore += fillBlank.getScore();
-                        scoredata.setScore(fillBlank.getScore());
-                        scoredata.setAnswer(userAnswer);
-                    } else {
-                        scoredata.setScore(0.0);
-                        scoredata.setAnswer(userAnswer);
-                    }
-                    LambdaQueryWrapper<Scoredata> queryWrapper = new LambdaQueryWrapper<>();
-                    queryWrapper.eq(Scoredata::getTestpaperId,jsonObject.getInteger("testPaperId"))
-                            .eq(Scoredata::getUserId, jsonObject.getInteger("userId"))
-                            .eq(Scoredata::getProblemId,((JSONObject) examFillBlank).getInteger("id"));
-                    scoreDataMapper.update(scoredata,queryWrapper);
-                }
-            }
+            totalScore = submitTestOfExamFillBlanks(jsonObject,totalScore,false,true, testPaperId, userId);
             //判断题
             //前端传0 1
-            JSONArray examJudges = jsonObject.getJSONArray("examJudge");
-            if (!examJudges.isEmpty()) {
-                for (Object examJudge : examJudges) {
-                    ExamJudge judge = examJudgeMapper.selectById(((JSONObject) examJudge).getInteger("id"));
-                    Scoredata scoredata = new Scoredata();
-                    Integer userAnswer = ((JSONObject) examJudge).getInteger("userAnswer");
-                    if (userAnswer.equals(judge.getAnswer())) {
-                        totalScore += judge.getScore();
-                        scoredata.setScore(judge.getScore());
-                        scoredata.setAnswer(userAnswer.toString());
-                    } else {
-                        scoredata.setScore(0.0);
-                        scoredata.setAnswer(userAnswer.toString());
-                    }
-                    LambdaQueryWrapper<Scoredata> queryWrapper = new LambdaQueryWrapper<>();
-                    queryWrapper.eq(Scoredata::getTestpaperId,jsonObject.getInteger("testPaperId"))
-                            .eq(Scoredata::getUserId, jsonObject.getInteger("userId"))
-                            .eq(Scoredata::getProblemId,((JSONObject) examJudge).getInteger("id"));
-                    scoreDataMapper.update(scoredata,queryWrapper);
-                }
-            }
+            totalScore = submitTestOfExamJudges(jsonObject,totalScore,false,true, testPaperId, userId);
             //主观题
-            JSONArray examSubjects = jsonObject.getJSONArray("examSubject");
-            if (!examSubjects.isEmpty()) {
-                for (Object examSubject : examSubjects) {
-                    ExamSubject subject = examSubjectMapper.selectById(((JSONObject) examSubject).getInteger("id"));
-                    Scoredata scoredata = new Scoredata();
-                    totalScore += subject.getScore();
-                    scoredata.setScore(subject.getScore());
-                    LambdaQueryWrapper<Scoredata> queryWrapper = new LambdaQueryWrapper<>();
-                    queryWrapper.eq(Scoredata::getTestpaperId,jsonObject.getInteger("testPaperId"))
-                            .eq(Scoredata::getUserId, jsonObject.getInteger("userId"))
-                            .eq(Scoredata::getProblemId,((JSONObject) examSubject).getInteger("id"));
-                    scoreDataMapper.update(scoredata,queryWrapper);
-                }
-            }
+            totalScore = submitTestOfExamSubjects(jsonObject,totalScore,false,true, testPaperId, userId);
             //材料题
-            JSONArray examMaterials = jsonObject.getJSONArray("examMaterial");
-            if (!examMaterials.isEmpty()) {
-                for (Object examMaterial : examMaterials) {
-                    ExamMaterial material = examMaterialMapper.selectById(((JSONObject) examMaterial).getInteger("id"));
-                    Scoredata scoredata = new Scoredata();
-                    Double materialTotalScore = examMaterialService.getMaterialTotalScore(material.getId());
-                    scoredata.setScore(materialTotalScore);
-                    totalScore += materialTotalScore;
-                    LambdaQueryWrapper<Scoredata> queryWrapper = new LambdaQueryWrapper<>();
-                    queryWrapper.eq(Scoredata::getTestpaperId,jsonObject.getInteger("testPaperId"))
-                            .eq(Scoredata::getUserId, jsonObject.getInteger("userId"))
-                            .eq(Scoredata::getProblemId,((JSONObject) examMaterial).getInteger("id"));
-                    scoreDataMapper.update(scoredata,queryWrapper);
-                }
-            }
+            totalScore = submitTestOfExamMaterials(jsonObject,totalScore,false,true, testPaperId, userId);
+
             LambdaQueryWrapper<Score> queryWrapper = new LambdaQueryWrapper<>();
             queryWrapper.eq(Score::getId, score.getId());
             Score score1 = new Score();
             score1.setScorenum(totalScore);
             scoreMapper.update(score1,queryWrapper);
         }
+        System.out.println(totalScore);
         JSONObject jsonObject1 = new JSONObject(new LinkedHashMap<>());
         jsonObject1.put("totalScore", totalScore);
         return jsonObject1;
+    }
+
+    private double submitTestOfSingleSelections(JSONObject jsonObject, double totalScore, boolean isInsert, boolean isUpdate, Integer testPaperId, Integer userId) {
+        JSONArray singleSelections = jsonObject.getJSONArray("singleSelections");
+        if (!singleSelections.isEmpty()) {
+            for (Object singleSelection : singleSelections) {
+                ExamSelect examSelect = examSelectMapper.selectById(((JSONObject) singleSelection).getInteger("id"));
+                Scoredata scoredata = new Scoredata();
+                if (examSelect.getAnswer().equals(((JSONObject) singleSelection).getString("userAnswer"))) {
+                    totalScore += examSelect.getScore();
+                    scoredata.setScore(examSelect.getScore());
+                } else {
+                    scoredata.setScore(0.0);
+                }
+                if (isInsert) {
+                    scoredata.setTestpaperId(testPaperId);
+                    scoredata.setUserId(userId);
+                    scoredata.setType(1);
+                    scoredata.setProblemId(((JSONObject) singleSelection).getInteger("id"));
+                    scoredata.setAnswer(((JSONObject) singleSelection).getString("userAnswer"));
+                    scoreDataMapper.insert(scoredata);
+                }
+                if (isUpdate) {
+                    scoredata.setAnswer(((JSONObject) singleSelection).getString("userAnswer"));
+                    LambdaQueryWrapper<Scoredata> queryWrapper = new LambdaQueryWrapper<>();
+                    queryWrapper.eq(Scoredata::getTestpaperId,testPaperId)
+                            .eq(Scoredata::getUserId, userId)
+                            .eq(Scoredata::getProblemId,((JSONObject) singleSelection).getInteger("id"));
+                    scoreDataMapper.update(scoredata,queryWrapper);
+                }
+            }
+        }
+        return totalScore;
+    }
+
+    private double submitTestOfMultipleSelections(JSONObject jsonObject, double totalScore, boolean isInsert, boolean isUpdate, Integer testPaperId, Integer userId) {
+        JSONArray multipleSelections = jsonObject.getJSONArray("multipleSelections");
+        if (!multipleSelections.isEmpty()) {
+            for (Object multipleSelection : multipleSelections) {
+                ExamSelect examSelect = examSelectMapper.selectById(((JSONObject) multipleSelection).getInteger("id"));
+                Scoredata scoredata = new Scoredata();
+                String userAnswer = ((JSONObject) multipleSelection).getString("userAnswer");
+                if (!userAnswer.isEmpty()) {
+                    //处理用户的多选题答案
+                    char[] chars = userAnswer.toCharArray();
+                    Arrays.sort(chars);
+                    //处理题库中的多选题答案
+                    String[] split = examSelect.getAnswer().split(",");
+                    StringBuffer stringBuffer = new StringBuffer();
+                    for (String s : split) {
+                        stringBuffer.append(s);
+                    }
+                    if (new String(chars).equals(stringBuffer.toString())) {
+                        totalScore += examSelect.getScore();
+                        scoredata.setScore(examSelect.getScore());
+                    } else {
+                        scoredata.setScore(0.0);
+                    }
+                    scoredata.setAnswer(userAnswer);
+                    if (isInsert) {
+                        scoredata.setTestpaperId(testPaperId);
+                        scoredata.setUserId(userId);
+                        scoredata.setType(1);
+                        scoredata.setProblemId(((JSONObject) multipleSelection).getInteger("id"));
+                        scoreDataMapper.insert(scoredata);
+                    }
+                    if (isUpdate) {
+                        LambdaQueryWrapper<Scoredata> queryWrapper = new LambdaQueryWrapper<>();
+                        queryWrapper.eq(Scoredata::getTestpaperId,testPaperId)
+                                .eq(Scoredata::getUserId, userId)
+                                .eq(Scoredata::getProblemId,((JSONObject) multipleSelection).getInteger("id"));
+                        scoreDataMapper.update(scoredata,queryWrapper);
+                    }
+                }
+            }
+        }
+        return totalScore;
+    }
+
+    private double submitTestOfExamFillBlanks(JSONObject jsonObject, double totalScore, boolean isInsert, boolean isUpdate, Integer testPaperId, Integer userId) {
+        JSONArray examFillBlanks = jsonObject.getJSONArray("examFillBlank");
+        if (!examFillBlanks.isEmpty()) {
+            for (Object examFillBlank : examFillBlanks) {
+                ExamFillBlank fillBlank = examFillBlankMapper.selectById(((JSONObject) examFillBlank).getInteger("id"));
+                Scoredata scoredata = new Scoredata();
+                String userAnswer = ((JSONObject) examFillBlank).getString("userAnswer");
+                //判断时候多空
+                if (userAnswer.contains(";")) {
+
+                } else {
+
+                }
+                if (userAnswer.equals(fillBlank.getAnswer())) {
+                    totalScore += fillBlank.getScore();
+                    scoredata.setScore(fillBlank.getScore());
+                } else {
+                    scoredata.setScore(0.0);
+                }
+                if (isInsert) {
+                    scoredata.setTestpaperId(testPaperId);
+                    scoredata.setUserId(userId);
+                    scoredata.setType(2);
+                    scoredata.setProblemId(((JSONObject) examFillBlank).getInteger("id"));
+                    scoredata.setAnswer(userAnswer);
+                    scoreDataMapper.insert(scoredata);
+                }
+                if (isUpdate) {
+                    LambdaQueryWrapper<Scoredata> queryWrapper = new LambdaQueryWrapper<>();
+                    queryWrapper.eq(Scoredata::getTestpaperId,testPaperId)
+                            .eq(Scoredata::getUserId, userId)
+                            .eq(Scoredata::getProblemId,((JSONObject) examFillBlank).getInteger("id"));
+                    scoreDataMapper.update(scoredata,queryWrapper);
+                }
+            }
+        }
+        return totalScore;
+    }
+
+    private double submitTestOfExamJudges(JSONObject jsonObject, double totalScore, boolean isInsert, boolean isUpdate, Integer testPaperId, Integer userId) {
+        JSONArray examJudges = jsonObject.getJSONArray("examJudge");
+        if (!examJudges.isEmpty()) {
+            for (Object examJudge : examJudges) {
+                ExamJudge judge = examJudgeMapper.selectById(((JSONObject) examJudge).getInteger("id"));
+                Scoredata scoredata = new Scoredata();
+                Integer userAnswer = ((JSONObject) examJudge).getInteger("userAnswer");
+                if (userAnswer.equals(judge.getAnswer())) {
+                    totalScore += judge.getScore();
+                    scoredata.setScore(judge.getScore());
+                } else {
+                    scoredata.setScore(0.0);
+                }
+                scoredata.setAnswer(userAnswer.toString());
+                if (isInsert) {
+                    scoredata.setTestpaperId(testPaperId);
+                    scoredata.setUserId(userId);
+                    scoredata.setType(3);
+                    scoredata.setProblemId(((JSONObject) examJudge).getInteger("id"));
+                    scoreDataMapper.insert(scoredata);
+                }
+                if (isUpdate) {
+                    LambdaQueryWrapper<Scoredata> queryWrapper = new LambdaQueryWrapper<>();
+                    queryWrapper.eq(Scoredata::getTestpaperId,testPaperId)
+                            .eq(Scoredata::getUserId, userId)
+                            .eq(Scoredata::getProblemId,((JSONObject) examJudge).getInteger("id"));
+                    scoreDataMapper.update(scoredata,queryWrapper);
+                }
+            }
+        }
+        return totalScore;
+    }
+
+    private double submitTestOfExamSubjects(JSONObject jsonObject, double totalScore, boolean isInsert, boolean isUpdate, Integer testPaperId, Integer userId) {
+        JSONArray examSubjects = jsonObject.getJSONArray("examSubject");
+        if (!examSubjects.isEmpty()) {
+            for (Object examSubject : examSubjects) {
+                ExamSubject subject = examSubjectMapper.selectById(((JSONObject) examSubject).getInteger("id"));
+
+                String answer = examSubjectMapper.selectById(((JSONObject) examSubject).getInteger("id")).getAnswer();
+                String userAnswer = ((JSONObject) examSubject).getString("userAnswer");
+                //相似度匹配算法
+                Jaccard jaccard = new Jaccard(1);
+                double similarity = jaccard.similarity(answer, userAnswer);
+                double getScore = 0.0;
+                if (similarity >= 0.7) {
+                    getScore = subject.getScore();
+                } else if (similarity >=0.5) {
+                    getScore = subject.getScore()*0.6;
+                } else if (similarity >= 0.4) {
+                    getScore = subject.getScore()*0.3;
+                } else if (similarity >= 0.2) {
+                    getScore = subject.getScore()*0.1;
+                } else {
+                    getScore = 0.0;
+                }
+                Scoredata scoredata = new Scoredata();
+                totalScore += getScore;
+                scoredata.setScore(getScore);
+                if (isInsert) {
+                    scoredata.setTestpaperId(testPaperId);
+                    scoredata.setUserId(userId);
+                    scoredata.setType(4);
+                    scoredata.setProblemId(((JSONObject) examSubject).getInteger("id"));
+                    scoredata.setAnswer(((JSONObject) examSubject).getString("userAnswer"));
+                    scoreDataMapper.insert(scoredata);
+                }
+                if (isUpdate) {
+                    LambdaQueryWrapper<Scoredata> queryWrapper = new LambdaQueryWrapper<>();
+                    queryWrapper.eq(Scoredata::getTestpaperId,testPaperId)
+                            .eq(Scoredata::getUserId, userId)
+                            .eq(Scoredata::getProblemId,((JSONObject) examSubject).getInteger("id"));
+                    scoreDataMapper.update(scoredata,queryWrapper);
+                }
+            }
+        }
+        return totalScore;
+    }
+
+    private double submitTestOfExamMaterials(JSONObject jsonObject, double totalScore, boolean isInsert, boolean isUpdate, Integer testPaperId, Integer userId) {
+        JSONArray examMaterials = jsonObject.getJSONArray("examMaterial");
+        if (!examMaterials.isEmpty()) {
+            for (Object examMaterial : examMaterials) {
+                double materialScore = 0.0;
+                //单选题
+                materialScore = submitTestOfSingleSelections((JSONObject) examMaterial, materialScore, isInsert, isUpdate, testPaperId, userId);
+                //多选题
+                materialScore = submitTestOfMultipleSelections((JSONObject) examMaterial, materialScore, isInsert, isUpdate, testPaperId, userId);
+                //判断题
+                materialScore = submitTestOfExamJudges((JSONObject) examMaterial, materialScore, isInsert, isUpdate, testPaperId, userId);
+                //主观题
+                materialScore = submitTestOfExamSubjects((JSONObject) examMaterial, materialScore, isInsert, isUpdate, testPaperId, userId);
+                //填空题
+                materialScore = submitTestOfExamFillBlanks((JSONObject) examMaterial, materialScore, isInsert, isUpdate, testPaperId, userId);
+
+                Scoredata scoredata = new Scoredata();
+                scoredata.setScore(materialScore);
+                totalScore += materialScore;
+                if (isInsert) {
+                    scoredata.setTestpaperId(testPaperId);
+                    scoredata.setUserId(userId);
+                    scoredata.setType(5);
+                    scoredata.setProblemId(((JSONObject) examMaterial).getInteger("id"));
+                    scoreDataMapper.insert(scoredata);
+                }
+                if (isUpdate) {
+                    LambdaQueryWrapper<Scoredata> queryWrapper = new LambdaQueryWrapper<>();
+                    queryWrapper.eq(Scoredata::getTestpaperId,testPaperId)
+                            .eq(Scoredata::getUserId, userId)
+                            .eq(Scoredata::getProblemId,((JSONObject) examMaterial).getInteger("id"));
+                    scoreDataMapper.update(scoredata,queryWrapper);
+                }
+            }
+        }
+        return totalScore;
     }
 
     /**
@@ -573,7 +582,17 @@ public class ExamServiceImpl implements ExamService {
         map.put("passScore",passscore);
         map.put("time",examAndUserAnswer.getTime());
         map.put("subject",subjectMapper.selectById(examAndUserAnswer.getSubject()).getName());
-        map.put("department",departmentMapper.selectById(examAndUserAnswer.getDepartment()).getName());
+
+        String department = examAndUserAnswer.getDepartment();
+        LinkedList<String> list = new LinkedList<>();
+        if (department.contains(" ")) {
+
+            String[] deptIds = department.split(" ");
+            for (String deptId : deptIds) {
+                list.add(departmentMapper.selectById(deptId).getName());
+            }
+        }
+        map.put("department",list);
         map.put("startTime",examAndUserAnswer.getStartTime());
         map.put("endTime",examAndUserAnswer.getEndTime());
         map.put("repeat",examAndUserAnswer.getRepeat());
@@ -583,14 +602,13 @@ public class ExamServiceImpl implements ExamService {
         String ispass = userscore >= passscore ? "true":"false";
         map.put("isPass",ispass);
         map.put("username",userMapper.selectById(userId).getName());
-        map.put("userDepartment",departmentMapper.selectById(examAndUserAnswer.getDepartment()).getName());
+        map.put("userDepartment",departmentMapper.selectById(examAndUserAnswer.getUserDepartment()).getName());
         map.put("userPosition",userMapper.selectById(userId).getPosition());
         map.put("userNums",userMapper.selectById(userId).getNums());
         map.putAll(data.get(0));
         result.add(map);
 //        result.add(data.get(0));
         return result;
-
 
     }
 

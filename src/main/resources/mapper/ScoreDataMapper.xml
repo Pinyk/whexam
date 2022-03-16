@@ -9,27 +9,27 @@
          select ej.id as id,ej.context as context,ej.answer as answer,ej.score as score,sd.answer as useranswer,sd.score as userscore,ej.img_url as imgurl
          from scoredata sd, exam_judge ej
          where sd.testpaper_id = #{testPaperId} and sd.user_id = #{userID}
-                                                      and sd.type = 1 and sd.problem_id = ej.id and ej.material_question = 0;
+                                                      and sd.type = 3 and sd.problem_id = ej.id and ej.material_question = 0;
     </select>
 <!--    List<Object> findSingleSelectionAnswerByTidAndUid(Integer testPaperId, Integer userID);-->
     <select id="findSingleSelectionAnswerByTidAndUid" parameterType="Integer" resultMap="usa">
         select es.id as id,es.context as context,es.selection as selection,es.answer as answer,es.score as score,sd.answer as useranswer,sd.score as userscore,es.img_url as imgurl
         from scoredata sd, exam_select es where sd.testpaper_id = #{testPaperId} and sd.user_id = #{userID}
-        and sd.type = 2 and sd.problem_id = es.id and es.type = 1 and es.material_question = 0;
+        and sd.type = 1 and sd.problem_id = es.id and es.type = 1 and es.material_question = 0;
     </select>
 
 <!--    List<Object> findMultipleSelectionAnswerByTidAndUid(Integer testPaperId, Integer userID);-->
     <select id="findMultipleSelectionAnswerByTidAndUid" parameterType="Integer" resultMap="usa">
         select es.id as id,es.context as context,es.selection as selection,es.answer as answer,es.score as score,sd.answer as useranswer,sd.score as userscore,es.img_url as imgurl
         from scoredata sd, exam_select es where sd.testpaper_id = #{testPaperId} and sd.user_id = #{userID}
-        and sd.type = 2 and sd.problem_id = es.id and es.type = 2 and es.material_question = 0;
+        and sd.type = 1 and sd.problem_id = es.id and es.type = 2 and es.material_question = 0;
     </select>
 
 <!--    List<Object> findExamSubjectAnswerByTidAndUid(Integer testPaperId, Integer userID);-->
     <select id="findExamSubjectAnswerByTidAndUid" parameterType="Integer" resultMap="uoa">
          select es.id as id,es.context as context,es.answer as answer,es.score as score,sd.answer as useranswer,sd.score as userscore,es.img_url as imgurl
          from scoredata sd, exam_subject es where sd.testpaper_id = #{testPaperId} and sd.user_id = #{userID}
-        and sd.type = 3 and sd.problem_id = es.id and es.material_question = 0;
+        and sd.type = 4 and sd.problem_id = es.id and es.material_question = 0;
     </select>
 
 <!--    List<Object> findExamFillBlankAnswerByTidAndUid(Integer testPaperId, Integer userID);-->
@@ -37,7 +37,7 @@
         select efb.id as id,efb.context as context,efb.answer as answer,efb.score as score,sd.answer as useranswer,sd.score as userscore,efb.img_url as imgurl
         from scoredata sd, exam_fb efb
         where sd.testpaper_id = #{testPaperId} and sd.user_id = #{userID}
-        and sd.type = 4 and sd.problem_id = efb.id and efb.material_question = 0;
+        and sd.type = 2 and sd.problem_id = efb.id and efb.material_question = 0;
     </select>
 
     <!--    List<Object> findExamJudgeAnswerByTidAndUid(Integer testPaperId, Integer userID);-->
@@ -46,7 +46,7 @@
          from scoredata sd
          left join material_problem mp on sd.problem_id = mp.problem_id and sd.type = mp.problem_type
          right join exam_judge ej on sd.problem_id = ej.id
-         where sd.type = 1 and sd.testpaper_id = #{testPaperId} and sd.user_id = #{userID}
+         where sd.type = 3 and sd.testpaper_id = #{testPaperId} and sd.user_id = #{userID}
          and mp.material_id = #{emId} and ej.material_question = 1 ;
     </select>
     <!--    List<Object> findSingleSelectionAnswerByTidAndUid(Integer testPaperId, Integer userID);-->
@@ -55,7 +55,7 @@
         from scoredata sd
         left join material_problem mp on sd.problem_id = mp.problem_id and sd.type = mp.problem_type
         right join exam_select es on sd.problem_id = es.id
-        where sd.type = 2 and es.type = 1 and sd.testpaper_id = #{testPaperId} and sd.user_id = #{userID}
+        where sd.type = 1 and es.type = 1 and sd.testpaper_id = #{testPaperId} and sd.user_id = #{userID}
         and mp.material_id = #{emId} and es.material_question = 1 ;
 
     </select>
@@ -66,7 +66,7 @@
         from scoredata sd
         left join material_problem mp on sd.problem_id = mp.problem_id and sd.type = mp.problem_type
         right join exam_select es on sd.problem_id = es.id
-        where sd.type = 2 and es.type = 2 and sd.testpaper_id = #{testPaperId} and sd.user_id = #{userID}
+        where sd.type = 1 and es.type = 2 and sd.testpaper_id = #{testPaperId} and sd.user_id = #{userID}
         and mp.material_id = #{emId} and es.material_question = 1 ;
 
 
@@ -78,7 +78,7 @@
         from scoredata sd
         left join material_problem mp on sd.problem_id = mp.problem_id and sd.type = mp.problem_type
         right join exam_subject es on sd.problem_id = es.id
-        where sd.type = 3 and sd.testpaper_id = #{testPaperId} and sd.user_id = #{userID}
+        where sd.type = 4 and sd.testpaper_id = #{testPaperId} and sd.user_id = #{userID}
         and mp.material_id = #{emId} and es.material_question = 1 ;
 
 
@@ -90,7 +90,7 @@
         from scoredata sd
         left join material_problem mp on sd.problem_id = mp.problem_id and sd.type = mp.problem_type
         right join exam_fb efb on sd.problem_id = efb.id
-        where sd.type = 4 and sd.testpaper_id = #{testPaperId} and sd.user_id = #{userID}
+        where sd.type = 2 and sd.testpaper_id = #{testPaperId} and sd.user_id = #{userID}
         and mp.material_id = #{emId} and efb.material_question = 1 ;
     </select>
 

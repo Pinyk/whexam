@@ -365,6 +365,7 @@ public class InformationServiceImpl implements InformationService {
         } else { //不存在 插入逻辑
             newInformationRecord.setUserId(userId);
             newInformationRecord.setDepartmentId(userMapper.selectById(userId).getDepartmentId());
+            studyMapper.selectById(dataId).getSubjectid();
             newInformationRecord.setSubjectId(studyMapper.selectById(dataId).getSubjectid());
             newInformationRecord.setTypeId(studyMapper.selectById(dataId).getTypeid());
             newInformationRecord.setDataId(dataId);
