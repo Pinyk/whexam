@@ -4,14 +4,12 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.exam.demo.entity.Department;
 import com.exam.demo.entity.Information;
 import com.exam.demo.entity.Study;
 import com.exam.demo.entity.User;
 import com.exam.demo.mapper.*;
 import com.exam.demo.results.vo.*;
 import com.exam.demo.service.InformationService;
-import io.swagger.models.auth.In;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -112,13 +110,14 @@ public class InformationServiceImpl implements InformationService {
                 .select(Information::getSubjectId,Information::getTypeId,Information::
                         getDataId,Information::getStudyTime,Information::getProcess)
                 .like(Information::getUserId,userId);
-        List<Information> informations = informationMapper.selectList(queryWrapper);
+//        List<Information> informations = informationMapper.selectList(queryWrapper);
         LinkedList<Integer> userIds = new LinkedList<>();
-        for (Information info : informations){
-            userIds.add(info.getSubjectId());
-            userIds.add(info.getTypeId());
-            userIds.add(info.getDataId());
-        }
+//        for (Information info : informations){
+//            userIds.add(info.getSubjectId());
+//            userIds.add(info.getTypeId());
+//            userIds.add(info.getDataId());
+            userIds.add(userId);
+//        }
         queryWrapper.in(Information::getUserId,userIds);
         LinkedList<InformationInVo> informationInVos = new LinkedList<>();
         Page<Information> informationPage = informationMapper.selectPage(page,queryWrapper);

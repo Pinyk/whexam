@@ -113,10 +113,10 @@ public class StudyServiceImpl implements StudyService {
         Page<Study> page = new Page<>(currentPage, pageSize);
         LambdaQueryWrapper<Study> wrapperStudy = new LambdaQueryWrapper<>();
         if(!StringUtils.isBlank(name)){
-            wrapperStudy.eq(Study::getName,name);
+            wrapperStudy.like(Study::getName,name);
         }
         if(!StringUtils.isBlank(beizhu)){
-            wrapperStudy.eq(Study::getBeizhu,beizhu);
+            wrapperStudy.like(Study::getBeizhu,beizhu);
         }
         if (subjectId != null){
             wrapperStudy.eq(Study::getSubjectid,subjectId);
