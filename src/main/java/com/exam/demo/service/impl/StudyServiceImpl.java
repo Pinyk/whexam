@@ -48,7 +48,6 @@ public class StudyServiceImpl implements StudyService {
         queryWrapper.eq(Study::getDatatypeid,datatype);
         return studyMapperr.selectList(queryWrapper);
 
-//        return studyMapperr.findStudyByType(datatype);
     }
 
     @Override
@@ -119,14 +118,17 @@ public class StudyServiceImpl implements StudyService {
         if(!StringUtils.isBlank(beizhu)){
             wrapperStudy.eq(Study::getBeizhu,beizhu);
         }
-        wrapperStudy.eq(Study::getTypeid,typeId);
-        wrapperStudy.eq(Study::getSubjectid,subjectId);
+        if (subjectId != null){
+            wrapperStudy.eq(Study::getSubjectid,subjectId);
+        }
+        if (typeId != null){
+            wrapperStudy.eq(Study::getTypeid,typeId);
+        }
         LinkedList<StudyVo> studyVos = new LinkedList<>();
         Page<Study> studyPage = studyMapperr.selectPage(page,wrapperStudy);
         List<Study> studyList = studyPage.getRecords();
-        StudyVo studyVo = new StudyVo();
         for (Study s : studyList){
-            StudyVo studyVo1 = copy(studyVo,s);
+            StudyVo studyVo1 = copy(s);
             studyVos.add(studyVo1);
         }
         return PageVo.<StudyVo>builder()
@@ -136,20 +138,22 @@ public class StudyServiceImpl implements StudyService {
                 .total(studyPage.getTotal())
                 .build();
     }
-    private StudyVo copy(StudyVo studyVo1,Study study) {
-        BeanUtils.copyProperties(study,studyVo1);
+
+    private StudyVo copy(Study study) {
+        StudyVo studyVo = new StudyVo();
+        BeanUtils.copyProperties(study,studyVo);
         int subjectId = study.getSubjectid();
         int dataTypeId = study.getDatatypeid();
         int typeId = study.getTypeid();
         if (subjectId != 0) {
-            studyVo1.setSubject(subjectMapper.selectById(subjectId).getName());
+            studyVo.setSubject(subjectMapper.selectById(subjectId).getName());
         }
         if (dataTypeId != 0){
-            studyVo1.setDatatype(dataTypeMapper.selectById(dataTypeId).getName());
+            studyVo.setDatatype(dataTypeMapper.selectById(dataTypeId).getName());
         }
         if (typeId != 0){
-            studyVo1.setSubject_type(subjectTypeMapper.selectById(typeId).getName());
+            studyVo.setSubject_type(subjectTypeMapper.selectById(typeId).getName());
         }
-        return studyVo1;
+        return studyVo;
     }
 }
