@@ -265,12 +265,6 @@ public class ExamServiceImpl implements ExamService {
                 ExamFillBlank fillBlank = examFillBlankMapper.selectById(((JSONObject) examFillBlank).getInteger("id"));
                 Scoredata scoredata = new Scoredata();
                 String userAnswer = ((JSONObject) examFillBlank).getString("userAnswer");
-                //判断时候多空
-                if (userAnswer.contains(";")) {
-
-                } else {
-
-                }
                 if (userAnswer.equals(fillBlank.getAnswer())) {
                     totalScore += fillBlank.getScore();
                     scoredata.setScore(fillBlank.getScore());
@@ -303,8 +297,8 @@ public class ExamServiceImpl implements ExamService {
             for (Object examJudge : examJudges) {
                 ExamJudge judge = examJudgeMapper.selectById(((JSONObject) examJudge).getInteger("id"));
                 Scoredata scoredata = new Scoredata();
-                Integer userAnswer = ((JSONObject) examJudge).getInteger("userAnswer");
-                if (userAnswer.equals(judge.getAnswer())) {
+                String userAnswer = ((JSONObject) examJudge).getString("userAnswer");
+                if (userAnswer != null && !userAnswer.isEmpty() && userAnswer.equals(judge.getAnswer().toString())) {
                     totalScore += judge.getScore();
                     scoredata.setScore(judge.getScore());
                 } else {

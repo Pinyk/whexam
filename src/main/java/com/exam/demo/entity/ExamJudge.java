@@ -18,7 +18,7 @@ public class ExamJudge extends ExamObject{
     private String context;
 
     @ApiModelProperty(value = "答案")
-    private int answer;
+    private Integer answer;
 
     @ApiModelProperty(value = "所属科目ID")
     private Integer subjectId;

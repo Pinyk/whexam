@@ -14,6 +14,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -45,6 +46,7 @@ public class ExamMaterialServiceImpl implements ExamMaterialService {
     ExamSubjectMapper examSubjectMapper;
     @Autowired
     FileCommit fileCommit;
+
     /**
      * 根据材料题id查询并分页
      * @return
@@ -160,8 +162,7 @@ public class ExamMaterialServiceImpl implements ExamMaterialService {
 
     @Override
     public Map<String, Object> previewById(Integer id) {
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("subjectId", id);
+        JSONObject jsonObject = new JSONObject(new LinkedHashMap<>());
         LambdaQueryWrapper<MaterialProblem> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper.select(MaterialProblem::getProblemId, MaterialProblem::getProblemType);
         if (id != null) {
@@ -183,8 +184,9 @@ public class ExamMaterialServiceImpl implements ExamMaterialService {
                     queryWrapper.select(ExamSelect::getContext,ExamSelect::getSelection,ExamSelect::getScore,
                             ExamSelect::getImgUrl,ExamSelect::getType,ExamSelect::getAnswer).eq(ExamSelect::getId,problemId);
                     ExamSelect examSelect = examSelectMapper.selectOne(queryWrapper);
-                    JSONObject jsonObject1 = new JSONObject();
+                    JSONObject jsonObject1 = new JSONObject(new LinkedHashMap<>());
                     jsonObject1.put("id", problemId);
+                    jsonObject1.put("subject", subjectMapper.selectById(examSelectMapper.selectById(problemId).getSubjectId()).getName());
                     jsonObject1.put("context", examSelect.getContext());
                     jsonObject1.put("selectionA", examSelect.getSelection().split(";")[0]);
                     jsonObject1.put("selectionB", examSelect.getSelection().split(";")[1]);
@@ -205,8 +207,9 @@ public class ExamMaterialServiceImpl implements ExamMaterialService {
                     queryWrapper.select(ExamFillBlank::getContext,ExamFillBlank::getScore,
                             ExamFillBlank::getImgUrl,ExamFillBlank::getAnswer).eq(ExamFillBlank::getId,problemId);
                     ExamFillBlank examFillBlank = examFillBlankMapper.selectOne(queryWrapper);
-                    JSONObject jsonObject1 = new JSONObject();
+                    JSONObject jsonObject1 = new JSONObject(new LinkedHashMap<>());
                     jsonObject1.put("id", problemId);
+                    jsonObject1.put("subject", subjectMapper.selectById(examFillBlankMapper.selectById(problemId).getSubjectId()).getName());
                     jsonObject1.put("context", examFillBlank.getContext());
                     jsonObject1.put("answer", examFillBlank.getAnswer());
                     jsonObject1.put("score", examFillBlank.getScore());
@@ -219,8 +222,9 @@ public class ExamMaterialServiceImpl implements ExamMaterialService {
                     queryWrapper.select(ExamJudge::getContext, ExamJudge::getScore, ExamJudge::getImgUrl, ExamJudge::getAnswer)
                             .eq(ExamJudge::getId,problemId);
                     ExamJudge examJudge = examJudgeMapper.selectOne(queryWrapper);
-                    JSONObject jsonObject1 = new JSONObject();
+                    JSONObject jsonObject1 = new JSONObject(new LinkedHashMap<>());
                     jsonObject1.put("id", problemId);
+                    jsonObject1.put("subject", subjectMapper.selectById(examJudgeMapper.selectById(problemId).getSubjectId()).getName());
                     jsonObject1.put("context", examJudge.getContext());
                     if (examJudge.getAnswer() == 0) {
                         jsonObject1.put("answer", "错误");
@@ -237,8 +241,9 @@ public class ExamMaterialServiceImpl implements ExamMaterialService {
                     queryWrapper.select(ExamSubject::getContext,ExamSubject::getScore,ExamSubject::getImgUrl,ExamSubject::getAnswer)
                             .eq(ExamSubject::getId, problemId);
                     ExamSubject examSubject = examSubjectMapper.selectOne(queryWrapper);
-                    JSONObject jsonObject1 = new JSONObject();
+                    JSONObject jsonObject1 = new JSONObject(new LinkedHashMap<>());
                     jsonObject1.put("id", problemId);
+                    jsonObject1.put("subject", subjectMapper.selectById(examSubjectMapper.selectById(problemId).getSubjectId()).getName());
                     jsonObject1.put("context", examSubject.getContext());
                     jsonObject1.put("answer", examSubject.getAnswer());
                     jsonObject1.put("score", examSubject.getScore());
