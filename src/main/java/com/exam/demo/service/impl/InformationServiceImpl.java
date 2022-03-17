@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.exam.demo.entity.Information;
-import com.exam.demo.entity.Study;
 import com.exam.demo.entity.User;
 import com.exam.demo.mapper.*;
 import com.exam.demo.results.vo.*;
@@ -14,7 +13,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -42,57 +40,60 @@ public class InformationServiceImpl implements InformationService {
     @Autowired
     private DepartmentMapper departmentMapper;
 
+    @Override
+    public Integer addNewStudyRecord(Integer userId, Integer dataId, double studyTime) {
+
+        //判断是否存在该条学习记录
+        LambdaQueryWrapper<Information> lambdaQueryWrapper = Wrappers.lambdaQuery(Information.class);
+        lambdaQueryWrapper.eq(Information::getUserId, userId).eq(Information::getDataId, dataId);
+        Information information = informationMapper.selectOne(lambdaQueryWrapper);
+        Information newInformationRecord = new Information();
+        if (information != null) { //存在  更新study_time逻辑
+            newInformationRecord.setStudyTime(information.getStudyTime() + studyTime);
+            informationMapper.update(newInformationRecord, lambdaQueryWrapper);
+        } else { //不存在 插入逻辑
+            newInformationRecord.setUserId(userId);
+            newInformationRecord.setDataId(dataId);
+            newInformationRecord.setStudyTime(studyTime);
+            informationMapper.insert(newInformationRecord);
+        }
+        return 1;
+    }
 
     @Override
-    public PageVo<InformationVo> search(String nums, String username, String department, Integer currentPage, Integer pageSize) {
+    public PageVo<InformationVo> search(String nums, String username, Integer departmentId, Integer currentPage, Integer pageSize) {
         Page<Information> page = new Page<>(currentPage, pageSize);
         LambdaQueryWrapper<Information> informationWrapper = new LambdaQueryWrapper<>();
-        if (!StringUtils.isBlank(username)){
+        if (!StringUtils.isBlank(username)) {
             LambdaQueryWrapper<User> userWrapper = Wrappers.lambdaQuery(User.class);
             userWrapper
                     .select(User::getId)
-                    .like(User::getName,username);
+                    .eq(User::getName, username)
+                    .eq(User::getNums,nums)
+                    .eq(User::getDepartmentId,departmentId);
             List<User> users = userMapper.selectList(userWrapper);
-            if (!users.isEmpty()){
+            if (!users.isEmpty()) {
                 LinkedList<Integer> userIds = new LinkedList<>();
-                for (User user : users){
-//                    System.out.println("=============="+user.getId());
+                for (User user : users) {
                     userIds.add(user.getId());
                 }
                 informationWrapper.in(Information::getUserId, userIds);
             }
         }
         LinkedList<InformationVo> informationVos = new LinkedList<>();
-        Page<Information> informationPage = informationMapper.selectPage(page,informationWrapper);
+        Page<Information> informationPage = informationMapper.selectPage(page, informationWrapper);
         List<Information> informationList = informationPage.getRecords();
-        InformationVo informationVo = new InformationVo();
-        informationVo.setUsername(username);
-        informationVo.setDepartment(department);
-        informationVo.setNums(nums);
-        int totalTime = 0;
-        if (!informationList.isEmpty()){
-            for (Information info : informationList){
-                LinkedHashMap<String, Object> map = new LinkedHashMap<>();
-                map.put("studyTime", info.getStudyTime());
-                int iST = Integer.parseInt(info.getStudyTime());
-                totalTime += iST;
+        if (!informationList.isEmpty()) {
+            for (Information info : informationList) {
+                InformationVo informationVo1 = copy(info);
+                if (username != null){
+                    informationVo1.setUsername(username);
+                }
+                if (nums != null){
+                    informationVo1.setNums(nums);
+                }
+                informationVos.add(informationVo1);
             }
-        }
-        for (Information info : informationList){
-            InformationVo informationVo1  = copy(informationVo,info);
-            int xS = totalTime / 60;
-            int fZ = totalTime % 60;
-            String totalTime1 = null;
-            if (xS != 0 && fZ != 0){
-                totalTime1 = xS+"小时"+fZ+"分钟";
-            }else if (xS !=0 && fZ ==0){
-                totalTime1 = xS+"小时";
-            }else {
-                totalTime1 = fZ+"分钟";
-            }
-//            String totalTime1 = String.valueOf(totalTime);
-            informationVo1.setTotalTime(totalTime1);
-            informationVos.add(informationVo1);
         }
         return PageVo.<InformationVo>builder()
                 .page(currentPage)
@@ -102,276 +103,128 @@ public class InformationServiceImpl implements InformationService {
                 .build();
     }
 
-    @Override
-    public PageVo<InformationInVo> searchIn(Integer userId, Integer currentPage, Integer pageSize) {
-        LambdaQueryWrapper<Information> queryWrapper = new LambdaQueryWrapper<>();
-        Page<Information> page = new Page<>(currentPage,pageSize);
-        queryWrapper
-                .select(Information::getSubjectId,Information::getTypeId,Information::
-                        getDataId,Information::getStudyTime,Information::getProcess)
-                .like(Information::getUserId,userId);
-//        List<Information> informations = informationMapper.selectList(queryWrapper);
-        LinkedList<Integer> userIds = new LinkedList<>();
-//        for (Information info : informations){
-//            userIds.add(info.getSubjectId());
-//            userIds.add(info.getTypeId());
-//            userIds.add(info.getDataId());
-            userIds.add(userId);
-//        }
-        queryWrapper.in(Information::getUserId,userIds);
-        LinkedList<InformationInVo> informationInVos = new LinkedList<>();
-        Page<Information> informationPage = informationMapper.selectPage(page,queryWrapper);
-        List<Information> informationList = informationPage.getRecords();
-        for (Information in : informationList){
-            InformationInVo informationInVo = copy(in);
-            informationInVos.add(informationInVo);
-        }
-        return PageVo.<InformationInVo>builder()
-                .values(informationInVos)
-                .page(currentPage)
-                .size(pageSize)
-                .total(informationPage.getTotal())
-                .build();
-    }
-
-    @Override
-    public InformationAllVo getStudyDurationByUserId(Integer userId) {
-        LambdaQueryWrapper<Information> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        lambdaQueryWrapper.eq(Information::getUserId, userId);
-
-        InformationAllVo informationAllVo = new InformationAllVo();
-        User user = userMapper.selectById(userId);
-        if (user != null) {
-            informationAllVo.setUsername(user.getName());
-            informationAllVo.setDepartment(departmentMapper.selectById(user.getDepartmentId()).getName());
-            informationAllVo.setNums(user.getNums());
-            informationAllVo.setIdentity(user.getIdentity());
-        }
-        int totalTime = 0;
-        List<Information> informationList = informationMapper.selectList(lambdaQueryWrapper);
-        if (!informationList.isEmpty()) {
-            List<LinkedHashMap<String, Object>> value = new LinkedList<>();
-            String totalTime1 = null;
-            String studyTime1 = null;
-            for (Information information : informationList) {
-                LinkedHashMap<String, Object> map = new LinkedHashMap<>();
-                map.put("subject", subjectMapper.selectById(information.getSubjectId()).getName());
-                map.put("name", studyMapper.selectById(information.getDataId()).getName());
-                map.put("beizhu", studyMapper.selectById(information.getDataId()).getBeizhu());
-                map.put("time", studyMapper.selectById(information.getDataId()).getTime());
-                int iST = Integer.parseInt(information.getStudyTime());
-                int xSS = iST / 60;
-                int fZS = iST % 60;
-                if (xSS != 0 && fZS != 0){
-                    studyTime1 = xSS+"小时"+fZS+"分钟";
-                }else if (xSS !=0 && fZS ==0){
-                    studyTime1 = xSS+"小时";
-                }else {
-                    studyTime1 = fZS+"分钟";
-                }
-                map.put("studyTime", studyTime1);
-                totalTime += iST;
-                int xS = totalTime / 60;
-                int fZ = totalTime % 60;
-                if (xS != 0 && fZ != 0){
-                    totalTime1 = xS+"小时"+fZ+"分钟";
-                }else if (xS !=0 && fZ ==0){
-                    totalTime1 = xS+"小时";
-                }else {
-                    totalTime1 = fZ+"分钟";
-                }
-                int time = Integer.parseInt(studyMapper.selectById(information.getDataId()).getTime());
-//                int time1 = (int) (time * 0.6);
-                int process = iST * 100 / time;
-                if (process >= 100){
-                    process = 100;
-                }
-                map.put("process", process);
-                value.add(map);
-            }
-            informationAllVo.setTotalTime(totalTime1);
-            informationAllVo.setValue(value);
-        }
-
-        return informationAllVo;
-    }
-
-    @Override
-    public int insert(Information information) {
-
-        return informationMapper.insert(information);
-    }
-
-    @Override
-    public InfoAddVo find(Integer dataId) {
-        Study study = studyMapper.selectById(dataId);
-        int departmentId = study.getDepartmentid();
-        int subjectId = study.getSubjectid();
-        int typeId = study.getTypeid();
-        String time = study.getTime();
-//        System.out.println(departmentId+"========="+subjectId+"==========="+typeId+"======="+time);
-        return new InfoAddVo(departmentId,subjectId,typeId,time);
-    }
-
-    @Override
-    public InformationAllVo findTime(Integer userId,Integer dataId) {
-        LambdaQueryWrapper<Information> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        lambdaQueryWrapper.eq(Information::getUserId, userId)
-                          .eq(Information::getDataId,dataId);
-        int totalTime = 0;
-        InformationAllVo informationAllVo = new InformationAllVo();
-        List<Information> informationList = informationMapper.selectList(lambdaQueryWrapper);
-        if (!informationList.isEmpty()) {
-            List<LinkedHashMap<String, Object>> value = new LinkedList<>();
-            for (Information information : informationList) {
-                LinkedHashMap<String, Object> map = new LinkedHashMap<>();
-                String studyTime = information.getStudyTime();
-                map.put("studyTime", studyTime);
-                int iST = 0;
-                if (studyTime != null){
-                    iST = Integer.parseInt(studyTime);
-                }
-                totalTime += iST;
-                map.put("process", information.getProcess());
-                value.add(map);
-            }
-            String totalTime1 = String.valueOf(totalTime);
-            informationAllVo.setTotalTime(totalTime1);
-            informationAllVo.setValue(value);
-        }
-        return informationAllVo;
-    }
-
-    @Override
-    public String time(Integer userId) {
-        LambdaQueryWrapper<Information> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        lambdaQueryWrapper.eq(Information::getUserId, userId);
-        int totalTime = 0;
-        String totalTime1 = null;
-        List<Information> informationList = informationMapper.selectList(lambdaQueryWrapper);
-        if (!informationList.isEmpty()) {
-            for (Information information : informationList) {
-                int iST = Integer.parseInt(information.getStudyTime());
-                totalTime += iST;
-            }
-            totalTime1 = String.valueOf(totalTime);
-        }
-        return totalTime1;
-    }
-
-
-
-    private InformationVo copy(InformationVo informationVo,Information information){
-        BeanUtils.copyProperties(information,informationVo);
-        int userId = information.getUserId();
-        if (userId != 0){
-            information.setUserId(userId);
+    private InformationVo copy(Information information) {
+        InformationVo informationVo = new InformationVo();
+        BeanUtils.copyProperties(information, informationVo);
+        int userId = informationVo.getUserId();
+        if (userId != 0) {
             informationVo.setIdentity(userMapper.selectById(userId).getIdentity());
-//            informationVo.setTotalTime(userMapper.selectById(userId).getTime());
+            String department = departmentMapper.selectById(userMapper.selectById(userId).getDepartmentId()).getName();
+            if (department != null) {
+                informationVo.setDepartment(department);
+            }
+            double totalTime = userMapper.selectById(userId).getTime();
+            String totalTime1 = null;
+            if (totalTime != 0) {
+                double xS = totalTime / 60;
+                double fZ = totalTime % 60;
+                if (xS != 0 && fZ != 0) {
+                    totalTime1 = xS + "小时" + fZ + "分钟";
+                } else if (xS != 0 && fZ == 0) {
+                    totalTime1 = xS + "小时";
+                } else {
+                    totalTime1 = fZ + "分钟";
+                }
+            }
+            informationVo.setTotalTime(totalTime1);
         }
         return informationVo;
     }
-    
-    private InformationInVo copy(Information information){
-        InformationInVo informationInVo = new InformationInVo();
-        BeanUtils.copyProperties(information,informationInVo);
-        Integer subjectId = information.getSubjectId();
-        Integer typeId = information.getTypeId();
-        Integer dataId = information.getDataId();
-        String studyTime = information.getStudyTime();
-        int time = Integer.parseInt(studyMapper.selectById(dataId).getTime());
-        if (subjectId != 0){
-            informationInVo.setSubject(subjectMapper.selectById(subjectId).getName());
-        }
-        if (typeId != 0){
-            informationInVo.setType(subjectTypeMapper.selectById(typeId).getName());
-        }
-        if (dataId != 0){
-            informationInVo.setTime(studyMapper.selectById(dataId).getTime());
-        }
-        int iST = Integer.parseInt(studyTime);
-        int xS = iST / 60;
-        int fZ = iST % 60;
-        String studyTime1 = null;
-        if (xS != 0 && fZ != 0){
-            studyTime1 = xS+"小时"+fZ+"分钟";
-        }else if (xS !=0 && fZ ==0){
-            studyTime1 = xS+"小时";
-        }else {
-            studyTime1 = fZ+"分钟";
-        }
-//        int process = studyTime / (time * 60) * 100;
-        informationInVo.setStudyTime(studyTime1);
-//        int time1 = (int) (time * 0.6);
-        int process = iST * 100 / time;
-        if (process >= 100){
-            process = 100;
-        }
-//        System.out.println(studyTime+"======="+time+"======"+process);
-
-        informationInVo.setProcess(process);
-        return informationInVo;
-    }
-
-    private InformationAllVo copy1(Information information){
-        InformationAllVo informationAllVo = new InformationAllVo();
-        BeanUtils.copyProperties(information,informationAllVo);
-        int userId = information.getUserId();
-        Integer subjectId = information.getSubjectId();
-        Integer typeId = information.getTypeId();
-        Integer dataId = information.getDataId();
-        Integer departmentId = information.getDepartmentId();
-        String totalTime = information.getTotalTime();
-        String studyTime = information.getStudyTime();
-        int process = information.getProcess();
-        if (userId != 0){
-            informationAllVo.setUsername(userMapper.selectById(userId).getName());
-            informationAllVo.setNums(userMapper.selectById(userId).getNums());
-            informationAllVo.setIdentity(userMapper.selectById(userId).getIdentity());
-        }
-        if (departmentId != 0){
-            informationAllVo.setDepartment(departmentMapper.selectById(departmentId).getName());
-        }
-        informationAllVo.setTotalTime(totalTime);
-        InformationInVo informationInVo = new InformationInVo();
-        if (subjectId != 0){
-            informationInVo.setSubject(subjectMapper.selectById(subjectId).getName());
-        }
-        if (typeId != 0){
-            informationInVo.setType(subjectTypeMapper.selectById(typeId).getName());
-        }
-        if (dataId != 0){
-            informationInVo.setTime(studyMapper.selectById(dataId).getTime());
-        }
-        informationInVo.setStudyTime(studyTime);
-        informationInVo.setProcess(process);
-//        informationAllVo.setInformationInVo(informationInVo);
-        return informationAllVo;
-    }
 
     @Override
-    public Integer addNewStudyRecord(Integer userId, Integer dataId, Integer studyTime) {
-
-        //判断是否存在该条学习记录
-        LambdaQueryWrapper<Information> lambdaQueryWrapper = Wrappers.lambdaQuery(Information.class);
-        lambdaQueryWrapper.eq(Information::getUserId,userId).eq(Information::getDataId,dataId);
-        Information information = informationMapper.selectOne(lambdaQueryWrapper);
-        Information newInformationRecord = new Information();
-        if (information != null) { //存在  更新study_time逻辑
-            int s = Integer.parseInt(information.getStudyTime());
-            s = s + studyTime;
-            newInformationRecord.setStudyTime(String.valueOf(s));
-            informationMapper.update(newInformationRecord, lambdaQueryWrapper);
-        } else { //不存在 插入逻辑
-            newInformationRecord.setUserId(userId);
-            newInformationRecord.setDepartmentId(userMapper.selectById(userId).getDepartmentId());
-            studyMapper.selectById(dataId).getSubjectid();
-            newInformationRecord.setSubjectId(studyMapper.selectById(dataId).getSubjectid());
-            newInformationRecord.setTypeId(studyMapper.selectById(dataId).getTypeid());
-            newInformationRecord.setDataId(dataId);
-            newInformationRecord.setStudyTime(studyTime.toString());
-            informationMapper.insert(newInformationRecord);
+    public InformationInVo searchIn(Integer userId) {
+        LambdaQueryWrapper<Information> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper
+                .eq(Information::getUserId, userId);
+        LinkedList<Integer> userIds = new LinkedList<>();
+        userIds.add(userId);
+        queryWrapper.in(Information::getUserId, userIds);
+        InformationInVo informationInVo = new InformationInVo();
+        List<Information> informationList = informationMapper.selectList(queryWrapper);
+        if (!informationList.isEmpty()) {
+            String studyTime1;
+            for (Information information : informationList) {
+                String subject = subjectMapper.selectById(studyMapper.selectById(information.getDataId()).getSubjectid()).getName();
+                if (subject != null) {
+                    informationInVo.setSubject(subject);
+                }
+                informationInVo.setTime(studyMapper.selectById(information.getDataId()).getTime());
+                informationInVo.setType(subjectTypeMapper.selectById
+                        (studyMapper.selectById(information.getDataId()).getTypeid()).getName());
+                double studyTime = informationMapper.selectById(userId).getStudyTime();
+                int xSS = (int) (studyTime / 60);
+                double fZS = studyTime % 60;
+                if (xSS != 0 && fZS != 0) {
+                    studyTime1 = xSS + "小时" + fZS + "分钟";
+                } else if (xSS != 0 && fZS == 0) {
+                    studyTime1 = xSS + "小时";
+                } else {
+                    studyTime1 = fZS + "分钟";
+                }
+                informationInVo.setStudyTime(studyTime1);
+            }
         }
-        return 1;
+        return informationInVo;
     }
+    //    @Override
+//    public InformationAllVo getStudyDurationByUserId(Integer userId) {
+//        LambdaQueryWrapper<Information> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+//        lambdaQueryWrapper.eq(Information::getUserId, userId);
+//
+//        InformationAllVo informationAllVo = new InformationAllVo();
+//        User user = userMapper.selectById(userId);
+//        if (user != null) {
+//            informationAllVo.setUsername(user.getName());
+//            informationAllVo.setDepartment(departmentMapper.selectById(user.getDepartmentId()).getName());
+//            informationAllVo.setNums(user.getNums());
+//            informationAllVo.setIdentity(user.getIdentity());
+//        }
+//        int totalTime = 0;
+//        List<Information> informationList = informationMapper.selectList(lambdaQueryWrapper);
+//        if (!informationList.isEmpty()) {
+//            List<LinkedHashMap<String, Object>> value = new LinkedList<>();
+//            String totalTime1 = null;
+//            String studyTime1 = null;
+//            for (Information information : informationList) {
+//                LinkedHashMap<String, Object> map = new LinkedHashMap<>();
+////                map.put("subject", subjectMapper.selectById(information.getSubjectId()).getName());
+//                map.put("name", studyMapper.selectById(information.getDataId()).getName());
+//                map.put("beizhu", studyMapper.selectById(information.getDataId()).getBeizhu());
+//                map.put("time", studyMapper.selectById(information.getDataId()).getTime());
+//                int iST = Integer.parseInt(information.getStudyTime());
+//                int xSS = iST / 60;
+//                int fZS = iST % 60;
+//                if (xSS != 0 && fZS != 0){
+//                    studyTime1 = xSS+"小时"+fZS+"分钟";
+//                }else if (xSS !=0 && fZS ==0){
+//                    studyTime1 = xSS+"小时";
+//                }else {
+//                    studyTime1 = fZS+"分钟";
+//                }
+//                map.put("studyTime", studyTime1);
+//                totalTime += iST;
+//                int xS = totalTime / 60;
+//                int fZ = totalTime % 60;
+//                if (xS != 0 && fZ != 0){
+//                    totalTime1 = xS+"小时"+fZ+"分钟";
+//                }else if (xS !=0 && fZ ==0){
+//                    totalTime1 = xS+"小时";
+//                }else {
+//                    totalTime1 = fZ+"分钟";
+//                }
+//                int time = Integer.parseInt(studyMapper.selectById(information.getDataId()).getTime());
+////                int time1 = (int) (time * 0.6);
+//                int process = iST * 100 / time;
+//                if (process >= 100){
+//                    process = 100;
+//                }
+//                map.put("process", process);
+//                value.add(map);
+//            }
+//            informationAllVo.setTotalTime(totalTime1);
+//            informationAllVo.setValue(value);
+//        }
+//
+//        return informationAllVo;
+//    }
 }

@@ -15,7 +15,7 @@ public class InformationParam {
     private String username;
 
     @ApiModelProperty(value = "用户所属部门")
-    private String department;
+    private Integer departmentId;
 
     @ApiModelProperty(value="当前页码")
     private Integer currentPage;
@@ -23,3 +23,4 @@ public class InformationParam {
     @ApiModelProperty(value="页码大小")
     private Integer pageSize;
 }
+
