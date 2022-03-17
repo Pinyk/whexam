@@ -91,10 +91,10 @@ public class InformationServiceImpl implements InformationService {
                 map.put("nums", record.getNums());
                 map.put("identity", record.getIdentity());
                 double time = record.getTime();
-                String totalTime = null;
+                String totalTime ;
                 if (time != 0) {
                     int xS = (int) (time / 60);
-                    double fZ = time % 60;
+                    int fZ = (int) (time % 60);
                     if (xS != 0 && fZ != 0) {
                         totalTime = xS + "小时" + fZ + "分钟";
                     } else if (xS != 0 && fZ == 0) {
@@ -102,6 +102,8 @@ public class InformationServiceImpl implements InformationService {
                     } else {
                         totalTime = fZ + "分钟";
                     }
+                }else {
+                    totalTime = 0 + "分钟";
                 }
                 map.put("totalTime", totalTime);
                 linkedHashMaps.push(map);
@@ -161,31 +163,40 @@ public class InformationServiceImpl implements InformationService {
                 String subject = subjectMapper.selectById(studyMapper.selectById(information.getDataId()).getSubjectid()).getName();
                 String time = studyMapper.selectById(information.getDataId()).getTime();
                 String name = subjectTypeMapper.selectById(studyMapper.selectById(information.getDataId()).getTypeid()).getName();
+                String type = subjectTypeMapper.selectById(studyMapper.selectById(information.getDataId()).getTypeid()).getName();
                 double xS = Double.parseDouble(time);
                 double sTime = information.getStudyTime();
                 int xSS = (int) (sTime / 60);
-                double fZS = sTime % 60;
+                int fZS = (int) (sTime % 60);
                 if (xSS != 0 && fZS != 0) {
-                studyTime = xSS + "小时" + fZS + "分钟";
+                    studyTime = xSS + "小时" + fZS + "分钟";
                 } else if (xSS != 0 && fZS == 0) {
-                studyTime = xSS + "小时";
-                } else {
-                studyTime = fZS + "分钟";
+                    studyTime = xSS + "小时";
+                } else if (fZS != 0){
+                    studyTime = fZS + "分钟";
+                }else {
+                    studyTime = "1分钟";
                 }
                 map.put("subject", subject);
                 map.put("name", name);
+                map.put("time",time);
+                map.put("type",type);
                 map.put("beizhu", studyMapper.selectById(information.getDataId()).getBeizhu());
                 map.put("studyTime", studyTime);
+                String process1 ;
                 int process = (int) (sTime * 100 / xS);
                 if (process >= 100){
-                process = 100;
+                    process1 = "100%";
+                }else {
+                    process1 = process +"%";
                 }
-                map.put("process", process);
+                map.put("process", process1);
                 linkedHashMaps.push(map);
             }
         }
         return linkedHashMaps;
     }
+
     @Override
     public InformationAllVo getStudyDurationByUserId(Integer userId) {
         LambdaQueryWrapper<Information> lambdaQueryWrapper = new LambdaQueryWrapper<>();
@@ -201,7 +212,7 @@ public class InformationServiceImpl implements InformationService {
             informationAllVo.setIdentity(user.getIdentity());
             double time = user.getTime();
             int xS = (int) (time / 60);
-            double fZ = time % 60;
+            int fZ = (int) (time % 60);
             if (xS != 0 && fZ != 0){
                 totalTime = xS+"小时"+fZ+"分钟";
             }else if (xS !=0 && fZ ==0){
@@ -219,27 +230,34 @@ public class InformationServiceImpl implements InformationService {
                 LinkedHashMap<String, Object> map = new LinkedHashMap<>();
                 String subject = subjectMapper.selectById(studyMapper.selectById(information.getDataId()).getSubjectid()).getName();
                 String name = subjectTypeMapper.selectById(studyMapper.selectById(information.getDataId()).getTypeid()).getName();
+                String type = subjectTypeMapper.selectById(studyMapper.selectById(information.getDataId()).getTypeid()).getName();
                 String time = studyMapper.selectById(information.getDataId()).getTime();
                 double xS = Double.parseDouble(time);
                 double sTime = information.getStudyTime();
                 int xSS = (int) (sTime / 60);
-                double fZS = sTime % 60;
+                int fZS = (int) (sTime % 60);
                 if (xSS != 0 && fZS != 0) {
                     studyTime = xSS + "小时" + fZS + "分钟";
                 } else if (xSS != 0 && fZS == 0) {
                     studyTime = xSS + "小时";
-                } else {
+                } else if (fZS != 0){
                     studyTime = fZS + "分钟";
+                }else {
+                    studyTime = "1分钟";
                 }
                 map.put("subject", subject);
+                map.put("type",type);
                 map.put("name", name);
                 map.put("beizhu", studyMapper.selectById(information.getDataId()).getBeizhu());
                 map.put("studyTime", studyTime);
+                String process1;
                 int process = (int) (sTime * 100 / xS);
                 if (process >= 100){
-                    process = 100;
+                    process1 = "100%";
+                }else {
+                    process1 = process + "%";
                 }
-                map.put("process", process);
+                map.put("process", process1);
                 value.add(map);
             }
             informationAllVo.setValue(value);
