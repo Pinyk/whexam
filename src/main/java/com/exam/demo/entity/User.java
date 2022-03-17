@@ -1,6 +1,5 @@
 package com.exam.demo.entity;
 
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -16,7 +15,7 @@ import lombok.NoArgsConstructor;
 public class User {
 
     @ApiModelProperty(value = "用户主键")
-    private int id;
+    private Integer id;
 
     @ApiModelProperty(value = "用户名")
     private String name;

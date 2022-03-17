@@ -13,6 +13,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -48,9 +49,16 @@ public class InformationServiceImpl implements InformationService {
         lambdaQueryWrapper.eq(Information::getUserId, userId).eq(Information::getDataId, dataId);
         Information information = informationMapper.selectOne(lambdaQueryWrapper);
         Information newInformationRecord = new Information();
+        //查询该用户并修改学习时长
+        LambdaQueryWrapper<User> userLambdaQueryWrapper = Wrappers.lambdaQuery(User.class);
+        userLambdaQueryWrapper.eq(User::getId,userId);
+        User user = userMapper.selectOne(userLambdaQueryWrapper);
+        User newUserRecord = new User();
         if (information != null) { //存在  更新study_time逻辑
             newInformationRecord.setStudyTime(information.getStudyTime() + studyTime);
+            newUserRecord.setTime(user.getTime()+studyTime);
             informationMapper.update(newInformationRecord, lambdaQueryWrapper);
+            userMapper.update(newUserRecord,userLambdaQueryWrapper);
         } else { //不存在 插入逻辑
             newInformationRecord.setUserId(userId);
             newInformationRecord.setDataId(dataId);
@@ -151,7 +159,7 @@ public class InformationServiceImpl implements InformationService {
                 informationInVo.setTime(studyMapper.selectById(information.getDataId()).getTime());
                 informationInVo.setType(subjectTypeMapper.selectById
                         (studyMapper.selectById(information.getDataId()).getTypeid()).getName());
-                double studyTime = informationMapper.selectById(userId).getStudyTime();
+                double studyTime = information.getStudyTime();
                 int xSS = (int) (studyTime / 60);
                 double fZS = studyTime % 60;
                 if (xSS != 0 && fZS != 0) {
@@ -166,65 +174,65 @@ public class InformationServiceImpl implements InformationService {
         }
         return informationInVo;
     }
-    //    @Override
-//    public InformationAllVo getStudyDurationByUserId(Integer userId) {
-//        LambdaQueryWrapper<Information> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-//        lambdaQueryWrapper.eq(Information::getUserId, userId);
-//
-//        InformationAllVo informationAllVo = new InformationAllVo();
-//        User user = userMapper.selectById(userId);
-//        if (user != null) {
-//            informationAllVo.setUsername(user.getName());
-//            informationAllVo.setDepartment(departmentMapper.selectById(user.getDepartmentId()).getName());
-//            informationAllVo.setNums(user.getNums());
-//            informationAllVo.setIdentity(user.getIdentity());
-//        }
-//        int totalTime = 0;
-//        List<Information> informationList = informationMapper.selectList(lambdaQueryWrapper);
-//        if (!informationList.isEmpty()) {
-//            List<LinkedHashMap<String, Object>> value = new LinkedList<>();
-//            String totalTime1 = null;
-//            String studyTime1 = null;
-//            for (Information information : informationList) {
-//                LinkedHashMap<String, Object> map = new LinkedHashMap<>();
-////                map.put("subject", subjectMapper.selectById(information.getSubjectId()).getName());
-//                map.put("name", studyMapper.selectById(information.getDataId()).getName());
-//                map.put("beizhu", studyMapper.selectById(information.getDataId()).getBeizhu());
-//                map.put("time", studyMapper.selectById(information.getDataId()).getTime());
-//                int iST = Integer.parseInt(information.getStudyTime());
-//                int xSS = iST / 60;
-//                int fZS = iST % 60;
-//                if (xSS != 0 && fZS != 0){
-//                    studyTime1 = xSS+"小时"+fZS+"分钟";
-//                }else if (xSS !=0 && fZS ==0){
-//                    studyTime1 = xSS+"小时";
-//                }else {
-//                    studyTime1 = fZS+"分钟";
-//                }
-//                map.put("studyTime", studyTime1);
-//                totalTime += iST;
-//                int xS = totalTime / 60;
-//                int fZ = totalTime % 60;
-//                if (xS != 0 && fZ != 0){
-//                    totalTime1 = xS+"小时"+fZ+"分钟";
-//                }else if (xS !=0 && fZ ==0){
-//                    totalTime1 = xS+"小时";
-//                }else {
-//                    totalTime1 = fZ+"分钟";
-//                }
-//                int time = Integer.parseInt(studyMapper.selectById(information.getDataId()).getTime());
-////                int time1 = (int) (time * 0.6);
-//                int process = iST * 100 / time;
-//                if (process >= 100){
-//                    process = 100;
-//                }
-//                map.put("process", process);
-//                value.add(map);
-//            }
-//            informationAllVo.setTotalTime(totalTime1);
-//            informationAllVo.setValue(value);
-//        }
-//
-//        return informationAllVo;
-//    }
+
+    @Override
+    public InformationAllVo getStudyDurationByUserId(Integer userId) {
+        LambdaQueryWrapper<Information> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper
+                .eq(Information::getUserId, userId);
+        InformationAllVo informationAllVo = new InformationAllVo();
+        User user = userMapper.selectById(userId);
+        String totalTime;
+        if (user != null) {
+            informationAllVo.setUsername(user.getName());
+            informationAllVo.setDepartment(departmentMapper.selectById(user.getDepartmentId()).getName());
+            informationAllVo.setNums(user.getNums());
+            informationAllVo.setIdentity(user.getIdentity());
+            double time = user.getTime();
+            int xS = (int) (time / 60);
+            double fZ = time % 60;
+            if (xS != 0 && fZ != 0){
+                totalTime = xS+"小时"+fZ+"分钟";
+            }else if (xS !=0 && fZ ==0){
+                totalTime = xS+"小时";
+            }else {
+                totalTime = fZ+"分钟";
+            }
+            informationAllVo.setTotalTime(totalTime);
+        }
+        List<Information> informationList = informationMapper.selectList(lambdaQueryWrapper);
+        if (!informationList.isEmpty()) {
+            List<LinkedHashMap<String, Object>> value = new LinkedList<>();
+            String studyTime;
+            for (Information information : informationList) {
+                LinkedHashMap<String, Object> map = new LinkedHashMap<>();
+                String subject = subjectMapper.selectById(studyMapper.selectById(information.getDataId()).getSubjectid()).getName();
+                String name = subjectTypeMapper.selectById(studyMapper.selectById(information.getDataId()).getTypeid()).getName();
+                String time = studyMapper.selectById(information.getDataId()).getTime();
+                double xS = Double.parseDouble(time);
+                double sTime = information.getStudyTime();
+                int xSS = (int) (sTime / 60);
+                double fZS = sTime % 60;
+                if (xSS != 0 && fZS != 0) {
+                    studyTime = xSS + "小时" + fZS + "分钟";
+                } else if (xSS != 0 && fZS == 0) {
+                    studyTime = xSS + "小时";
+                } else {
+                    studyTime = fZS + "分钟";
+                }
+                map.put("subject", subject);
+                map.put("name", name);
+                map.put("beizhu", studyMapper.selectById(information.getDataId()).getBeizhu());
+                map.put("studyTime", studyTime);
+                int process = (int) (sTime * 100 / xS);
+                if (process >= 100){
+                    process = 100;
+                }
+                map.put("process", process);
+                value.add(map);
+            }
+            informationAllVo.setValue(value);
+        }
+        return informationAllVo;
+    }
 }

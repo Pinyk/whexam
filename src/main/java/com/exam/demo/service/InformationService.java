@@ -17,7 +17,7 @@ public interface InformationService {
 //     * @param userId
 //     * @return
 //     */
-//    InformationAllVo getStudyDurationByUserId(Integer userId);
+    InformationAllVo getStudyDurationByUserId(Integer userId);
 
     Integer addNewStudyRecord(Integer userId, Integer dataId, double studyTime);
 }
