@@ -1,7 +1,6 @@
 package com.exam.demo.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.exam.demo.entity.Information;
@@ -69,45 +68,50 @@ public class InformationServiceImpl implements InformationService {
     }
 
     @Override
-    public PageVo<InformationVo> search(String nums, String username, Integer departmentId, Integer currentPage, Integer pageSize) {
-        Page<Information> page = new Page<>(currentPage, pageSize);
-        LambdaQueryWrapper<Information> informationWrapper = new LambdaQueryWrapper<>();
-        if (!StringUtils.isBlank(username)) {
-            LambdaQueryWrapper<User> userWrapper = Wrappers.lambdaQuery(User.class);
-            userWrapper
-                    .select(User::getId)
-                    .eq(User::getName, username)
-                    .eq(User::getNums,nums)
-                    .eq(User::getDepartmentId,departmentId);
-            List<User> users = userMapper.selectList(userWrapper);
-            if (!users.isEmpty()) {
-                LinkedList<Integer> userIds = new LinkedList<>();
-                for (User user : users) {
-                    userIds.add(user.getId());
+    public PageVo<LinkedHashMap<String, Object>> search(String nums, String username, Integer departmentId, Integer currentPage, Integer pageSize) {
+        Page<User> userPage = new Page<>(currentPage, pageSize);
+        LambdaQueryWrapper<User> userLambdaQueryWrapper = Wrappers.lambdaQuery(User.class);
+        userLambdaQueryWrapper.select(User::getName,User::getNums,User::getDepartmentId,User::getIdentity,User::getTime);
+        if (nums != null && !nums.isEmpty()) {
+            userLambdaQueryWrapper.like(User::getNums, nums);
+        }
+        if (username != null && !username.isEmpty()) {
+            userLambdaQueryWrapper.like(User::getName,username);
+        }
+        if (departmentId != null) {
+            userLambdaQueryWrapper.eq(User::getDepartmentId, departmentId);
+        }
+        Page<User> page = userMapper.selectPage(userPage, userLambdaQueryWrapper);
+        LinkedList<LinkedHashMap<String, Object>> linkedHashMaps = new LinkedList<>();
+        if (!page.getRecords().isEmpty()) {
+            for (User record : page.getRecords()) {
+                LinkedHashMap<String, Object> map = new LinkedHashMap<>();
+                map.put("userName", record.getName());
+                map.put("department", departmentMapper.selectById(record.getDepartmentId()).getName());
+                map.put("nums", record.getNums());
+                map.put("identity", record.getIdentity());
+                double time = record.getTime();
+                String totalTime = null;
+                if (time != 0) {
+                    int xS = (int) (time / 60);
+                    double fZ = time % 60;
+                    if (xS != 0 && fZ != 0) {
+                        totalTime = xS + "小时" + fZ + "分钟";
+                    } else if (xS != 0 && fZ == 0) {
+                        totalTime = xS + "小时";
+                    } else {
+                        totalTime = fZ + "分钟";
+                    }
                 }
-                informationWrapper.in(Information::getUserId, userIds);
+                map.put("totalTime", totalTime);
+                linkedHashMaps.push(map);
             }
         }
-        LinkedList<InformationVo> informationVos = new LinkedList<>();
-        Page<Information> informationPage = informationMapper.selectPage(page, informationWrapper);
-        List<Information> informationList = informationPage.getRecords();
-        if (!informationList.isEmpty()) {
-            for (Information info : informationList) {
-                InformationVo informationVo1 = copy(info);
-                if (username != null){
-                    informationVo1.setUsername(username);
-                }
-                if (nums != null){
-                    informationVo1.setNums(nums);
-                }
-                informationVos.add(informationVo1);
-            }
-        }
-        return PageVo.<InformationVo>builder()
+        return PageVo.<LinkedHashMap<String, Object>>builder()
                 .page(currentPage)
-                .total(informationPage.getTotal())
                 .size(pageSize)
-                .values(informationVos)
+                .total(page.getTotal())
+                .values(linkedHashMaps)
                 .build();
     }
 
@@ -140,41 +144,48 @@ public class InformationServiceImpl implements InformationService {
     }
 
     @Override
-    public InformationInVo searchIn(Integer userId) {
+    public LinkedList<LinkedHashMap<String, Object>> searchIn(Integer userId) {
         LambdaQueryWrapper<Information> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper
                 .eq(Information::getUserId, userId);
-        LinkedList<Integer> userIds = new LinkedList<>();
-        userIds.add(userId);
-        queryWrapper.in(Information::getUserId, userIds);
+//        LinkedList<Integer> userIds = new LinkedList<>();
+//        userIds.add(userId);
+//        queryWrapper.in(Information::getUserId, userIds);
         InformationInVo informationInVo = new InformationInVo();
         List<Information> informationList = informationMapper.selectList(queryWrapper);
+        LinkedList<LinkedHashMap<String, Object>> linkedHashMaps = new LinkedList<>();
         if (!informationList.isEmpty()) {
-            String studyTime1;
+            String studyTime;
             for (Information information : informationList) {
+                LinkedHashMap<String, Object> map = new LinkedHashMap<>();
                 String subject = subjectMapper.selectById(studyMapper.selectById(information.getDataId()).getSubjectid()).getName();
-                if (subject != null) {
-                    informationInVo.setSubject(subject);
-                }
-                informationInVo.setTime(studyMapper.selectById(information.getDataId()).getTime());
-                informationInVo.setType(subjectTypeMapper.selectById
-                        (studyMapper.selectById(information.getDataId()).getTypeid()).getName());
-                double studyTime = information.getStudyTime();
-                int xSS = (int) (studyTime / 60);
-                double fZS = studyTime % 60;
+                String time = studyMapper.selectById(information.getDataId()).getTime();
+                String name = subjectTypeMapper.selectById(studyMapper.selectById(information.getDataId()).getTypeid()).getName();
+                double xS = Double.parseDouble(time);
+                double sTime = information.getStudyTime();
+                int xSS = (int) (sTime / 60);
+                double fZS = sTime % 60;
                 if (xSS != 0 && fZS != 0) {
-                    studyTime1 = xSS + "小时" + fZS + "分钟";
+                studyTime = xSS + "小时" + fZS + "分钟";
                 } else if (xSS != 0 && fZS == 0) {
-                    studyTime1 = xSS + "小时";
+                studyTime = xSS + "小时";
                 } else {
-                    studyTime1 = fZS + "分钟";
+                studyTime = fZS + "分钟";
                 }
-                informationInVo.setStudyTime(studyTime1);
+                map.put("subject", subject);
+                map.put("name", name);
+                map.put("beizhu", studyMapper.selectById(information.getDataId()).getBeizhu());
+                map.put("studyTime", studyTime);
+                int process = (int) (sTime * 100 / xS);
+                if (process >= 100){
+                process = 100;
+                }
+                map.put("process", process);
+                linkedHashMaps.push(map);
             }
         }
-        return informationInVo;
+        return linkedHashMaps;
     }
-
     @Override
     public InformationAllVo getStudyDurationByUserId(Integer userId) {
         LambdaQueryWrapper<Information> lambdaQueryWrapper = new LambdaQueryWrapper<>();

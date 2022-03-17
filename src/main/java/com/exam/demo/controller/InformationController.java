@@ -11,6 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+
 import static com.exam.demo.results.WebResult.REQUEST_STATUS_SUCCESS;
 
 /**
@@ -27,10 +30,10 @@ public class InformationController {
 
     @PostMapping("search")
     @ApiOperation(notes = "wxn",value = "组合查询")
-    public WebResult<PageVo<InformationVo>> search(@ApiParam(name="前端查询条件 InformationParam 查询条件实体类")
+    public WebResult<PageVo<LinkedHashMap<String, Object>>> search(@ApiParam(name="前端查询条件 InformationParam 查询条件实体类")
                                                    @RequestBody InformationParam informationParam){
 
-        return WebResult.<PageVo<InformationVo>>builder()
+        return WebResult.<PageVo<LinkedHashMap<String, Object>>>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
                 .data(informationService.search(informationParam.getNums(),informationParam.getUsername(),informationParam.getDepartmentId(),
@@ -40,9 +43,9 @@ public class InformationController {
 
     @GetMapping("searchIn")
     @ApiOperation(notes = "wxn",value = "组合查询")
-    public WebResult<InformationInVo> searchIn(@ApiParam(name="前端查询条件 InformationInParam 查询条件实体类")
-                                               @RequestBody Integer userId){
-        return WebResult.<InformationInVo>builder()
+    public WebResult<LinkedList<LinkedHashMap<String, Object>>> searchIn(@ApiParam(name="前端查询条件 InformationInParam 查询条件实体类")
+                                               @RequestParam Integer userId){
+        return WebResult.<LinkedList<LinkedHashMap<String, Object>>>builder()
                 .code(200)
                 .message(REQUEST_STATUS_SUCCESS)
                 .data(informationService.searchIn(userId))

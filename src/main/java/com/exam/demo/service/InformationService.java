@@ -2,15 +2,18 @@ package com.exam.demo.service;
 
 import com.exam.demo.results.vo.*;
 
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+
 /**
  * @Author: wxn
  * @Date: 2022/3/13
  */
 public interface InformationService {
 
-    PageVo<InformationVo> search(String nums,String username,Integer departmentId,Integer currentPage, Integer pageSize);
+    PageVo<LinkedHashMap<String, Object>> search(String nums, String username, Integer departmentId, Integer currentPage, Integer pageSize);
 
-    InformationInVo searchIn(Integer userId);
+    LinkedList<LinkedHashMap<String, Object>> searchIn(Integer userId);
 //
 //    /**
 //     * 根据用户Id导出学习时长
